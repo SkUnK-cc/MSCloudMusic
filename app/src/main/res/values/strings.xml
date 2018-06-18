@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">MyCloudMusic</string>
+    <string name="mymusictitle">我的音乐</string>
+    <string name="local_music_title">本地音乐</string>
+    <string name="bottom_radio_discover">发现</string>
+    <string name="bottom_radio_music">我的</string>
+    <string name="bottom_radio_me">账号</string>
+    <string name="local_title">本地音乐</string>
+    <string name="bg_image_content_description">默认背景图片</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

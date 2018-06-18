@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="titlebar">#9C27B0</color>
+    <color name="bottom_bar">#9C27B0</color>
+    <color name="radio_check_color">#9C27B0</color>
+    <color name="text_unselected">#CAC4BF</color>
+    <color name="text_selected">#F0EBE2</color>
+    <color name="alpha_10_black">#1A000000</color>
+    <color name="alpha_55_black">#8C000000</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="white_96p">#F5FFFFFF</color>
+    <color name="alpha_15_white">#26FFFFFF</color>
+    <color name="alpha_35_black">#59000000</color>
+    <color name="alpha_20_black">#33000000</color>
+    <color name="redTab">#F44336</color>
+    <color name="redTab_30p">#4CF44336</color>
+    <color name="artist_foreground">#4F6A6A6A</color>
+</resources>

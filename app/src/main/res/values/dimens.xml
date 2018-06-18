@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--标题栏-->
+    <dimen name="base_bar_height">45dp</dimen>
+    <dimen name="main_bottom_bar">50dp</dimen>
+    <dimen name="base_bar_padding_top_and_bottom">7dp</dimen>
+    <dimen name="base_bar_padding_left_and_right">12dp</dimen>
+
+    <dimen name="textSize">20sp</dimen>
+    <dimen name="img">30dp</dimen>
+    <dimen name="next_to">20dp</dimen>
+
+    <dimen name="category_list_height">45dp</dimen>
+    <dimen name="category_list_paddingleft">20dp</dimen>
+
+    <!--本地音乐Item布局-->
+    <dimen name="music_item_height">60dp</dimen>
+    <dimen name="music_item_padleft">11dp</dimen>
+    <dimen name="music_item_padtop">9dp</dimen>
+    <dimen name="music_item_title_size">18sp</dimen>
+    <dimen name="music_item_padright">10dp</dimen>
+
+
+</resources>

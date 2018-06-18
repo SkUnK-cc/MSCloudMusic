@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/rl_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@color/titlebar"
+        android:paddingTop="20dp"
+        android:paddingLeft="15dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <EditText
+            android:id="@+id/search_edit"
+            android:layout_width="270dp"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/the_music_playing"
+            android:textSize="16sp"
+            android:background="@drawable/search_bar_bg"
+            android:hint="搜索歌曲、专辑、歌手"
+            android:singleLine="true"
+            android:drawableLeft="@drawable/ic_icon_search"
+            android:drawablePadding="7dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="8dp" />
+
+        <ImageView
+            android:id="@+id/the_music_playing"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_icon_music_play"
+            android:layout_alignParentRight="true"
+            android:padding="8dp"
+            android:focusable="true"/>
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_alignParentRight="true"
+            android:text="取消"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+    <FrameLayout
+        android:id="@+id/searchfragment_framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

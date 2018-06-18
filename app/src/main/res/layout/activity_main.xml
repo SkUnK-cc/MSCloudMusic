@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+    </FrameLayout>
+
+    <RadioGroup
+        android:id="@+id/bottom_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_bottom_bar"
+        android:orientation="horizontal"
+        android:paddingTop="7dp"
+        android:background="@color/bottom_bar">
+
+        <RadioButton
+            android:id="@+id/bottom_radio_search"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/selector_radio_search"
+            android:button="@null"
+            android:text="@string/bottom_radio_discover"
+            android:textColor="@drawable/selector_radio_text"
+            android:gravity="center"/>
+
+        <RadioButton
+            android:id="@+id/bottom_radio_music"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/selector_radio_music"
+            android:button="@null"
+            android:text="@string/bottom_radio_music"
+            android:textColor="@drawable/selector_radio_text"
+            android:gravity="center"/>
+
+        <RadioButton
+            android:id="@+id/bottom_radio_me"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/selector_radio_me"
+            android:button="@null"
+            android:text="@string/bottom_radio_me"
+            android:textColor="@drawable/selector_radio_text"
+            android:gravity="center"/>
+
+    </RadioGroup>
+
+
+
+</LinearLayout>

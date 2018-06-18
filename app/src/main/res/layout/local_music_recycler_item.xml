@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/music_item_height"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:paddingLeft="@dimen/music_item_padleft"
+    android:paddingTop="@dimen/music_item_padtop"
+    android:paddingRight="@dimen/music_item_padright">
+
+
+    <TextView
+        android:id="@+id/local_music_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:textSize="@dimen/music_item_title_size"
+        tool:text="演员"/>
+
+    <TextView
+        android:id="@+id/local_music_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tool:text="薛之谦"
+        android:layout_below="@id/local_music_title"/>
+
+    <ImageView
+        android:id="@+id/local_music_more"
+        android:layout_width="@dimen/img"
+        android:layout_height="@dimen/img"
+        android:src="@drawable/ic_icon_more"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+
+
+</RelativeLayout>

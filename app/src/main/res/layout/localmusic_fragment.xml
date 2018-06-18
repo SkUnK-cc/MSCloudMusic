@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/mymusicbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base_bar_height"
+        android:background="@color/titlebar"
+        android:paddingTop="@dimen/base_bar_padding_top_and_bottom"
+        android:paddingBottom="@dimen/base_bar_padding_top_and_bottom"
+        android:paddingLeft="@dimen/base_bar_padding_left_and_right"
+        android:paddingRight="@dimen/base_bar_padding_left_and_right">
+        <ImageView
+            android:id="@+id/local_music_back"
+            android:layout_width="@dimen/img"
+            android:layout_height="@dimen/img"
+            android:src="@drawable/ic_icon_last_to"/>
+        <TextView
+            android:id="@+id/mymusictitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/local_music_title"
+            android:textSize="@dimen/textSize"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
+            android:id="@+id/the_music_playing"
+            android:layout_width="@dimen/img"
+            android:layout_height="@dimen/img"
+            android:src="@drawable/ic_icon_music_play"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/load_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="正在加载..."
+        android:layout_gravity="center_horizontal"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/local_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>
