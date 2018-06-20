@@ -7,7 +7,7 @@
     tools:context=".fragment.instance.MergeFragment">
 
     <RadioGroup
-        android:id="@+id/radio_group"
+        android:id="@+id/merge_radio_group"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal">
@@ -49,11 +49,24 @@
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:background="#B9B9B9"/>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/merge_recycler"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/merge_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+        <ImageView
+            android:id="@+id/iv_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_icon_loading"
+            android:scaleType="center"
+            android:background="@android:color/white"/>
+    </RelativeLayout>
 
 
 </LinearLayout>

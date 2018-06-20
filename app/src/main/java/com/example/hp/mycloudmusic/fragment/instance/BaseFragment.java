@@ -16,6 +16,7 @@ import com.example.hp.mycloudmusic.base.BaseAppHelper;
 import com.example.hp.mycloudmusic.fragment.callback.ClickListener;
 import com.example.hp.mycloudmusic.injection.component.AppComponent;
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter;
+import com.example.hp.mycloudmusic.mvp.view.IBaseView;
 import com.example.hp.mycloudmusic.service.PlayService;
 import com.litesuits.orm.LiteOrm;
 
@@ -27,13 +28,14 @@ import butterknife.ButterKnife;
  * 由于存储在FragmentManager中，fragment生命周期只执行一次
  * @param <P>
  */
-public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
+public abstract class BaseFragment<P extends BasePresenter> extends Fragment implements IBaseView {
 
     @Inject
     protected LiteOrm liteOrm;
 
     private static final String TAG = "BaseFragment";
 
+    @Inject
     protected P mPresenter;
     protected ClickListener activityListener;
 
@@ -57,9 +59,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(mPresenter != null){
-            mPresenter.subscribe();
-        }
+        mPresenter.attach(this);
         Log.e(TAG, getClass().getName()+" : onViewCreated");
         setupActivityComponent(CMApplication.getAppComponent());
         initView();
@@ -93,9 +93,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mPresenter != null){
-            mPresenter.unSubcribe();
-        }
+        mPresenter.detach();
         ButterKnife.unbind(this);
         Log.e(TAG, getClass().getName()+" : onDestroy");
     }

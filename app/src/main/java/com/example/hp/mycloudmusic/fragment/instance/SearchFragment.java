@@ -3,6 +3,7 @@ package com.example.hp.mycloudmusic.fragment.instance;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -173,6 +174,9 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
             transaction.add(R.id.searchfragment_framelayout, merge_fragment);
             transaction.commit();
         }else{
+            Bundle bundle = merge_fragment.getArguments();
+            bundle.putString(MergeFragment.SEARCH_WORD,text);
+            merge_fragment.setArguments(bundle);
             if(merge_fragment.isAdded()){
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.show(merge_fragment);

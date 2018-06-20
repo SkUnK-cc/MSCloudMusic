@@ -27,17 +27,21 @@ public class Album implements IQueryResult{
     public String title;
     public String album_id;
     public String pic_small;
-    public String hot;
+    public int hot;
     public String author;
     public String artist_id;
 
     @Override
     public String getName() {
-        return null;
+        return title;
     }
 
     @Override
     public int getSearchResultType() {
-        return 0;
+        return ALBUM;
+    }
+
+    public String getPic(){
+        return pic_small;
     }
 }

@@ -2,6 +2,7 @@ package com.example.hp.mycloudmusic.injection.component;
 
 import com.example.hp.mycloudmusic.fragment.instance.LocalFragment;
 import com.example.hp.mycloudmusic.fragment.instance.MeFragment;
+import com.example.hp.mycloudmusic.fragment.instance.MergeFragment;
 import com.example.hp.mycloudmusic.fragment.instance.MusicFragment;
 import com.example.hp.mycloudmusic.fragment.instance.PlayMusicFragment;
 import com.example.hp.mycloudmusic.fragment.instance.SearchFragment;
@@ -22,4 +23,5 @@ public interface ActivityComponent {
     void inject(MusicFragment musicFragment);
     void inject(PlayMusicFragment playMusicFragment);
     void inject(SearchFragment searchFragment);
+    void inject(MergeFragment mergeFragment);
 }

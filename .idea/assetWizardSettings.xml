@@ -14,8 +14,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_icon_back_white" />
-                            <entry key="sourceFile" value="G:\迅雷下载\icon\返回.svg" />
+                            <entry key="height" value="200" />
+                            <entry key="outputName" value="ic_icon_loading" />
+                            <entry key="overrideSize" value="true" />
+                            <entry key="sourceFile" value="G:\迅雷下载\icon\加载中.svg" />
+                            <entry key="width" value="200" />
                           </map>
                         </option>
                       </PersistentState>
