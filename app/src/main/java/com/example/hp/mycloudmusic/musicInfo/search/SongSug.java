@@ -1,5 +1,6 @@
 package com.example.hp.mycloudmusic.musicInfo.search;
 
+import android.net.Uri;
 import android.os.Parcel;
 
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
@@ -35,6 +36,36 @@ public class SongSug extends AbstractMusic{
     public String resource_provider;
 
     public SongSug(){
+    }
+
+    @Override
+    public String getTitle() {
+        return songname;
+    }
+
+    @Override
+    public String getArtist() {
+        return artistname;
+    }
+
+    @Override
+    public Uri getDataSource() {
+        return null;
+    }
+
+    @Override
+    public int getDuration() {
+        return 0;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE_ONLINE;
+    }
+
+    @Override
+    public String getAlbumPic() {
+        return null;
     }
 
     public SongSug(Parcel source) {
@@ -88,99 +119,5 @@ public class SongSug extends AbstractMusic{
 
 
     /**                 get set                         */
-    public String getSongid() {
-        return songid;
-    }
 
-    public void setSongid(String songid) {
-        this.songid = songid;
-    }
-
-    public String getSongname() {
-        return songname;
-    }
-
-    public void setSongname(String songname) {
-        this.songname = songname;
-    }
-
-    public String getArtistname() {
-        return artistname;
-    }
-
-    public void setArtistname(String artistname) {
-        this.artistname = artistname;
-    }
-
-    public String getHas_mv() {
-        return has_mv;
-    }
-
-    public void setHas_mv(String has_mv) {
-        this.has_mv = has_mv;
-    }
-
-    public String getEncrypted_songid() {
-        return encrypted_songid;
-    }
-
-    public void setEncrypted_songid(String encrypted_songid) {
-        this.encrypted_songid = encrypted_songid;
-    }
-
-    public String getYyr_artist() {
-        return yyr_artist;
-    }
-
-    public void setYyr_artist(String yyr_artist) {
-        this.yyr_artist = yyr_artist;
-    }
-
-    public String getControl() {
-        return control;
-    }
-
-    public void setControl(String control) {
-        this.control = control;
-    }
-
-    public String getWeight() {
-        return weight;
-    }
-
-    public void setWeight(String weight) {
-        this.weight = weight;
-    }
-
-    public String getResource_type() {
-        return resource_type;
-    }
-
-    public void setResource_type(String resource_type) {
-        this.resource_type = resource_type;
-    }
-
-    public String getResource_type_ext() {
-        return resource_type_ext;
-    }
-
-    public void setResource_type_ext(String resource_type_ext) {
-        this.resource_type_ext = resource_type_ext;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    public String getResource_provider() {
-        return resource_provider;
-    }
-
-    public void setResource_provider(String resource_provider) {
-        this.resource_provider = resource_provider;
-    }
 }

@@ -5,8 +5,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.hp.mycloudmusic.R;
-import com.example.hp.mycloudmusic.injection.component.AppComponent;
-import com.example.hp.mycloudmusic.injection.component.DaggerActivityComponent;
 
 import butterknife.Bind;
 
@@ -18,13 +16,13 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener 
     ImageView iv_playing;
 
 
-    @Override
-    protected void setupActivityComponent(AppComponent appComponent) {
-        DaggerActivityComponent.builder()
-                .appComponent(appComponent)
-                .build()
-                .inject(this);
-    }
+//    @Override
+//    protected void setupActivityComponent(AppComponent appComponent) {
+//        DaggerActivityComponent.builder()
+//                .appComponent(appComponent)
+//                .build()
+//                .inject(this);
+//    }
 
     @Override
     protected void initData() {

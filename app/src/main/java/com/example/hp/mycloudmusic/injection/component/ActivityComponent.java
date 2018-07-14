@@ -7,6 +7,7 @@ import com.example.hp.mycloudmusic.fragment.instance.MusicFragment;
 import com.example.hp.mycloudmusic.fragment.instance.PlayMusicFragment;
 import com.example.hp.mycloudmusic.fragment.instance.SearchFragment;
 import com.example.hp.mycloudmusic.injection.ActivityScope;
+import com.example.hp.mycloudmusic.injection.module.ActivityModule;
 import com.example.hp.mycloudmusic.ui.MainActivity;
 
 import dagger.Component;
@@ -15,7 +16,7 @@ import dagger.Component;
  * 子component需要在注解中使用dependencies来连接父component
  */
 @ActivityScope
-@Component(dependencies = {AppComponent.class})
+@Component(dependencies = {AppComponent.class},modules = {ActivityModule.class})
 public interface ActivityComponent {
     void inject(MainActivity mainActivity);
     void inject(LocalFragment localFragment);

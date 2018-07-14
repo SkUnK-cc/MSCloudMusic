@@ -89,14 +89,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         checkPlayService();
     }
 
-//    @Override
-//    protected void setupActivityComponent(AppComponent appComponent) {
-//        DaggerActivityComponent.builder()
-//                .appComponent(appComponent)
-//                .build()
-//                .inject(this);
-//    }
-
     public void checkPlayService() {
         if(BaseAppHelper.get().getPlayService() == null){
             Intent intent = new Intent(this, PlayService.class);

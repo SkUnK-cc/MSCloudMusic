@@ -19,8 +19,6 @@ import android.widget.Toast;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
-import com.example.hp.mycloudmusic.injection.component.AppComponent;
-import com.example.hp.mycloudmusic.injection.component.DaggerActivityComponent;
 import com.example.hp.mycloudmusic.util.InputMethodUtils;
 
 import butterknife.Bind;
@@ -47,13 +45,13 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
     FragmentManager fragmentManager;
     MergeFragment merge_fragment;
 
-    @Override
-    protected void setupActivityComponent(AppComponent appComponent) {
-        DaggerActivityComponent.builder()
-                .appComponent(appComponent)
-                .build()
-                .inject(this);
-    }
+//    @Override
+//    protected void setupActivityComponent(AppComponent appComponent) {
+//        DaggerActivityComponent.builder()
+//                .appComponent(appComponent)
+//                .build()
+//                .inject(this);
+//    }
 
     @Override
     protected void initData() {
@@ -186,6 +184,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                 transaction.add(R.id.searchfragment_framelayout,merge_fragment);
                 transaction.commit();
             }
+            merge_fragment.updateData();
         }
         closeKeyboard(etSearch);
     }

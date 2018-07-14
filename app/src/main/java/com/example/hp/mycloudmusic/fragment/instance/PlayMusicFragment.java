@@ -13,8 +13,6 @@ import android.widget.TextView;
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.executor.SearchLyric;
 import com.example.hp.mycloudmusic.fragment.callback.OnProgressChangedListener;
-import com.example.hp.mycloudmusic.injection.component.AppComponent;
-import com.example.hp.mycloudmusic.injection.component.DaggerActivityComponent;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.util.CoverLoader;
 import com.example.hp.mycloudmusic.util.FileMusicUtils;
@@ -89,13 +87,13 @@ public class PlayMusicFragment extends BaseFragment implements View.OnClickListe
     private int mLinePosition = -1;
 
 
-    @Override
-    protected void setupActivityComponent(AppComponent appComponent) {
-        DaggerActivityComponent.builder()
-                .appComponent(appComponent)
-                .build()
-                .inject(this);
-    }
+//    @Override
+//    protected void setupActivityComponent(AppComponent appComponent) {
+//        DaggerActivityComponent.builder()
+//                .appComponent(appComponent)
+//                .build()
+//                .inject(this);
+//    }
 
     @Override
     protected void initData() {

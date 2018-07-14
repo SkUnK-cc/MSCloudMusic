@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.example.hp.mycloudmusic.injection.component.AppComponent;
 import com.example.hp.mycloudmusic.injection.component.DaggerAppComponent;
 import com.example.hp.mycloudmusic.injection.module.AppModule;
+import com.litesuits.orm.LiteOrm;
 
 /**
  * note:
@@ -15,9 +16,11 @@ import com.example.hp.mycloudmusic.injection.module.AppModule;
 public class CMApplication extends Application {
 
     public static final String TAG = "Application";
+    public static final String DB_NAME = "MyCloudMusic.db";
     public static Context mContext;
     public static Application mApplication;
     private static AppComponent mAppComponent;
+    private static LiteOrm liteOrm;
 
     @Override
     public void onCreate() {
@@ -40,5 +43,16 @@ public class CMApplication extends Application {
 
     public static AppComponent getAppComponent(){
         return mAppComponent;
+    }
+
+    public static LiteOrm provideLiteOrm(){
+        if(liteOrm == null){
+            synchronized(CMApplication.class){
+                if(liteOrm == null){
+                    liteOrm = LiteOrm.newSingleInstance(mApplication,DB_NAME);
+                }
+            }
+        }
+        return liteOrm;
     }
 }

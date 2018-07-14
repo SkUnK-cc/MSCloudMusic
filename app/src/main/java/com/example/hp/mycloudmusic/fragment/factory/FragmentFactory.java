@@ -101,11 +101,11 @@ public class FragmentFactory {
         return mPlayMusicFragment;
     }
 
-    public MergeFragment getmMergeFragment(String arg1){
+    public MergeFragment getmMergeFragment(String search_word){
         if(mMergeFragment == null){
             synchronized(FragmentFactory.class){
                 if(mMergeFragment == null){
-                    mMergeFragment = MergeFragment.newInstance("111");
+                    mMergeFragment = MergeFragment.newInstance(search_word);
                 }
             }
         }

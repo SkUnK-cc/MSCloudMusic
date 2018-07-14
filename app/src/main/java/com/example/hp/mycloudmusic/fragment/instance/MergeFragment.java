@@ -1,32 +1,45 @@
 package com.example.hp.mycloudmusic.fragment.instance;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.fragment.presenter.MergePresenter;
 import com.example.hp.mycloudmusic.fragment.view.IMergeView;
-import com.example.hp.mycloudmusic.injection.component.AppComponent;
-import com.example.hp.mycloudmusic.injection.component.DaggerActivityComponent;
+import com.example.hp.mycloudmusic.musicInfo.merge.QueryMergeResp;
 
 import butterknife.Bind;
 
 public class MergeFragment extends BaseFragment<MergePresenter> implements IMergeView {
+    public static final String TAG = "MergeFragment";
     public static final String SEARCH_WORD = "Search_Word";
 
-    @Bind(R.id.merge_recycler)
-    RecyclerView recyclerView;
+    @Bind(R.id.merge_pager)
+    ViewPager viewPager;
     @Bind(R.id.iv_loading)
     ImageView ivLoading;
     @Bind(R.id.merge_radio_group)
     RadioGroup rgMerge;
 
+    QueryMergeResp queryMergeResp;
+
     private String search_word;
 
     public MergeFragment() {
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mPresenter = new MergePresenter(liteOrm);
+        mPresenter.attach(this);
+        super.onViewCreated(view, savedInstanceState);
     }
 
     public static MergeFragment newInstance(String param1) {
@@ -37,18 +50,17 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
         return fragment;
     }
 
-    @Override
-    protected void setupActivityComponent(AppComponent appComponent) {
-        DaggerActivityComponent.builder()
-                .appComponent(appComponent)
-                .build()
-                .inject(this);
-    }
+//    @Override
+//    protected void setupActivityComponent(AppComponent appComponent) {
+//        DaggerActivityComponent.builder()
+//                .appComponent(appComponent)
+//                .build()
+//                .inject(this);
+//    }
 
     @Override
     protected void initData() {
-        search_word = getArguments().getString(SEARCH_WORD);
-        mPresenter.getMergeData(search_word);
+        updateData();
     }
 
     @Override
@@ -58,7 +70,6 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
 
     @Override
     protected void initView() {
-
     }
 
     @Override
@@ -69,5 +80,17 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    public void updateData() {
+        search_word = getArguments().getString(SEARCH_WORD);
+        Log.e(TAG, "initData: search_word:"+search_word);
+        mPresenter.getMergeData(search_word);
+    }
+
+    @Override
+    public void showMergeData(QueryMergeResp res) {
+        this.queryMergeResp = res;
+
     }
 }
