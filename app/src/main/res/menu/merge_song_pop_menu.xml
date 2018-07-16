@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="歌手"
+        android:icon="@drawable/ic_icon_me"
+        android:id="@+id/merge_song_pop_artist"/>
+    <item
+        android:title="添加到歌单"
+        android:icon="@drawable/ic_icon_music"
+        android:id="@+id/merge_song_pop_add"/>
+</menu>

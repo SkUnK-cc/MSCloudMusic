@@ -205,8 +205,10 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                 etSearch.clearFocus();
                 hideCancel();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.hide(merge_fragment);
-                transaction.commit();
+                if(merge_fragment!=null && !merge_fragment.isHidden()){
+                    transaction.hide(merge_fragment);
+                    transaction.commit();
+                }
                 break;
             default:
                 break;

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <ImageView
+        android:id="@+id/merge_song_more"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_icon_more"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:padding="14dp"/>
+
+    <RelativeLayout
+        android:id="@+id/merge_song_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/merge_song_more"
+        android:paddingTop="10dp"
+        android:paddingLeft="14dp"
+        android:paddingBottom="10dp"
+        android:paddingRight="14dp">
+        <TextView
+            android:id="@+id/merge_song_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="遇见111111"
+            android:textSize="17sp"
+            android:textColor="@android:color/black"
+            android:letterSpacing="0.1"
+
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"/>
+        <TextView
+            android:id="@+id/merge_song_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/merge_song_title"
+            android:layout_marginTop="3dp"
+            tools:text="孙燕姿2222222222222222222222222222222222222222222222222222222222222222222"
+
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

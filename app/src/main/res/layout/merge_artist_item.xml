@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/merge_artist_info"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:paddingRight="13dp"
+    android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/merge_artist_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/taylor_swift"
+        tools:scaleType="fitXY"/>
+    <TextView
+        android:id="@+id/merge_artist_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Taylor Swift"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="12dp"
+        android:letterSpacing="0.1"/>
+
+</LinearLayout>
