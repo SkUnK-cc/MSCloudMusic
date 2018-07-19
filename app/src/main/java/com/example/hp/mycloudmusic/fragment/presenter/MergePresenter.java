@@ -24,6 +24,7 @@ public class MergePresenter extends BasePresenter<IMergeView> {
     }
 
     public void getMergeData(final String search_word){
+        //http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.search.merge&query=taylor&page_no=1&page_size=50
         RetrofitFactory.provideBaiduApi()
                 .queryMerge(search_word,1,50)
                 .subscribeOn(Schedulers.io())

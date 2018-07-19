@@ -18,6 +18,7 @@ public class MArtistRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerHol
 
     private Context context;
     private List<Artist> mList;
+    private IClickArtistListener listener;
 
     public MArtistRecyclerAdapter(Context context){
         this.context = context;
@@ -33,8 +34,18 @@ public class MArtistRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BaseRecyclerHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull BaseRecyclerHolder holder, final int position) {
+        Artist artist = mList.get(position);
+        holder.setText(R.id.merge_artist_name,artist.getName());
+        holder.setImageByUrl(R.id.merge_artist_image,artist.getAvatar_middle());
+        holder.getView(R.id.merge_artist_info).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener != null){
+                    listener.onClick(mList.get(position).getTing_uid());
+                }
+            }
+        });
     }
 
     @Override
@@ -42,5 +53,18 @@ public class MArtistRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerHol
         return mList.size();
     }
 
+    public void update(List<Artist> list) {
+        this.mList = list;
+    }
 
+    /**
+     * 接口
+     */
+    public interface IClickArtistListener{
+        void onClick(String ting_uid);
+    }
+
+    public void setOnClickListener(IClickArtistListener listener) {
+        this.listener = listener;
+    }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.hp.mycloudmusic.R;
@@ -16,6 +17,7 @@ import java.util.List;
 import butterknife.Bind;
 
 public class MergeSongFragment extends BaseFragment {
+    public static final String TAG = "MergeSongFragment";
 
     @Bind(R.id.merge_song_recyclerview)
     RecyclerView rvSong;
@@ -95,6 +97,9 @@ public class MergeSongFragment extends BaseFragment {
 
     private void updateAdapter() {
         List<Song> data = songInfo.getSong_list();
+        if(adapter == null){
+            Log.e(TAG, "updateAdapter: adapter is null");
+        }
         adapter.updateData(data);
         adapter.notifyDataSetChanged();
     }

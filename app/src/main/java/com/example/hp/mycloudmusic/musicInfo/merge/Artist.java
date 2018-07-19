@@ -30,8 +30,16 @@ public class Artist implements IQueryResult{
         return author;
     }
 
+    public String getAvatar_middle() {
+        return avatar_middle;
+    }
+
     @Override
     public int getSearchResultType() {
         return ARTIST;
+    }
+
+    public String getTing_uid() {
+        return ting_uid;
     }
 }

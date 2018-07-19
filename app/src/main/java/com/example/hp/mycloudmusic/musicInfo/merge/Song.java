@@ -90,6 +90,7 @@ public class Song extends AbstractMusic implements IQueryResult{
         return title;
     }
 
+
     @Override
     public int getSearchResultType() {
         return SONG;
@@ -103,6 +104,14 @@ public class Song extends AbstractMusic implements IQueryResult{
     @Override
     public String getArtist() {
         return author;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     @Override

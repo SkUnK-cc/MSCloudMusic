@@ -4,25 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
 
     <ImageView
+        android:id="@+id/artist_middle_avatar"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:src="@drawable/taylor_swift"
         android:scaleType="centerCrop"
-        android:foreground="@color/artist_foreground"/>
+        android:foreground="@color/artist_foreground" />
+    <ImageView
+        android:id="@+id/artist_iv_front_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:scaleType="fitXY"
+        android:alpha="0"/>
 
 
-    <com.example.hp.mycloudmusic.custom.SearchScrollView
-        android:id="@+id/scroll_view"
+    <com.example.hp.mycloudmusic.custom.ArtistDetailScrollView
+        android:id="@+id/detail_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="220dp"
-        android:scrollbars="none">
+        android:paddingTop="65dp"
+        android:scrollbars="none"
+        android:fillViewport="true">
         <LinearLayout
+            android:id="@+id/ll_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_marginTop="155dp"
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="@android:color/white">
             <RadioGroup
                 android:id="@+id/radio_group"
                 android:layout_width="match_parent"
@@ -37,6 +55,7 @@
                     android:text="单曲"
                     android:gravity="center"
                     android:textColor="@drawable/radio_text_selector"
+                    android:background="@drawable/radio_bg_selector"
                     android:button="@null" />
                 <RadioButton
                     android:id="@+id/radio_album"
@@ -47,7 +66,8 @@
                     android:text="专辑"
                     android:gravity="center"
                     android:button="@null"
-                    android:textColor="@drawable/radio_text_selector"/>
+                    android:textColor="@drawable/radio_text_selector"
+                    android:background="@drawable/radio_bg_selector"/>
                 <RadioButton
                     android:id="@+id/radio_mv"
                     android:layout_width="0dp"
@@ -57,7 +77,8 @@
                     android:text="视频"
                     android:gravity="center"
                     android:button="@null"
-                    android:textColor="@drawable/radio_text_selector"/>
+                    android:textColor="@drawable/radio_text_selector"
+                    android:background="@drawable/radio_bg_selector"/>
                 <RadioButton
                     android:id="@+id/radio_info"
                     android:layout_width="0dp"
@@ -67,7 +88,8 @@
                     android:text="歌手信息"
                     android:gravity="center"
                     android:button="@null"
-                    android:textColor="@drawable/radio_text_selector"/>
+                    android:textColor="@drawable/radio_text_selector"
+                    android:background="@drawable/radio_bg_selector"/>
             </RadioGroup>
 
             <View
@@ -75,15 +97,15 @@
                 android:layout_height="1dp"
                 android:background="#D4D4D4"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler"
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_activity_detail"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="200dp"></android.support.v4.view.ViewPager>
 
         </LinearLayout>
 
-    </com.example.hp.mycloudmusic.custom.SearchScrollView>
-
+    </com.example.hp.mycloudmusic.custom.ArtistDetailScrollView>
+    </RelativeLayout>
     <include layout="@layout/online_search_bar"/>
+
 </RelativeLayout>

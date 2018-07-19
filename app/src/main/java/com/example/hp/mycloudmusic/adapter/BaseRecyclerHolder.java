@@ -39,6 +39,10 @@ public class BaseRecyclerHolder extends RecyclerView.ViewHolder {
 
     public BaseRecyclerHolder setText(int viewId,String text){
         TextView tv = getView(viewId);
+        if(text.contains("<em>") || text.contains("</em>")){
+            text = text.replace("<em>","");
+            text = text.replace("</em>","");
+        }
         if(text == null){
             tv.setVisibility(View.GONE);
         }else{

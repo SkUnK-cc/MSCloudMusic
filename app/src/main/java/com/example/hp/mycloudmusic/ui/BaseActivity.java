@@ -24,8 +24,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         ButterKnife.bind(this);
         if(Build.VERSION.SDK_INT >= 21){
             View decorView = getWindow().getDecorView();
-            int option = View.SYSTEM_UI_FLAG_VISIBLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-//            int option = View.SYSTEM_UI_FLAG_VISIBLE;
+            //int option = View.SYSTEM_UI_FLAG_VISIBLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             decorView.setSystemUiVisibility(option);
 //            getWindow().setStatusBarColor(Color.parseColor("#9C27B0"));
             getWindow().setStatusBarColor(Color.TRANSPARENT);

@@ -88,7 +88,9 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPresenter.detach();
+        if(mPresenter!=null) {
+            mPresenter.detach();
+        }
         ButterKnife.unbind(this);
         Log.e(TAG, getClass().getName()+" : onDestroy");
     }

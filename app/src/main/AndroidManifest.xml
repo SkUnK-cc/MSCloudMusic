@@ -28,7 +28,7 @@
             android:name=".service.PlayService"
             android:enabled="true" />
 
-        <activity android:name=".ui.onLine.OnlineSearchActivity"></activity>
+        <activity android:name=".ui.onLine.ArtistInfoActivity"></activity>
     </application>
 
 </manifest>

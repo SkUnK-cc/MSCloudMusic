@@ -163,7 +163,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
      * @param text
      */
     private void search(String text) {
-//        Intent intent  = new Intent(getContext(), OnlineSearchActivity.class);
+//        Intent intent  = new Intent(getContext(), ArtistInfoActivity.class);
 //        intent.putExtra(ConstantValue.SEARCH_WORD,text);
 //        startActivity(intent);
         if(merge_fragment == null){
