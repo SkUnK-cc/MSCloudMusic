@@ -29,6 +29,7 @@ public class ArtistDetailScrollView extends ScrollView {
     private int tmWorksInfo = -1;
     private int topWorksInfo = -1;
     private int height = 1;
+    private boolean isTop = false;
 
     public ArtistDetailScrollView(Context context) {
         super(context);
@@ -55,7 +56,10 @@ public class ArtistDetailScrollView extends ScrollView {
         if(t >= worksInfo.getTop()- DisplayUtil.dip2px(getContext(),65)){
             scrollTo(0,worksInfo.getTop()-DisplayUtil.dip2px(getContext(),65));
         }
-        Log.e(TAG, "onScrollChanged: scroll to"+t);
+        if(t == worksInfo.getTop()-DisplayUtil.dip2px(getContext(),65)){
+            isTop = true;
+        }
+//        Log.e(TAG, "onScrollChanged: scroll to"+t);
     }
 
     @Override
@@ -67,6 +71,7 @@ public class ArtistDetailScrollView extends ScrollView {
         setOverScrollMode(OVER_SCROLL_NEVER);
     }
 
+
     /**
      * 本身带有scroll
      * @param ev
@@ -76,10 +81,11 @@ public class ArtistDetailScrollView extends ScrollView {
     public boolean onTouchEvent(MotionEvent ev) {
         switch(ev.getAction()){
             case MotionEvent.ACTION_DOWN:
-                Log.e(TAG, "this is action down!");
+                Log.e(TAG, "down!");
                 y = ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+                Log.e(TAG, "move!");
                 ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams) worksInfo.getLayoutParams();
                 if(tmWorksInfo == -1) {
                     tmWorksInfo = layoutParams.topMargin;
@@ -96,9 +102,13 @@ public class ArtistDetailScrollView extends ScrollView {
                         worksInfo.layout(worksInfo.getLeft(),(int)(worksInfo.getTop()+moveY),worksInfo.getRight(),(int)(worksInfo.getBottom()+moveY));
                         /**此处无需加65dp，getTop相对于父布局已经包含该65dp*/
                         listener.imageScale(worksInfo.getTop());
-                        Log.e(TAG, "onTouchEvent: moveY"+moveY);
+//                        Log.e(TAG, "onTouchEvent: moveY"+moveY);
                     }
                 }else if(newY < y){
+                    if(isTop){
+                        Log.e(TAG, "onTouchEvent: move return false");
+                        return false;
+                    }
 //                    if(layoutParams.topMargin > tmWorksInfo) {
 //                        listener.llMoveTo(layoutParams.topMargin - moveY*2);
 //                        listener.imageScale(layoutParams.topMargin+moveY);
@@ -117,6 +127,7 @@ public class ArtistDetailScrollView extends ScrollView {
 
                 break;
             case MotionEvent.ACTION_UP:
+                Log.e(TAG, "down!");
 //                listener.llMoveTo(tmWorksInfo);
 //                listener.imageScale(tmWorksInfo);
                 if(worksInfo.getTop()>DisplayUtil.dip2px(getContext(),220)) {
@@ -131,12 +142,12 @@ public class ArtistDetailScrollView extends ScrollView {
          * （2）当过度滚动后往上拉，scrollView的onTouchEvent返回true(因为可以滚动)，scrollView的滚动开启
          * 这里的判断是在第二种情况下，关闭scrollView的滚动
          */
-        if(worksInfo.getTop()> DisplayUtil.dip2px(getContext(),220)&&getScrollY()==0){
-            Log.e(TAG, "onTouchEvent: return false");
+        if(worksInfo.getTop() > DisplayUtil.dip2px(getContext(),220)&&getScrollY()==0){
             return false;
         }
         return super.onTouchEvent(ev);
     }
+
 
     public void setScrollListener(MyOnScrollListener myOnScrollListener){
         this.listener = myOnScrollListener;
@@ -153,16 +164,20 @@ public class ArtistDetailScrollView extends ScrollView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        switch(ev.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                y = ev.getY();
-                break;
+        if(ev.getAction() == MotionEvent.ACTION_DOWN){
+            y = ev.getY();
+            return super.onInterceptTouchEvent(ev);
+        }else{
+            return true;
         }
-        return super.onInterceptTouchEvent(ev);
     }
 
     @Override
     protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
         return 0;
+    }
+
+    public boolean getIsTop(){
+        return isTop;
     }
 }

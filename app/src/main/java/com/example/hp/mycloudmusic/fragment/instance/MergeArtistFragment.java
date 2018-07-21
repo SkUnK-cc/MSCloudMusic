@@ -10,7 +10,7 @@ import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.merge.MArtistRecyclerAdapter;
 import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
 import com.example.hp.mycloudmusic.musicInfo.merge.Artist_info;
-import com.example.hp.mycloudmusic.ui.onLine.ArtistInfoActivity;
+import com.example.hp.mycloudmusic.ui.onLine.ArtistDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ public class MergeArtistFragment extends BaseFragment {
             @Override
             public void onClick(String ting_uid) {
                 Toast.makeText(getContext(), "you click artist!", Toast.LENGTH_SHORT).show();
-                ArtistInfoActivity.toArtistInfoActivity(getContext(),ting_uid);
+                ArtistDetailActivity.toArtistDetailActivity(getContext(),ting_uid);
             }
         });
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());

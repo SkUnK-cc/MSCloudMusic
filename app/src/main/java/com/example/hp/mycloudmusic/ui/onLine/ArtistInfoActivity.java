@@ -16,8 +16,6 @@ import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.merge.TabFragmentPagerAdapter;
 import com.example.hp.mycloudmusic.custom.ArtistDetailScrollView;
 import com.example.hp.mycloudmusic.fragment.instance.ADetailSongFragment;
-import com.example.hp.mycloudmusic.musicInfo.merge.Song;
-import com.example.hp.mycloudmusic.musicInfo.merge.Song_info;
 import com.example.hp.mycloudmusic.ui.BaseActivity;
 import com.example.hp.mycloudmusic.util.DisplayUtil;
 
@@ -67,25 +65,25 @@ public class ArtistInfoActivity extends BaseActivity implements RadioGroup.OnChe
     }
 
     private void updateData() {
-        List<Song> songList = new ArrayList<>();
-        for(int i=0;i<20;i++){
-            Song song = new Song();
-            song.setTitle("Song-"+i);
-            song.setAuthor("artist");
-            songList.add(song);
-        }
-        Song_info song_info = new Song_info();
-        song_info.setSong_list(songList);
-        aDetailSongFragment1.setData(song_info);
-        for(int i=0;i<10;i++){
-            Song song = new Song();
-            song.setTitle("Song-"+i);
-            song.setAuthor("artist");
-            songList.add(song);
-        }
-        Song_info song_info2 = new Song_info();
-        song_info2.setSong_list(songList);
-        aDetailSongFragment2.setData(song_info2);
+//        List<Song> songList = new ArrayList<>();
+//        for(int i=0;i<20;i++){
+//            Song song = new Song();
+//            song.setTitle("Song-"+i);
+//            song.setAuthor("artist");
+//            songList.add(song);
+//        }
+//        Song_info song_info = new Song_info();
+//        song_info.setSong_list(songList);
+//        aDetailSongFragment1.setData(song_info);
+//        for(int i=0;i<10;i++){
+//            Song song = new Song();
+//            song.setTitle("Song-"+i);
+//            song.setAuthor("artist");
+//            songList.add(song);
+//        }
+//        Song_info song_info2 = new Song_info();
+//        song_info2.setSong_list(songList);
+//        aDetailSongFragment2.setData(song_info2);
     }
 
     @Override
@@ -100,9 +98,9 @@ public class ArtistInfoActivity extends BaseActivity implements RadioGroup.OnChe
         vpWorksList.addOnPageChangeListener(new OnDetailPageChangeListener());
 
         fragmentList = new ArrayList<>();
-        aDetailSongFragment1 = ADetailSongFragment.newInstance(this);
+        aDetailSongFragment1 = ADetailSongFragment.newInstance();
         fragmentList.add(aDetailSongFragment1);
-        aDetailSongFragment2 = ADetailSongFragment.newInstance(this);
+        aDetailSongFragment2 = ADetailSongFragment.newInstance();
         fragmentList.add(aDetailSongFragment2);
         adapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList);
         vpWorksList.setAdapter(adapter);
@@ -219,5 +217,9 @@ public class ArtistInfoActivity extends BaseActivity implements RadioGroup.OnChe
         public void onPageScrollStateChanged(int state) {
 
         }
+    }
+
+    public ArtistDetailScrollView getScrollView(){
+        return scrollView;
     }
 }

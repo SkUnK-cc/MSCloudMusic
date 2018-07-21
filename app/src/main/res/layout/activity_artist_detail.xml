@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.onLine.ArtistDetailActivity">
+    <ImageView
+        android:id="@+id/id_stickynavlayout_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:src="@drawable/taylor_swift"
+        android:scaleType="centerCrop"/>
+
+    <com.example.hp.mycloudmusic.custom.StickNavLayout
+        android:id="@+id/id_stickynavlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:fillViewport="true">
+
+                <com.example.hp.mycloudmusic.custom.SimpleViewPagerIndicator
+                    android:id="@+id/id_stickynavlayout_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="220dp">
+                </com.example.hp.mycloudmusic.custom.SimpleViewPagerIndicator>
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/id_stickynavlayout_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toEndOf="@id/id_stickynavlayout_indicator"
+                    android:layout_toRightOf="@id/id_stickynavlayout_indicator">
+                </android.support.v4.view.ViewPager>
+
+
+    </com.example.hp.mycloudmusic.custom.StickNavLayout>
+
+    <include layout="@layout/online_search_bar"/>
+
+</RelativeLayout>
