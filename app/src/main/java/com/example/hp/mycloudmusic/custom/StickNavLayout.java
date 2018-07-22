@@ -2,16 +2,18 @@ package com.example.hp.mycloudmusic.custom;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Interpolator;
 import android.support.annotation.Nullable;
 import android.support.v4.view.NestedScrollingParent;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
 
@@ -27,7 +29,7 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
 
     private OverScroller mScroller;
     private VelocityTracker mVelocityTracker;
-    private ValueAnimator offSetAnimator;
+    private ValueAnimator mOffsetAnimator;
     private Interpolator mInterpolator;
     /**
      * 表示滑动的时候，手的移动要大于这个距离才开始移动控件。如果小于这个距离就不触发移动控件
@@ -134,7 +136,7 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
                     listener.imageScale(mNav.getTop());
                     consumed[1] = dy;
                 }
-            }else if(getScrollY() > 0){
+            }else if(getScrollY() > 0 && !ViewCompat.canScrollVertically(target,-1)){
                 if(getScrollY()+dy<0){
                     scrollTo(0,0);
                 }else {
@@ -169,8 +171,15 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
                     consumed[1] = dy;
                 }
             }else{
-                scrollTo(0,getScrollY()+dy);
-                consumed[1]=dy;
+                if(getScrollY()<DisplayUtil.dip2px(getContext(),155)){
+                    if(getScrollY()+dy>DisplayUtil.dip2px(getContext(),155)){
+                        scrollTo(0,DisplayUtil.dip2px(getContext(),155));
+                        consumed[1] = dy;
+                    }else {
+                        scrollTo(0, getScrollY() + dy);
+                        consumed[1] = dy;
+                    }
+                }
             }
         }
         //方法二
@@ -222,7 +231,70 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
 
     @Override
     public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
-        return false;
+        //鼠标向下拉，velocityY为负
+        if(target instanceof RecyclerView && velocityY < 0){
+            final RecyclerView recyclerView = (RecyclerView) target;
+            final View firstChild = recyclerView.getChildAt(0);
+            final int childAdapterPosition = recyclerView.getChildAdapterPosition(firstChild);
+            consumed = childAdapterPosition > 3;
+        }
+        if(!consumed){
+            animateScroll(velocityY,computeDuration(0),consumed);
+        }else{
+            animateScroll(velocityY,computeDuration(velocityY),consumed);
+        }
+        return true;
+    }
+
+    private int computeDuration(float velocityY) {
+        final int distance;
+        if(velocityY > 0){
+            //鼠标往上
+            distance = Math.abs(mNav.getTop() - getScrollY());
+        }else{
+            //鼠标往下
+            distance = Math.abs(getScrollY());
+        }
+
+        final int duration;
+        velocityY = Math.abs(velocityY);
+        if(velocityY > 0){
+            duration = 3 * Math.round(1000 * (distance / velocityY));
+        }else{
+            final float distanceRadtio = distance/getHeight();
+            duration = (int) ((distanceRadtio+1)*150);
+        }
+        return duration;
+    }
+
+    private void animateScroll(float velocityY, int duration, boolean consumed) {
+        final int currentOffset = getScrollY();
+        final int topHeight = mNav.getTop();
+        if(mOffsetAnimator == null){
+            mOffsetAnimator = new ValueAnimator();
+            mOffsetAnimator.setInterpolator(mInterpolator);
+            mOffsetAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    if(animation.getAnimatedValue() instanceof Integer){
+                        scrollTo(0, (Integer) animation.getAnimatedValue());
+                    }
+                }
+            });
+        }else{
+            mOffsetAnimator.cancel();
+        }
+        mOffsetAnimator.setDuration(Math.min(duration,600));
+
+        if(velocityY >= 0){
+            mOffsetAnimator.setIntValues(currentOffset,mNav.getTop());
+            mOffsetAnimator.start();
+        }else{
+            if(!consumed){
+                mOffsetAnimator.setIntValues(currentOffset,0);
+                mOffsetAnimator.start();
+            }
+        }
     }
 
     @Override
