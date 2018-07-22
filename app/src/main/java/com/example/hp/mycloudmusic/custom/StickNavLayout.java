@@ -23,7 +23,6 @@ import com.example.hp.mycloudmusic.util.DisplayUtil;
 public class StickNavLayout extends LinearLayout implements NestedScrollingParent {
     public static final String TAG = "StickNavLayout";
 
-    private View mTop;
     private View mNav;
     private ViewPager mViewPager;
 
@@ -85,7 +84,6 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-//        mTopViewHeight = mTop.getMeasuredHeight();
     }
 
     /**
@@ -129,13 +127,11 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
         int moveY = (int) Math.sqrt(Math.abs(dy)*2);
         if(dy < 0){
             //往下拉
-            if(getScrollY() == 0) {
-                if (mNav.getTop() >= mNavTop) {
-                    mNav.layout(mNav.getLeft(), mNav.getTop() + moveY, mNav.getRight(), mNav.getBottom() + moveY);
-                    mViewPager.layout(mViewPager.getLeft(), mViewPager.getTop() + moveY, mViewPager.getRight(), mViewPager.getBottom() + moveY);
-                    listener.imageScale(mNav.getTop());
-                    consumed[1] = dy;
-                }
+            if(getScrollY() == 0 && mNav.getTop() >= mNavTop) {
+                mNav.layout(mNav.getLeft(), mNav.getTop() + moveY, mNav.getRight(), mNav.getBottom() + moveY);
+                mViewPager.layout(mViewPager.getLeft(), mViewPager.getTop() + moveY, mViewPager.getRight(), mViewPager.getBottom() + moveY);
+                listener.imageScale(mNav.getTop());
+                consumed[1] = dy;
             }else if(getScrollY() > 0 && !ViewCompat.canScrollVertically(target,-1)){
                 if(getScrollY()+dy<0){
                     scrollTo(0,0);
@@ -145,19 +141,6 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
                 }
             }
         }else if(dy > 0){
-//            if(mNav.getTop() > mNavTop){
-//                if(mNav.getTop()-moveY < mNavTop){
-//                    mNav.layout(mNav.getLeft(),mNavTop,mNav.getRight(),mNavTop+mNav.getHeight());
-//                    mViewPager.layout(mViewPager.getLeft(),mViewPagerTop,mViewPager.getRight(),mViewPagerTop+mViewPager.getHeight());
-//                    listener.imageScale(mNavTop);
-//                    consumed[1] = dy;
-//                }else {
-//                    mNav.layout(mNav.getLeft(), mNav.getTop() - moveY, mNav.getRight(), mNav.getBottom() - moveY);
-//                    mViewPager.layout(mViewPager.getLeft(), mViewPager.getTop() - moveY, mViewPager.getRight(), mViewPager.getBottom() - moveY);
-//                    listener.imageScale(mNav.getTop());
-//                    consumed[1] = dy;
-//                }
-//            }
             if(mNav.getTop() > mNavTop){
                 if(mNav.getTop()-moveY < mNavTop){
                     mNav.layout(mNav.getLeft(),mNavTop,mNav.getRight(),mNavTop+mNav.getHeight());
@@ -170,32 +153,16 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
                     listener.imageScale(mNav.getTop());
                     consumed[1] = dy;
                 }
-            }else{
-                if(getScrollY()<DisplayUtil.dip2px(getContext(),155)){
-                    if(getScrollY()+dy>DisplayUtil.dip2px(getContext(),155)){
-                        scrollTo(0,DisplayUtil.dip2px(getContext(),155));
-                        consumed[1] = dy;
-                    }else {
-                        scrollTo(0, getScrollY() + dy);
-                        consumed[1] = dy;
-                    }
+            }else if(getScrollY()<DisplayUtil.dip2px(getContext(),155)){
+                if(getScrollY()+dy>DisplayUtil.dip2px(getContext(),155)){
+                    scrollTo(0,DisplayUtil.dip2px(getContext(),155));
+                    consumed[1] = dy;
+                }else {
+                    scrollTo(0, getScrollY() + dy);
+                    consumed[1] = dy;
                 }
             }
         }
-        //方法二
-//        if(avatar_height == -1){
-//            avatar_height = mTop.getHeight();
-//        }
-//        int moveY = (int) Math.sqrt(Math.abs(dy)*2);
-//        if(dy < 0){
-//            if(mTop.getHeight() >= avatar_height){
-//                LayoutParams layoutParams = (LayoutParams) mTop.getLayoutParams();
-//                layoutParams.height = layoutParams.height + moveY;
-//                mTop.setLayoutParams(layoutParams);
-//                consumed[1] = dy;
-//                Log.e(TAG, "onNestedPreScroll: mTop.height = "+mTop.getHeight());
-//            }
-//        }
     }
     /**
      * 接下来子View就要进自己的滑动操作了，滑动完成后子View还需要调用
@@ -288,7 +255,7 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
         mOffsetAnimator.setDuration(Math.min(duration,600));
 
         if(velocityY >= 0){
-            mOffsetAnimator.setIntValues(currentOffset,mNav.getTop());
+            mOffsetAnimator.setIntValues(currentOffset,mNav.getTop()-DisplayUtil.dip2px(getContext(),65));
             mOffsetAnimator.start();
         }else{
             if(!consumed){
