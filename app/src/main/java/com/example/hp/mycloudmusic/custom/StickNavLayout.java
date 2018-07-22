@@ -242,6 +242,7 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
             animateScroll(velocityY,computeDuration(0),consumed);
         }else{
             animateScroll(velocityY,computeDuration(velocityY),consumed);
+
         }
         return true;
     }
