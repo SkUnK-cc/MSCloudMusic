@@ -1,11 +1,12 @@
-package com.example.hp.mycloudmusic.musicInfo.search;
+package com.example.hp.mycloudmusic.musicInfo.sug;
 
 import android.net.Uri;
 import android.os.Parcel;
 
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
+import com.example.hp.mycloudmusic.musicInfo.IQueryResult;
 
-public class SongSug extends AbstractMusic{
+public class SongSug extends AbstractMusic implements IQueryResult{
 
     /**
      "bitrate_fee":"{"0":"0|0","1":"0|0"}",
@@ -54,12 +55,12 @@ public class SongSug extends AbstractMusic{
     }
 
     @Override
-    public int getDuration() {
+    public long getDuration() {
         return 0;
     }
 
     @Override
-    public int getType() {
+    public String getType() {
         return TYPE_ONLINE;
     }
 
@@ -115,9 +116,16 @@ public class SongSug extends AbstractMusic{
     public SongSug[] newArray(int size) {
         return new SongSug[size];
     }
+
     /** ------------------------------------------  */
+    @Override
+    public String getName() {
+        return songname;
+    }
 
-
-    /**                 get set                         */
+    @Override
+    public int getSearchResultType() {
+        return SONG;
+    }
 
 }

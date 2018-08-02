@@ -18,4 +18,10 @@
     <color name="redTab">#F44336</color>
     <color name="redTab_30p">#4CF44336</color>
     <color name="artist_foreground">#4F6A6A6A</color>
+    <color name="colorBgDark">#f4f4f4</color>
+    <color name="colorBg">#ffffff</color>
+    <color name="colorTextColor">#666666</color>
+    <color name="colorTextLight">#d1d1d1</color>
+    <color name="colorTextBlack">#666666</color>
+    <color name="colorTextColorLight">#999999</color>
 </resources>

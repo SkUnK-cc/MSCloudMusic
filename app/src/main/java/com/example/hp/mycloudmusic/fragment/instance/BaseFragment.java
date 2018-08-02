@@ -57,6 +57,9 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         super.onViewCreated(view, savedInstanceState);
         Log.e(TAG, getClass().getName()+" : onViewCreated");
 //        setupActivityComponent(CMApplication.getAppComponent());
+        if(mPresenter != null){
+            mPresenter.attach(this);
+        }
         initView();
         initListener();
         initData();
@@ -67,7 +70,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initData();
         Log.e(TAG, getClass().getName()+" : onActivityCreate");
     }
 
@@ -77,6 +79,42 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
             throw new NullPointerException("play service is null!");
         }
         return playService;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.e(TAG, getClass().getName()+" : onAttach");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.e(TAG, getClass().getName() + ": onCreate");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e(TAG, getClass().getName()+" : onResume");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e(TAG, getClass().getName()+" : onStart");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e(TAG, getClass().getName()+":onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e(TAG, getClass().getName()+" : onStop");
     }
 
     @Override
@@ -93,30 +131,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         }
         ButterKnife.unbind(this);
         Log.e(TAG, getClass().getName()+" : onDestroy");
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.e(TAG, getClass().getName()+" : onAttach");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.e(TAG, getClass().getName()+" : onResume");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.e(TAG, getClass().getName()+" : onStart");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.e(TAG, getClass().getName()+" : onStop");
     }
 
     public void startActivity(Class<?> cls){

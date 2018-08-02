@@ -2,14 +2,16 @@ package com.example.hp.mycloudmusic.fragment.instance;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.recyclerview.CommonAdapter;
 import com.example.hp.mycloudmusic.adapter.recyclerview.CommonViewHolder;
 import com.example.hp.mycloudmusic.custom.ArtistDetailScrollView;
+import com.example.hp.mycloudmusic.custom.FullyLinearLayoutManager;
 import com.example.hp.mycloudmusic.ui.onLine.ArtistInfoActivity;
+import com.example.hp.mycloudmusic.util.DisplayUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +52,9 @@ public class ADetailSongFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-//        List<String> list = new ArrayList<>();
-//        for(int i=0;i<25;i++){
-//            list.add("text"+i);
-//        }
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1,list);
-//        rvList.setAdapter(adapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setLayoutManager(new FullyLinearLayoutManager(getContext()));
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        mRecyclerView.setLayoutManager(new FullyLinearLayoutManager0(getContext()));
         for (int i = 0; i < 50; i++)
         {
             mDatas.add("mtitle" + " -> " + i);
@@ -68,6 +66,13 @@ public class ADetailSongFragment extends BaseFragment {
                 holder.setText(R.id.id_info,s);
             }
         });
+        mRecyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("recyclerview", "50dp = "+ DisplayUtil.dip2px(getContext(),50));
+                Log.e("recyclerview", "recyclerview height = "+mRecyclerView.getHeight());
+            }
+        },2000);
     }
 
     @Override

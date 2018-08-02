@@ -59,6 +59,7 @@ public class LyricManager {
             String line ;
             lyricInfo = new LyricInfo();
             while((line=br.readLine())!=null){
+                Log.e(TAG, "decode: "+line);
                 analyzeLyric(line);
             }
         } catch (IOException e) {
@@ -68,6 +69,7 @@ public class LyricManager {
     }
 
     public void setCurrentTimeMillis(int currentTimeMillis) {
+        //这里判断歌词是否为空，歌词可能还未加载
         List<LineInfo> lines = lyricInfo==null ? null : lyricInfo.getLines();
         if(lines != null){
             int position = 0;
@@ -75,7 +77,7 @@ public class LyricManager {
             //以一个int的position来定位
             for(int i=0;i<lines.size();i++){
                 if(currentTimeMillis > lines.get(i).getStart()){
-                    Log.e(TAG, "setCurrentTimeMillis: currentTimeMillis="+currentTimeMillis+" line="+lines.get(i).getStart());
+//                    Log.e(TAG, "setCurrentTimeMillis: currentTimeMillis="+currentTimeMillis+" line="+lines.get(i).getStart());
                     position = i;
                 }else{
                     break;
@@ -128,7 +130,7 @@ public class LyricManager {
                     if(obj != null && obj instanceof DataHolder){
                         DataHolder holder = (DataHolder) obj;
                         if(onProgressChangedListener!=null){
-                            Log.e(TAG, "handleMessage: 调用回调函数更新进度handler所在线程"+Thread.currentThread().getName());
+//                            Log.e(TAG, "handleMessage: 调用回调函数更新进度handler所在线程"+Thread.currentThread().getName());
                             onProgressChangedListener.onProgressChanged(holder.builder,holder.position,holder.refresh);
                         }
                     }

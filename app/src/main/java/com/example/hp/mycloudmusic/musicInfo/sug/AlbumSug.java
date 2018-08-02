@@ -1,6 +1,8 @@
-package com.example.hp.mycloudmusic.musicInfo.search;
+package com.example.hp.mycloudmusic.musicInfo.sug;
 
-public class AlbumSug {
+import com.example.hp.mycloudmusic.musicInfo.IQueryResult;
+
+public class AlbumSug implements IQueryResult{
     /**
      "albumname":"其实我是一个演员",
      "weight":"1",
@@ -62,5 +64,15 @@ public class AlbumSug {
 
     public void setAlbumid(String albumid) {
         this.albumid = albumid;
+    }
+
+    @Override
+    public String getName() {
+        return albumname;
+    }
+
+    @Override
+    public int getSearchResultType() {
+        return ALBUM;
     }
 }

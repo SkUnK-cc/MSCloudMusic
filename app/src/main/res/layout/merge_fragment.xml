@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragment.instance.MergeFragment">
+    tools:context=".fragment.instance.MergeFragment"
+    android:background="@android:color/white">
 
     <RadioGroup
         android:id="@+id/merge_radio_group"

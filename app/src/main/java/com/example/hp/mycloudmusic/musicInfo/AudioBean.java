@@ -1,13 +1,15 @@
 package com.example.hp.mycloudmusic.musicInfo;
 
+import android.net.Uri;
+import android.os.Parcel;
+
 import com.litesuits.orm.db.annotation.Column;
 import com.litesuits.orm.db.annotation.Table;
 
-@Table("tb_audio")
-public class AudioBean {
-    public static final String TYPE_LOCAL = "local";
-    public static final String TYPE_ONLINE = "online";
+import java.io.File;
 
+@Table("tb_audio")
+public class AudioBean extends AbstractMusic{
     public static final String COL_ID="_id";
     public static final String COL_TYPE="type";
     public static final String COL_TITLE="title";
@@ -23,7 +25,7 @@ public class AudioBean {
     @Column(COL_ID)
     private long id;
     @Column(COL_TYPE)
-    private String type;
+    private int type;
     @Column(COL_TITLE)
     private String title;
     @Column(COL_ARTIST)
@@ -43,6 +45,9 @@ public class AudioBean {
     @Column(COL_FILE_SIZE)
     private long fileSize;
 
+    public AudioBean(){
+    }
+
     public long getId() {
         return id;
     }
@@ -52,10 +57,10 @@ public class AudioBean {
     }
 
     public String getType() {
-        return type;
+        return TYPE_LOCAL;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -123,11 +128,78 @@ public class AudioBean {
         this.fileSize = fileSize;
     }
 
+
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public String getArtist() {
         return artist;
+    }
+
+    @Override
+    public String getAlbumPic() {
+        return null;
+    }
+
+
+    //AbstractMusic
+
+    @Override
+    public Uri getDataSource() {
+        return Uri.fromFile(new File(path));
+    }
+    private int viewId;
+
+    public int getViewId() {
+        return viewId;
+    }
+    public void setViewId(int id){
+        viewId = id;
+    }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(title);
+        dest.writeString(artist);
+        dest.writeInt(type);
+        dest.writeString(album);
+        dest.writeLong(albumId);
+        dest.writeString(coverPath);
+        dest.writeLong(duration);
+        dest.writeString(path);
+        dest.writeString(fileName);
+        dest.writeLong(fileSize);
+    }
+
+    @Override
+    public AbstractMusic createFromParcel(Parcel source) {
+        return new AudioBean(source);
+    }
+
+    public AudioBean(Parcel source) {
+        id = source.readLong();
+        title = source.readString();
+        artist = source.readString();
+        type = source.readInt();
+        album = source.readString();
+        albumId = source.readLong();
+        coverPath = source.readString();
+        duration = source.readLong();
+        path = source.readString();
+        fileName = source.readString();
+        fileSize = source.readLong();
+    }
+
+    @Override
+    public AbstractMusic[] newArray(int size) {
+        return new AudioBean[size];
     }
 }

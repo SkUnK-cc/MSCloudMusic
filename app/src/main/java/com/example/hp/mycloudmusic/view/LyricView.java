@@ -93,7 +93,7 @@ public class LyricView extends RelativeLayout implements View.OnTouchListener {
         textView.setTextSize(16.0f);
         textView.setLineSpacing(6,1.5f);
         textView.setPadding(0, textPaddingValue,0, textPaddingValue);
-        textView.setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n-\n1\n2\n3\n4\n5");
+//        textView.setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n-\n1\n2\n3\n4\n5");
 
         scrollView.addView(textView,new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         this.addView(scrollView);
@@ -200,15 +200,19 @@ public class LyricView extends RelativeLayout implements View.OnTouchListener {
     };
 
     public void setEmptyView(View emptyView) {
-        mEmptyView = emptyView;
-        if(mEmptyView != null && textView != null){
-            if(textView.getText().toString()==null || TextUtils.isEmpty(textView.getText().toString().trim())){
-                mEmptyView.setVisibility(View.VISIBLE);
-                Log.e(TAG, "emptyview is visible" );
-            }else{
-                mEmptyView.setVisibility(View.GONE);
-                Log.e(TAG, "emptyview is gone");
-            }
+        if(emptyView != null){
+            mEmptyView = emptyView;
+        }
+    }
+
+    public void showEmptyView(){
+        if(mEmptyView != null) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        }
+    }
+    public void hideEmptyView(){
+        if(mEmptyView != null) {
+            mEmptyView.setVisibility(View.GONE);
         }
     }
 
@@ -251,7 +255,11 @@ public class LyricView extends RelativeLayout implements View.OnTouchListener {
 
     private Animator setupScroll(int position) {
         int start = scrollView.getScrollY();
+        //scrollView.getHeight()获取的是可见的高度，textView获取的是内容的高度
         int end = textView.getPaddingTop()+textView.getLineHeight()*position-scrollView.getHeight()/2-textView.getLineHeight()/2;
+        Log.e(TAG, "textView.getHeight="+textView.getHeight());
+        Log.e(TAG, "scrollView.getHeight="+scrollView.getHeight());
+        Log.e(TAG, "this.getHeight="+this.getHeight());
         ValueAnimator valueAnimator = ValueAnimator.ofInt(start,end);
         valueAnimator.setDuration(600);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

@@ -37,21 +37,19 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener 
 
     private static final String TAG = "LocalFragment";
 
-//    @Override
-//    protected void setupActivityComponent(AppComponent appComponent) {
-//        DaggerActivityComponent.builder()
-//                .appComponent(appComponent)
-//                .build()
-//                .inject(this);
-//    }
+    @Override
+    protected int getContentView() {
+        return R.layout.localmusic_fragment;
+    }
 
     @Override
     protected void initData() {
         checkLocalMusic();
     }
 
+
     private void checkLocalMusic() {
-        if(localMusicList == null || localMusicList.size()==0){
+        if(localMusicList == null){
             loadTip.setVisibility(View.VISIBLE);
             startScan();
         }
@@ -106,11 +104,6 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener 
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mrecyclerView.setLayoutManager(layoutManager);
         mrecyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    protected int getContentView() {
-        return R.layout.localmusic_fragment;
     }
 
 

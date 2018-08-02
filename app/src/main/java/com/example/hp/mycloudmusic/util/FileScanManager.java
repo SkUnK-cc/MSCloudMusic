@@ -48,8 +48,8 @@ public class FileScanManager {
     public List<AudioBean> scanMusic(Context context) {
         List<AudioBean> musicList = new ArrayList<>();
 
-        String mFilterSize = SpUtils.getLocalFilterSize(context);
-        String mFilterTime = SpUtils.getLocalFilterTime(context);
+        String mFilterSize = SpUtils.getLocalFilterSize();
+        String mFilterTime = SpUtils.getLocalFilterTime();
 
         long filterSize = parseLong(mFilterSize)*1024;
         long filterTime = parseLong(mFilterTime)*1000;
@@ -81,7 +81,6 @@ public class FileScanManager {
             }
             AudioBean music = new AudioBean();
             music.setId(cursor.getLong(cursor.getColumnIndex(BaseColumns._ID)));
-            music.setType(AudioBean.TYPE_LOCAL);
             music.setTitle(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE)));
             music.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST)));
             music.setAlbum(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM)));

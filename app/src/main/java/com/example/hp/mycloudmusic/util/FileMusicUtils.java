@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 
 import java.io.BufferedWriter;
@@ -38,8 +39,23 @@ public class FileMusicUtils {
                 lrcFilePath = null;
             }
         }
-//        return lrcFilePath;
-        return null;
+        return lrcFilePath;
+    }
+
+    public static File createLrcFile(AbstractMusic music){
+        if(music == null){
+            return null;
+        }
+        String lrcFile = getLrcDir()+getLrcFileName(music.getTitle(),music.getArtist());
+        File file = new File(lrcFile);
+        try {
+            if(!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     /**

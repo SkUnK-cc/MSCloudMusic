@@ -1,10 +1,10 @@
 package com.example.hp.mycloudmusic.api.baidu;
 
+import com.example.hp.mycloudmusic.musicInfo.lyric.Lrc;
 import com.example.hp.mycloudmusic.musicInfo.merge.QueryMergeResp;
-import com.example.hp.mycloudmusic.musicInfo.search.MusicSearchSugResp;
+import com.example.hp.mycloudmusic.musicInfo.sug.MusicSearchSugResp;
 
 import io.reactivex.Observable;
-import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -14,6 +14,7 @@ public interface BaiduMusicApi {
     String V1_TING = "v1/restserver/ting";
     String QUERY_MERGE = "baidu.ting.search.merge";
     String SEARCH_CATALOGSUG = "baidu.ting.search.catalogSug";
+    String SONG_LRC = "baidu.ting.song.lry";
     /**
      * 关键词建议
      * @param query
@@ -27,9 +28,7 @@ public interface BaiduMusicApi {
                                           @Query("page_no") int pageNo,
                                           @Query("page_size") int pageSize);
 
-    @GET(V1_TING + "?method=" + QUERY_MERGE)
-    Observable<ResponseBody> queryMergeString(@Query("query") String query,
-                                        @Query("page_no") int pageNo,
-                                        @Query("page_size") int pageSize);
+    @GET(V1_TING + "?method=" + SONG_LRC)
+    Observable<Lrc> queryLrc(@Query("songid") String songid);
 
 }

@@ -1,6 +1,8 @@
-package com.example.hp.mycloudmusic.musicInfo.search;
+package com.example.hp.mycloudmusic.musicInfo.sug;
 
-public class ArtistSug {
+import com.example.hp.mycloudmusic.musicInfo.IQueryResult;
+
+public class ArtistSug implements IQueryResult{
 
     /**
      "yyr_artist":"0",
@@ -53,5 +55,15 @@ public class ArtistSug {
 
     public void setWeight(String weight) {
         this.weight = weight;
+    }
+
+    @Override
+    public String getName() {
+        return artistname;
+    }
+
+    @Override
+    public int getSearchResultType() {
+        return ARTIST;
     }
 }

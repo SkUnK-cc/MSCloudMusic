@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--标题栏-->
-    <dimen name="base_bar_height">45dp</dimen>
+    <dimen name="base_bar_height">65dp</dimen>
     <dimen name="main_bottom_bar">50dp</dimen>
     <dimen name="base_bar_padding_top_and_bottom">7dp</dimen>
     <dimen name="base_bar_padding_left_and_right">12dp</dimen>

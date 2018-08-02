@@ -1,11 +1,13 @@
 package com.example.hp.mycloudmusic.adapter.recyclerview;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonViewHolder> {
@@ -14,12 +16,32 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonViewHo
     protected int mLayoutId;
     protected List<T> mDatas;
     protected LayoutInflater mInflater;
+    protected RecyclerView recyclerView;
 
     private CommonOnItemClickListener mOnItemClickListener;
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.recyclerView = null;
+    }
 
     public void setOnItemClickListener(CommonOnItemClickListener onItemClickListener)
     {
         this.mOnItemClickListener = onItemClickListener;
+    }
+
+    public CommonAdapter(Context context,int layoutId){
+        mContext = context;
+        mInflater = LayoutInflater.from(context);
+        mLayoutId = layoutId;
+        mDatas = new ArrayList<>();
     }
 
     public CommonAdapter(Context context, int layoutId, List<T> datas)
@@ -89,6 +111,11 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonViewHo
     }
 
     public abstract void convert(CommonViewHolder holder, T t);
+
+    public void setmDatas(List<T> list){
+        mDatas = list;
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount()

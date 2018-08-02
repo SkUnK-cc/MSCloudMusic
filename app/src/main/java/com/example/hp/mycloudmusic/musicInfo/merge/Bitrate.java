@@ -43,12 +43,12 @@ public class Bitrate extends AbstractMusic{
     }
 
     @Override
-    public int getDuration() {
+    public long getDuration() {
         return getFirstItem().getTime();
     }
 
     @Override
-    public int getType() {
+    public String getType() {
         return TYPE_ONLINE;
     }
 

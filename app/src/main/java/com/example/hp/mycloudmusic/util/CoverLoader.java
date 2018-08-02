@@ -10,6 +10,7 @@ import android.util.LruCache;
 
 import com.example.hp.mycloudmusic.CMApplication;
 import com.example.hp.mycloudmusic.R;
+import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 
 import java.io.FileNotFoundException;
@@ -57,12 +58,12 @@ public class CoverLoader {
      * @param music
      * @return
      */
-    public Bitmap loadBlur(AudioBean music) {
+    public Bitmap loadBlur(AbstractMusic music) {
         return loadCover(music,TYPE_BLUR);
     }
 
 
-    private Bitmap loadCover(AudioBean music, String type) {
+    private Bitmap loadCover(AbstractMusic music, String type) {
         Bitmap bitmap;
         String key = getKey(music,type);
         if(TextUtils.isEmpty(key)){
@@ -87,12 +88,14 @@ public class CoverLoader {
         return loadCover(null,type);
     }
 
-    private Bitmap loadCoverByType(AudioBean music, String type) {
+    private Bitmap loadCoverByType(AbstractMusic music, String type) {
         Bitmap bitmap;
         if(music.getType() == AudioBean.TYPE_LOCAL ){
-            bitmap = loadCoverFromMediaStore(music.getAlbumId());
+            AudioBean audioBean = (AudioBean) music;
+            bitmap = loadCoverFromMediaStore(audioBean.getAlbumId());
         }else{
-            bitmap = loadCoverFromFile(music.getCoverPath());
+//            bitmap = loadCoverFromFile(music.getCoverPath());
+            bitmap = null;
         }
         switch (type){
             case TYPE_BLUR:
@@ -141,16 +144,25 @@ public class CoverLoader {
         }
     }
 
-    private String getKey(AudioBean music, String type) {
-        if(music == null){
+    private String getKey(AbstractMusic music, String type) {
+        if (music == null) {
             return null;
         }
-        if(music.getType()==AudioBean.TYPE_LOCAL && music.getAlbumId()>0){
-            return String.valueOf(music.getAlbumId()).concat(AudioBean.TYPE_LOCAL);
-        }else if(music.getType()==AudioBean.TYPE_ONLINE && !TextUtils.isEmpty(music.getCoverPath())){
-            return music.getCoverPath().concat(AudioBean.TYPE_ONLINE);
-        }else{
+        if (music.getType() == AbstractMusic.TYPE_LOCAL) {
+            AudioBean audioBean = (AudioBean) music;
+            if (audioBean.getAlbumId() > 0) {
+                return String.valueOf(audioBean.getAlbumId()).concat(AbstractMusic.TYPE_LOCAL);
+            }
+        } else {
             return null;
         }
+        return null;
     }
+//        else if(music.getType()==AbstractMusic.TYPE_ONLINE && !TextUtils.isEmpty(music.getCoverPath())){
+//            return music.getCoverPath().concat(AudioBean.TYPE_ONLINE);
+//            return null;
+//        }
+//        else{
+//            return null;
+//        }
 }

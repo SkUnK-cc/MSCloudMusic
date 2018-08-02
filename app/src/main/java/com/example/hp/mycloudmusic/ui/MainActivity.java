@@ -33,7 +33,6 @@ import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.mvp.presenter.MainPresenter;
 import com.example.hp.mycloudmusic.mvp.view.IMainView;
 import com.example.hp.mycloudmusic.service.PlayService;
-import com.example.hp.mycloudmusic.service.listener.OnPlayerEventListener;
 
 import java.util.List;
 
@@ -79,34 +78,37 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
     private boolean isBind = false;
 
     @Override
+    protected int getContentView() { return R.layout.activity_main; }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null){
             bundle = savedInstanceState;
         }
-        Log.e(TAG, "onCreate.." );
+//        Log.e(TAG, "onCreate.." );
         permissionCheck();
         checkPlayService();
     }
-
     public void checkPlayService() {
         if(BaseAppHelper.get().getPlayService() == null){
             Intent intent = new Intent(this, PlayService.class);
-            Log.e(TAG, "checkPlayService: to start service");
+//            Log.e(TAG, "checkPlayService: to start service");
             isBind = bindService(intent,playConnection, Context.BIND_AUTO_CREATE);
         }
     }
+
     private ServiceConnection playConnection = new ServiceConnection() {
         /**
-         * 在serviceconnected中为service添加监听，
-         * 防止service未创建
+         * 在 onServiceconnected中为service设置listener，
+         * 防止service未创建，出现空指针
          */
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             PlayService playService = ((PlayService.PlayBinder) service).getPlayService();
             BaseAppHelper.get().setPlayService(playService);
             initPlayServiceListener();
-            Log.e(TAG, "onServiceConnected: ");
+//            Log.e(TAG, "onServiceConnected: ");
         }
 
         @Override
@@ -114,51 +116,51 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
             Log.e(TAG, "onServiceDisconnected");
         }
     };
-
     private void initPlayServiceListener() {
         if(getPlayService() == null){
-            Log.e(TAG, "initPlayServiceListener: service is null!!!");
+//            Log.e(TAG, "initPlayServiceListener: service is null!!!");
             return;
         }
-        Log.e(TAG, "initPlayServiceListener: service is not null");
-        getPlayService().setOnPlayerEventListener(new OnPlayerEventListener(){
-
-            @Override
-            public void onUpdateProgress(int currentPosition) {
-                playMusicFragment.onUpdateProgress(currentPosition);
-            }
-
-            @Override
-            public void onPlayerStart() {
-
-            }
-
-            @Override
-            public void onBufferingUpdate(int percent) {
-
-            }
-
-            @Override
-            public void onChange(AudioBean music) {
-                Log.e(TAG, "onchange: 调用onchange方法0");
-                Log.e(TAG, "onChange: "+music==null?"music=null":"music!=null" );
-                Log.e(TAG, "onChange: "+playMusicFragment==null?"fragment=null":"fragment!=null" );
-                if(playMusicFragment.isAdded()){
-                    Log.e(TAG, "onChange: fragment is add");
-                }else{
-                    Log.e(TAG, "onChange: fragment is  not  add");
-                }
-                if(music != null && playMusicFragment!=null && playMusicFragment.isAdded()){
-                    playMusicFragment.onchange(music);
-                }else{
-                    Message message = Message.obtain();
-                    message.what = WAIT_PLAYFRAGMENT_ADD;
-                    message.obj = music;
-                    handler.sendMessageDelayed(message,300);
-                }
-            }
-        });
+//        Log.e(TAG, "initPlayServiceListener: service is not null");
+//        getPlayService().setOnPlayerEventListener(new OnPlayerEventListener(){
+//
+//            @Override
+//            public void onUpdateProgress(int currentPosition) {
+//                playMusicFragment.onUpdateProgress(currentPosition);
+//            }
+//
+//            @Override
+//            public void onPlayerStart() {
+//
+//            }
+//
+//            @Override
+//            public void onBufferingUpdate(int percent) {
+//
+//            }
+//
+//            @Override
+//            public void onChange(AudioBean music) {
+//                Log.e(TAG, "onchange: 调用onchange方法0");
+//                Log.e(TAG, "onChange: "+music==null?"music=null":"music!=null" );
+//                Log.e(TAG, "onChange: "+playMusicFragment==null?"fragment=null":"fragment!=null" );
+//                if(playMusicFragment.isAdded()){
+//                    Log.e(TAG, "onChange: fragment is add");
+//                }else{
+//                    Log.e(TAG, "onChange: fragment is  not  add");
+//                }
+//                if(music != null && playMusicFragment!=null && playMusicFragment.isAdded()){
+//                    playMusicFragment.onchange(music);
+//                }else{
+//                    Message message = Message.obtain();
+//                    message.what = WAIT_PLAYFRAGMENT_ADD;
+//                    message.obj = music;
+//                    handler.sendMessageDelayed(message,300);
+//                }
+//            }
+//        });
     }
+
     Handler handler  = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -273,8 +275,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
             Log.d(TAG, "currentFragment == frament");
             return ;
         }
-
-
         if (currentFragment != null){
             transaction.hide(currentFragment);
         }
@@ -288,9 +288,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
 
         currentFragment = fragment;
     }
-
-    @Override
-    protected int getContentView() { return R.layout.activity_main; }
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -338,7 +335,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         transaction.setCustomAnimations(R.anim.fragment_slide_from_right,0);
         if(playMusicFragment == null){
             playMusicFragment = FragmentFactory.getInstance(this).getmPlayMusicFragment();
-            //transaction.replace(android.R.id.content,playMusicFragment);
             transaction.add(android.R.id.content,playMusicFragment);
         }else{
             transaction.show(playMusicFragment);

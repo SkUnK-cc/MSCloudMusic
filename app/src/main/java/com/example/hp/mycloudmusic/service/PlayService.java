@@ -13,6 +13,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.service.listener.OnPlayerEventListener;
 import com.example.hp.mycloudmusic.service.receiver.NoisyAudioStreamReceiver;
@@ -20,6 +21,7 @@ import com.example.hp.mycloudmusic.util.AudioFocusManager;
 import com.example.hp.mycloudmusic.util.NotificationUtils;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,25 +49,39 @@ public class PlayService extends Service {
 
     public static final int UPDATE_PLAY_PROGRESS_SHOW = 0;
 
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what){
-                case UPDATE_PLAY_PROGRESS_SHOW:
-                    updatePlayProgressShow();
-                    break;
-                default:
-                    break;
-            }
+    private final Handler handler = new MyServiceHandler(this);
+
+    public AbstractMusic getPlayingMusic() {
+        return mPlayingMusic;
+    }
+
+
+    //将MyServiceHandler声明为静态类(不持有对外部类的隐式引用)，防止内存泄漏
+    private static class MyServiceHandler extends Handler{
+        private final WeakReference<PlayService> mPlayService;
+
+        public MyServiceHandler(PlayService playService){
+            mPlayService = new WeakReference<PlayService>(playService);
         }
-    };
+
+        @Override
+        public void handleMessage(Message msg){
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case UPDATE_PLAY_PROGRESS_SHOW:
+                        mPlayService.get().updatePlayProgressShow();    //先调用get()得到引用
+                        break;
+                    default:
+                        break;
+                }
+            }
+    }
 
 
     /**
      * 正在播放的歌曲列表
      */
-    private ArrayList<AudioBean> audioMusics;
+    private ArrayList<AbstractMusic> audioMusics;
 
     /**
      * 正在播放的歌曲序号
@@ -74,7 +90,7 @@ public class PlayService extends Service {
     /**
      * 正在播放的歌曲
      */
-    private AudioBean mPlayingMusic;
+    private AbstractMusic mPlayingMusic;
     /**
      * 播放器
      */
@@ -152,8 +168,20 @@ public class PlayService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void playPause() {
+    public void playPause() {
+        if(isPreparing()){
+            stop();
+        }else if(isPlaying()){
+            pause();
+        }else if(isPausing()){
+            start();
+        }else{
+            play(getPlayingPosition());
+        }
+    }
 
+    private int getPlayingPosition() {
+        return mPlayingPosition;
     }
 
 
@@ -175,28 +203,52 @@ public class PlayService extends Service {
         mPlayingMusic = audioMusics.get(mPlayingPosition);
 
         createMediaPlayer();
+        initPlayer(mPlayingMusic);
+        if(mPlayerEventListener != null){
+            Log.e(TAG, "服务调用onChange方法");
+            mPlayerEventListener.onChange(mPlayingMusic);
+        }
+    }
+
+    public void play(int position) {
+        if(position < 0){
+            //第一首音乐的上一首
+            position = audioMusics.size() - 1;
+        }else if(position >= audioMusics.size()){
+            //最后一首音乐的下一首
+            position = 0;
+        }
+        mPlayingPosition = position;
+        mPlayingMusic = getMusicList().get(mPlayingPosition);
+        play(mPlayingMusic);
+    }
+
+    private void play(AbstractMusic music) {
+        if(mPlayingMusic == null)return;
+        createMediaPlayer();
+        initPlayer(music);
+        if(mPlayerEventListener!=null){
+            mPlayerEventListener.onChange(music);
+        }
+    }
+
+    private void initPlayer(AbstractMusic music){
         try {
             mPlayer.reset();
-            mPlayer.setDataSource(mPlayingMusic.getPath());     //catch
+            mPlayer.setDataSource(getBaseContext(),music.getDataSource());
             mPlayer.prepareAsync();
-
             mPlayState = STATE_PREPARING;
-
             mPlayer.setOnPreparedListener(mOnPreparedListener);
             mPlayer.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
             mPlayer.setOnCompletionListener(mOnCompletionListener);
             mPlayer.setOnSeekCompleteListener(mOnSeekCompleteListener);
             mPlayer.setOnErrorListener(mOnErrorListener);
             mPlayer.setOnInfoListener(mOnInfoListener);
-            if(mPlayerEventListener != null){
-                Log.e(TAG, "服务调用onChange方法");
-                mPlayerEventListener.onChange(mPlayingMusic);
-            }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     /**-------------------------------mediaPlayer监听方法------------------------------------------*/
     /**
@@ -221,24 +273,36 @@ public class PlayService extends Service {
             }
         }
     };
+    /**
+     * 媒体资源播放完成后调用
+     */
     private MediaPlayer.OnCompletionListener mOnCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
             next();
         }
     };
+    /**
+     * seek操作完成后调用
+     */
     private MediaPlayer.OnSeekCompleteListener mOnSeekCompleteListener = new MediaPlayer.OnSeekCompleteListener() {
         @Override
         public void onSeekComplete(MediaPlayer mp) {
 
         }
     };
+    /**
+     * 当异步操作期间发生错误时调用
+     */
     private MediaPlayer.OnErrorListener mOnErrorListener = new MediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
             return false;
         }
     };
+    /**
+     * 传递媒体或其播放的信息或警告
+     */
     private MediaPlayer.OnInfoListener mOnInfoListener = new MediaPlayer.OnInfoListener() {
         @Override
         public boolean onInfo(MediaPlayer mp, int what, int extra) {
@@ -271,14 +335,40 @@ public class PlayService extends Service {
                     mReceiverTag = true;
                     registerReceiver(mNoisyReceiver,filter);
                 }
-
             }
         }
-
     }
 
     private void next() {
 
+    }
+    private void pause() {
+        if(mPlayingMusic == null){
+            return;
+        }
+        if(mPlayer != null){
+            mPlayer.pause();
+            mPlayState = STATE_PAUSE;
+            handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+            if(mPlayerEventListener != null){
+                mPlayerEventListener.onPlayerPause();
+            }
+            if(mReceiverTag){
+                mReceiverTag = false;
+                unregisterReceiver(mNoisyReceiver);
+            }
+        }
+    }
+
+    private void stop() {
+        if(isDefault()){
+            return;
+        }
+        pause();
+        if(mPlayer != null){
+            mPlayer.reset();
+            mPlayState = STATE_IDLE;
+        }
     }
 
 
@@ -296,16 +386,17 @@ public class PlayService extends Service {
         handler.sendEmptyMessageDelayed(UPDATE_PLAY_PROGRESS_SHOW,300);
     }
 
+    //默认状态应该是原始状态，STATE_IDLE
+    private boolean isDefault() {
+        return mPlayState == STATE_IDLE;
+    }
+
     private boolean isPausing() {
         return mPlayState == STATE_PAUSE;
     }
 
     private boolean isPlaying(){
         return mPlayState == STATE_PLAYING;
-    }
-
-    private boolean isIdle(){
-        return mPlayState == STATE_IDLE;
     }
 
     private boolean isPreparing() {
@@ -317,7 +408,7 @@ public class PlayService extends Service {
         audioMusics.addAll(list);
     }
 
-    public ArrayList<AudioBean> getLocalMusic(){
+    public List<AbstractMusic> getMusicList(){
         return audioMusics;
     }
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -18,12 +19,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hp.mycloudmusic.R;
+import com.example.hp.mycloudmusic.adapter.recyclerview.search_fragment.NoScrollGridLayoutManager;
+import com.example.hp.mycloudmusic.adapter.recyclerview.search_fragment.SearchAdapter;
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
+import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.util.InputMethodUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 
-public class SearchFragment extends BaseFragment implements View.OnClickListener {
+public class SearchFragment extends BaseFragment implements View.OnClickListener{
 
     public static final String TAG = "SearchFragment";
     private int etOriginalWidth = 0;
@@ -42,20 +49,38 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
     @Bind(R.id.cancel)
     TextView tvCancel;
 
+    @Bind(R.id.id_search_fragment_recyclerview)
+    RecyclerView mRecyclerView;
+
+    private SearchAdapter mSearchAdapter;
+
     FragmentManager fragmentManager;
     MergeFragment merge_fragment;
 
-//    @Override
-//    protected void setupActivityComponent(AppComponent appComponent) {
-//        DaggerActivityComponent.builder()
-//                .appComponent(appComponent)
-//                .build()
-//                .inject(this);
-//    }
+    @Override
+    protected int getContentView() {
+        return R.layout.search_fragment;
+    }
 
     @Override
     protected void initData() {
-
+        List<AudioBean> list = new ArrayList<>();
+        for(int i=0;i<10;i++){
+            AudioBean audioBean;
+            if(i<=5) {
+                audioBean = new AudioBean();
+                audioBean.setTitle("three->"+i);
+                audioBean.setArtist("artist "+i);
+                audioBean.setViewId(R.layout.item_search_three);
+            }else{
+                audioBean = new AudioBean();
+                audioBean.setTitle("two->"+i);
+                audioBean.setArtist("artist "+i);
+                audioBean.setViewId(R.layout.item_search_two);
+            }
+            list.add(audioBean);
+        }
+        mSearchAdapter.setmDatas(list);
     }
 
     @Override
@@ -66,23 +91,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
     @Override
     protected void initView() {
         fragmentManager = getActivity().getSupportFragmentManager();
-        etSearch.clearFocus();
-//        etSearch.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.e(TAG, "edittext is click!!");
-//            }
-//        });
-        etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    Log.e(TAG, "editText is focus.");
-                }else{
-                    Log.e(TAG, "edittext is not focus.");
-                }
-            }
-        });
+//        etSearch.clearFocus();
         etSearch.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -110,6 +119,32 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
             }
         });
         tvCancel.setOnClickListener(this);
+
+        NoScrollGridLayoutManager layoutManager = new NoScrollGridLayoutManager(getContext(),6);
+        layoutManager.setScrollEnable(true);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mSearchAdapter = new SearchAdapter(getContext(),R.layout.item_search_two);
+        RecyclerView.RecycledViewPool pool = mRecyclerView.getRecycledViewPool();
+        pool.setMaxRecycledViews(0,10);
+        mRecyclerView.setRecycledViewPool(pool);
+        mRecyclerView.setAdapter(mSearchAdapter);
+        mSearchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(RecyclerView parent, View view, int position) {
+            }
+            @Override
+            public void onTitleClick(RecyclerView parent, View view, int position) {
+            }
+            @Override
+            public void onItemThreeClick(RecyclerView parent, View view, int position) {
+                Toast.makeText(getContext(), "three item per line!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onItemTwoClick(RecyclerView parent, View view, int position) {
+                Toast.makeText(getContext(), "two item per line!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void showCancel() {
@@ -187,11 +222,6 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
             merge_fragment.updateData();
         }
         closeKeyboard(etSearch);
-    }
-
-    @Override
-    protected int getContentView() {
-        return R.layout.search_fragment;
     }
 
     @Override

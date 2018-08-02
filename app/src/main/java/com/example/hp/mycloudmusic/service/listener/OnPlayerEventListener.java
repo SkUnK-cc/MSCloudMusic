@@ -1,6 +1,6 @@
 package com.example.hp.mycloudmusic.service.listener;
 
-import com.example.hp.mycloudmusic.musicInfo.AudioBean;
+import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 
 public interface OnPlayerEventListener {
     void onUpdateProgress(int currentPosition);
@@ -9,5 +9,7 @@ public interface OnPlayerEventListener {
 
     void onBufferingUpdate(int percent);
 
-    void onChange(AudioBean mPlayingMusic);
+    void onChange(AbstractMusic mPlayingMusic);
+
+    void onPlayerPause();
 }

@@ -28,7 +28,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
             int option = View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             decorView.setSystemUiVisibility(option);
 //            getWindow().setStatusBarColor(Color.parseColor("#9C27B0"));
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);//设置状态栏的背景色
         }
         initView();
         initListener();

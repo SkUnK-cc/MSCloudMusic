@@ -11,8 +11,8 @@ import java.io.Serializable;
  * 定义播放实体的抽象类，子类包含Song（在线音乐）
  */
 public abstract class AbstractMusic implements Serializable,Parcelable,Parcelable.Creator<AbstractMusic> {
-    public static final int TYPE_LOCAL = 1;
-    public static final int TYPE_ONLINE = 2;
+    public static final String TYPE_LOCAL = "LOCAL";
+    public static final String TYPE_ONLINE = "ONLINE";
 
     public static Creator<AbstractMusic> CREATOR;
 
@@ -27,9 +27,9 @@ public abstract class AbstractMusic implements Serializable,Parcelable,Parcelabl
 
     public abstract Uri getDataSource();
 
-    public abstract int getDuration();
+    public abstract long getDuration();
 
-    public abstract int getType();
+    public abstract String getType();
 
     /**
      * 获取专辑图片

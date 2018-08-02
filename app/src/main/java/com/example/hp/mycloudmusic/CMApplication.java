@@ -5,8 +5,6 @@ import android.content.Context;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.example.hp.mycloudmusic.injection.component.AppComponent;
-import com.example.hp.mycloudmusic.injection.component.DaggerAppComponent;
-import com.example.hp.mycloudmusic.injection.module.AppModule;
 import com.litesuits.orm.LiteOrm;
 
 /**
@@ -28,9 +26,9 @@ public class CMApplication extends Application {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         mContext = this;
         mApplication = this;
-        mAppComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .build();
+//        mAppComponent = DaggerAppComponent.builder()
+//                .appModule(new AppModule(this))
+//                .build();
     }
 
     public static Context getAppContext(){
@@ -41,9 +39,9 @@ public class CMApplication extends Application {
         return mApplication;
     }
 
-    public static AppComponent getAppComponent(){
-        return mAppComponent;
-    }
+//    public static AppComponent getAppComponent(){
+//        return mAppComponent;
+//    }
 
     public static LiteOrm provideLiteOrm(){
         if(liteOrm == null){

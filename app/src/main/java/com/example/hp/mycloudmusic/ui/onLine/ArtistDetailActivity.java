@@ -41,6 +41,11 @@ public class ArtistDetailActivity extends BaseActivity implements SimpleViewPage
     private List<Fragment> mFragments = new ArrayList<>();
 
     @Override
+    protected int getContentView() {
+        return R.layout.activity_artist_detail;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -88,15 +93,10 @@ public class ArtistDetailActivity extends BaseActivity implements SimpleViewPage
 
         mStickNavLayout.setScrollListener(this);
 
-        int height = DisplayUtil.getScreenHeight(ArtistDetailActivity.this)-DisplayUtil.dip2px(ArtistDetailActivity.this,65)-mIndicator.getHeight();
+        int height = DisplayUtil.getScreenHeight(ArtistDetailActivity.this)-DisplayUtil.dip2px(ArtistDetailActivity.this,65)-DisplayUtil.dip2px(ArtistDetailActivity.this,40);
         LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) mViewPager.getLayoutParams();
-        layoutParams.height = 3000;
+        layoutParams.height = height;
         mViewPager.setLayoutParams(layoutParams);
-    }
-
-    @Override
-    protected int getContentView() {
-        return R.layout.activity_artist_detail;
     }
 
     public static void toArtistDetailActivity(Context context, String uid){

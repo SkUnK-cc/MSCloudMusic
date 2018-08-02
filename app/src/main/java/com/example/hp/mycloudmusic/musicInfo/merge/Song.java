@@ -120,12 +120,12 @@ public class Song extends AbstractMusic implements IQueryResult{
     }
 
     @Override
-    public int getDuration() {
+    public long getDuration() {
         return 0;
     }
 
     @Override
-    public int getType() {
+    public String getType() {
         return TYPE_ONLINE;
     }
 
