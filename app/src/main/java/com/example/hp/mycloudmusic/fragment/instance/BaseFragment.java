@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,11 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         return view;
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+    }
+
     /**
      * 应在onCreateView执行之后对控件进行初始化,onCreateView在onCreate之后执行
      * Called immediately after onCreateView(LayoutInflater, ViewGroup, Bundle) has returned,
@@ -52,6 +58,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
      * to initialize themselves once they know their view hierarchy has been completely created.
      * The fragment's view hierarchy is not however attached to its parent at this point.
      */
+    //viewpager自动销毁，执行生命周期到onDestroyView，之后回到onCreateView -> onViewCreate
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -79,6 +86,50 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
             throw new NullPointerException("play service is null!");
         }
         return playService;
+    }
+
+    protected void addOrShowFragmentOnActivity(int layoutId, Fragment fragment, int enterAnim){
+        if(fragment == null){
+            return;
+        }
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(enterAnim,0);
+        if(!fragment.isAdded()){
+            transaction.add(layoutId,fragment);
+        }else if(fragment.isHidden()){
+            transaction.show(fragment);
+        }
+        transaction.commit();
+    }
+    protected void hideFragmentOnActivity(Fragment fragment, int exitAnim){
+        if(fragment == null){
+            return;
+        }
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(0, exitAnim);
+        transaction.hide(fragment).commit();
+    }
+
+    protected void addOrShowFragmentOnFragment(int layoutId, Fragment fragment, int enterAnim){
+        if(fragment == null){
+            return;
+        }
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(enterAnim,0);
+        if(!fragment.isAdded()){
+            transaction.add(layoutId,fragment);
+        }else if(fragment.isHidden()){
+            transaction.show(fragment);
+        }
+        transaction.commit();
+    }
+    protected void hideFragmentOnFragment(Fragment fragment, int exitAnim){
+        if(fragment == null){
+            return;
+        }
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(0, exitAnim);
+        transaction.hide(fragment).commit();
     }
 
     @Override

@@ -54,10 +54,10 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public static MergeFragment newInstance(String param1) {
+    public static MergeFragment newInstance(String word) {
         MergeFragment fragment = new MergeFragment();
         Bundle args = new Bundle();
-        args.putString(SEARCH_WORD, param1);
+        args.putString(SEARCH_WORD, word);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,6 +75,7 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
 
     @Override
     protected void initView() {
+        Log.e(TAG, "initView: 执行");
         rgMerge.check(R.id.merge_single);
         viewPager.addOnPageChangeListener(new MyPagerChangeListener());
 
@@ -85,7 +86,7 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
         fragmentList.add(mergeSongFragment);
         fragmentList.add(mergeArtistFragment);
         fragmentList.add(mergeAlbumFragment);
-        adapter = new TabFragmentPagerAdapter(getActivity().getSupportFragmentManager(),fragmentList);
+        adapter = new TabFragmentPagerAdapter(getChildFragmentManager(),fragmentList);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
 
@@ -158,5 +159,11 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
         public void onPageScrollStateChanged(int state) {
 
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        mPresenter.detach();
+        super.onDestroy();
     }
 }

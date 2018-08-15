@@ -3,7 +3,8 @@ package com.example.hp.mycloudmusic.ui;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.example.hp.mycloudmusic.base.BaseAppHelper;
@@ -13,13 +14,14 @@ import com.example.hp.mycloudmusic.service.PlayService;
 
 import butterknife.ButterKnife;
 
-public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements IBaseView{
-
+public abstract class BaseActivity<P extends BasePresenter> extends FragmentActivity implements IBaseView{
+    public static final String TAG = "BaseActivity";
     protected P mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "onCreate: "+getClass().getName());
         setContentView(getContentView());
         ButterKnife.bind(this);
         if(Build.VERSION.SDK_INT >= 21){
@@ -58,8 +60,16 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 //        return mLiteOrm;
 //    }
 
+
+    @Override
+    protected void onStop() {
+        Log.e(TAG, "onStop: "+getClass().getName());
+        super.onStop();
+    }
+
     @Override
     protected void onDestroy() {
+        Log.e(TAG, "onDestroy: "+getClass().getName());
         super.onDestroy();
     }
 }

@@ -119,6 +119,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
             }
         });
         tvCancel.setOnClickListener(this);
+        ivPlaying.setOnClickListener(this);
 
         NoScrollGridLayoutManager layoutManager = new NoScrollGridLayoutManager(getContext(),6);
         layoutManager.setScrollEnable(true);
@@ -202,24 +203,21 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
 //        intent.putExtra(ConstantValue.SEARCH_WORD,text);
 //        startActivity(intent);
         if(merge_fragment == null){
+//            Log.e(TAG, "search: add mergeframgent");
             merge_fragment = FragmentFactory.getInstance(null).getmMergeFragment(text);
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.searchfragment_framelayout, merge_fragment);
-            transaction.commit();
         }else{
+//            Log.e(TAG, "search: show mergefragment");
             Bundle bundle = merge_fragment.getArguments();
             bundle.putString(MergeFragment.SEARCH_WORD,text);
             merge_fragment.setArguments(bundle);
-            if(merge_fragment.isAdded()){
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.show(merge_fragment);
-                transaction.commit();
-            }else{
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.add(R.id.searchfragment_framelayout,merge_fragment);
-                transaction.commit();
-            }
+        }
+        if(merge_fragment.isAdded()){
+//            Log.e(TAG, "search: second show mergefragment");
+            addOrShowFragmentOnFragment(R.id.searchfragment_framelayout,merge_fragment,0);
             merge_fragment.updateData();
+        }else{
+//            Log.e(TAG, "search: second add mergefragment");
+            addOrShowFragmentOnFragment(R.id.searchfragment_framelayout,merge_fragment,0);
         }
         closeKeyboard(etSearch);
     }
@@ -234,11 +232,26 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                 clearEdit();
                 etSearch.clearFocus();
                 hideCancel();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                if(merge_fragment!=null && !merge_fragment.isHidden()){
-                    transaction.hide(merge_fragment);
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                if(merge_fragment!=null && merge_fragment.isAdded()){
+                    Log.e(TAG, "onClick: remove from activity");
+                    transaction.remove(merge_fragment);
                     transaction.commit();
                 }
+                break;
+            case R.id.the_music_playing:
+                Log.e(TAG, "onClick");
+                PlayMusicFragment playFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment();
+//                FragmentTransaction transaction1 = fragmentManager.beginTransaction();
+//                if(!playFragment.isAdded()){
+//                    Log.e(TAG, "onClick: add");
+//                    transaction1.add(android.R.id.content,playFragment);
+//                }else if(playFragment.isHidden()){
+//                    Log.e(TAG, "onClick: show");
+//                    transaction1.show(playFragment);
+//                }
+//                transaction1.commitAllowingStateLoss();
+                addOrShowFragmentOnActivity(android.R.id.content,playFragment,R.anim.fragment_slide_from_right);
                 break;
             default:
                 break;

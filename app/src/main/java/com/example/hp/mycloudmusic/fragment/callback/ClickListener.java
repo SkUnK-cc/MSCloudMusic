@@ -4,5 +4,5 @@ import android.view.View;
 
 public interface ClickListener{
     void onClick(View view);
-    void onLocalItemClick(int adapterPosition);
+    void onLocalItemClick(int position);
 }

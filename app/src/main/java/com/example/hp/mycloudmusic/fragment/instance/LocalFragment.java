@@ -1,6 +1,7 @@
 package com.example.hp.mycloudmusic.fragment.instance;
 
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,14 +12,18 @@ import android.widget.TextView;
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.LocalMusicAdapter;
 import com.example.hp.mycloudmusic.base.BaseAppHelper;
+import com.example.hp.mycloudmusic.fragment.callback.ClickListener;
+import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
+import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.util.FileScanManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 
-public class LocalFragment extends BaseFragment implements View.OnClickListener {
+public class LocalFragment extends BaseFragment implements View.OnClickListener, ClickListener {
 
     @Bind(R.id.load_tip)
     TextView loadTip;
@@ -49,9 +54,11 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener 
 
 
     private void checkLocalMusic() {
-        if(localMusicList == null){
+        if(localMusicList == null || localMusicList.size()==0){
             loadTip.setVisibility(View.VISIBLE);
             startScan();
+        }else{
+            adapter.setData(localMusicList);
         }
     }
 
@@ -99,7 +106,7 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener 
         iv_playing.setOnClickListener(this);
         //recyclerView
         adapter = new LocalMusicAdapter();
-        adapter.setOnItemClickListener(activityListener);
+        adapter.setOnItemClickListener(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mrecyclerView.setLayoutManager(layoutManager);
@@ -109,7 +116,28 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        activityListener.onClick(v);
+        switch (v.getId()){
+            case R.id.local_music_back:
+                activityListener.onClick(v);
+                break;
+            case R.id.the_music_playing:
+                Fragment playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment();
+                addOrShowFragmentOnActivity(android.R.id.content,playMusicFragment,R.anim.fragment_slide_from_right);
+                break;
+            default:
+                break;
+        }
     }
 
+    @Override
+    public void onLocalItemClick(int pos) {
+        Fragment playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment();
+        addOrShowFragmentOnActivity(android.R.id.content,playMusicFragment,R.anim.fragment_slide_from_right);
+        if(BaseAppHelper.get().getPlayService().checkPlayingChange(localMusicList.get(pos))){
+            Log.e(TAG, "onLocalItemClick: change");
+            List<AbstractMusic> musicList = new ArrayList<>();
+            musicList.addAll(localMusicList);
+            BaseAppHelper.get().getPlayService().play(musicList,pos);
+        }
+    }
 }

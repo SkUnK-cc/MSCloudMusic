@@ -3,8 +3,11 @@ package com.example.hp.mycloudmusic.musicInfo.merge;
 import android.net.Uri;
 import android.os.Parcel;
 
+import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.IQueryResult;
+import com.example.hp.mycloudmusic.musicInfo.songPlay.Bitrate;
+import com.example.hp.mycloudmusic.musicInfo.songPlay.SongInfo;
 
 public class Song extends AbstractMusic implements IQueryResult{
 
@@ -46,6 +49,7 @@ public class Song extends AbstractMusic implements IQueryResult{
      "all_artist_id":"591517581",
      "ting_uid":"340422426"
      */
+    //播放时使用songid
     public String resource_type_ext;
     public String has_filmtv;
     public int resource_type;
@@ -83,7 +87,8 @@ public class Song extends AbstractMusic implements IQueryResult{
     public String all_artist_id;
     public String ting_uid;       //歌手id
 
-
+    public Bitrate bitrate;
+    public SongInfo songInfo;
 
     @Override
     public String getName() {
@@ -114,9 +119,14 @@ public class Song extends AbstractMusic implements IQueryResult{
         this.author = author;
     }
 
+    public String getSong_id(){
+        return song_id;
+    }
+
     @Override
     public Uri getDataSource() {
-        return null;
+        String url = bitrate != null ? bitrate.getFile_link():BaiduMusicApi.DownloadUrl+song_id;
+        return Uri.parse(url);
     }
 
     @Override

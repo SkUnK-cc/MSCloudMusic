@@ -1,8 +1,11 @@
 package com.example.hp.mycloudmusic.musicInfo.merge;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.example.hp.mycloudmusic.musicInfo.IQueryResult;
 
-public class Artist implements IQueryResult{
+public class Artist implements IQueryResult,Parcelable{
     /**
      "ting_uid":"60867779",
      "song_num":126,
@@ -14,7 +17,6 @@ public class Artist implements IQueryResult{
      "artist_source":"web",
      "artist_id":"43888407"
      */
-
     public String ting_uid;
     public int song_num;
     public String country;
@@ -23,6 +25,7 @@ public class Artist implements IQueryResult{
     public String author;
     public String artist_source;
     public String artist_id;
+    public String artist_desc;
 
 
     @Override
@@ -41,5 +44,47 @@ public class Artist implements IQueryResult{
 
     public String getTing_uid() {
         return ting_uid;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(ting_uid);
+        dest.writeInt(song_num);
+        dest.writeString(country);
+        dest.writeString(avatar_middle);
+        dest.writeInt(album_num);
+        dest.writeString(author);
+        dest.writeString(artist_source);
+        dest.writeString(artist_id);
+        dest.writeString(artist_desc);
+    }
+
+    public static final Creator<Artist> CREATOR = new Creator<Artist>() {
+        @Override
+        public Artist createFromParcel(Parcel in) {
+            return new Artist(in);
+        }
+
+        @Override
+        public Artist[] newArray(int size) {
+            return new Artist[size];
+        }
+    };
+
+    protected Artist(Parcel in) {
+        ting_uid = in.readString();
+        song_num = in.readInt();
+        country = in.readString();
+        avatar_middle = in.readString();
+        album_num = in.readInt();
+        author = in.readString();
+        artist_source = in.readString();
+        artist_id = in.readString();
+        artist_desc = in.readString();
     }
 }

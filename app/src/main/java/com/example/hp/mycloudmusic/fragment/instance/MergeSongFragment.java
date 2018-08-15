@@ -58,6 +58,7 @@ public class MergeSongFragment extends BaseFragment {
 
     @Override
     protected void initView() {
+        Log.e(TAG, "initView: init adapter");
         adapter = new MSongRecyclerAdapter(getContext());
         adapter.setOnClickListener(new MSongRecyclerAdapter.IClickMSPopupMenuItem(){
             @Override
@@ -103,5 +104,4 @@ public class MergeSongFragment extends BaseFragment {
         adapter.updateData(data);
         adapter.notifyDataSetChanged();
     }
-
 }

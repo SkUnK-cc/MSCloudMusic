@@ -2,6 +2,7 @@ package com.example.hp.mycloudmusic.custom;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.ViewCompat;
@@ -13,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewTreeObserver;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
@@ -51,6 +53,18 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
         mMaximumVelocity = ViewConfiguration.get(context).getScaledMaximumFlingVelocity();
         mMinimumVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
         barheight = DisplayUtil.dip2px(getContext(),65);
+        this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    StickNavLayout.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }else{
+                    StickNavLayout.this.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+                mNavTop = mNav.getTop();
+            }
+        });
+
     }
 
     @Override
@@ -184,7 +198,9 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
      */
     @Override
     public void onStopNestedScroll(View child) {
+        Log.e(TAG, "onStopNestedScroll");
         if(mNav.getTop() != mNavTop) {
+            Log.e(TAG, "onStopNestedScroll: in");
             mNav.layout(mNav.getLeft(),mNavTop,mNav.getRight(),mNavTop+mNav.getHeight());
             mViewPager.layout(mViewPager.getLeft(),mViewPagerTop,mViewPager.getRight(),mViewPagerTop+mViewPager.getHeight());
             listener.imageScale(mNavTop);
@@ -286,6 +302,7 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_UP:
+                Log.e(TAG, "onTouchEvent: action_up");
                 mNav.layout(mNav.getLeft(),mNavTop,mNav.getRight(),mNavTop+mNav.getHeight());
                 break;
         }

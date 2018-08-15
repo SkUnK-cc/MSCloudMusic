@@ -98,9 +98,9 @@ public class ArtistInfoActivity extends BaseActivity implements RadioGroup.OnChe
         vpWorksList.addOnPageChangeListener(new OnDetailPageChangeListener());
 
         fragmentList = new ArrayList<>();
-        aDetailSongFragment1 = ADetailSongFragment.newInstance();
+        aDetailSongFragment1 = ADetailSongFragment.newInstance(null);
         fragmentList.add(aDetailSongFragment1);
-        aDetailSongFragment2 = ADetailSongFragment.newInstance();
+        aDetailSongFragment2 = ADetailSongFragment.newInstance(null);
         fragmentList.add(aDetailSongFragment2);
         adapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList);
         vpWorksList.setAdapter(adapter);

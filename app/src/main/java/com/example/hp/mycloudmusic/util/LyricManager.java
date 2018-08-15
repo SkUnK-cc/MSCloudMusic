@@ -32,7 +32,7 @@ public class LyricManager {
     private boolean flag_refresh = false;
 
     public LyricManager(){
-
+        Log.e(TAG, "LyricManager: 新的LyricManager");
     }
 
     public void setFileStream(final InputStream is) {
@@ -68,10 +68,15 @@ public class LyricManager {
         setCurrentTimeMillis(0);
     }
 
+    public void notLrc(){
+        this.lyricInfo = null;
+    }
+
     public void setCurrentTimeMillis(int currentTimeMillis) {
         //这里判断歌词是否为空，歌词可能还未加载
         List<LineInfo> lines = lyricInfo==null ? null : lyricInfo.getLines();
         if(lines != null){
+//            Log.e(TAG, "setCurrentTimeMillis: 歌词不为空");
             int position = 0;
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
             //以一个int的position来定位

@@ -1,6 +1,6 @@
 package com.example.hp.mycloudmusic.base;
 
-import com.example.hp.mycloudmusic.musicInfo.AudioBean;
+import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.service.PlayService;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ public class BaseAppHelper {
     /**
      * 本地音乐播放列表
      */
-    private List<AudioBean> mMusicList = new ArrayList<>();
+    private List<AbstractMusic> mMusicList = new ArrayList<>();
 
     public void setPlayService(PlayService playService) {
         mplayService = playService;
@@ -21,7 +21,7 @@ public class BaseAppHelper {
         return mplayService;
     }
 
-    public List<AudioBean> getMusicList() {
+    public List<AbstractMusic> getMusicList() {
         return mMusicList;
     }
 

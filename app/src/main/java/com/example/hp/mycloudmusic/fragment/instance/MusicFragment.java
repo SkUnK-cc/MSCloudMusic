@@ -1,10 +1,12 @@
 package com.example.hp.mycloudmusic.fragment.instance;
 
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.hp.mycloudmusic.R;
+import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
 
 import butterknife.Bind;
 
@@ -38,7 +40,19 @@ public class MusicFragment extends BaseFragment implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        activityListener.onClick(v);
+//        activityListener.onClick(v);
+        switch (v.getId()){
+            case R.id.to_local_music:
+//                Fragment fragment = FragmentFactory.getInstance(null).getmLocalFragment();
+//                addOrShowFragmentOnActivity(R.id.framelayout,fragment,0);
+                activityListener.onClick(v);
+                break;
+            case R.id.the_music_playing:
+                Fragment fragment1 = FragmentFactory.getInstance(null).getmPlayMusicFragment();
+                addOrShowFragmentOnActivity(android.R.id.content,fragment1,R.anim.fragment_slide_from_right);
+                break;
+            default:
+                break;
+        }
     }
-
 }

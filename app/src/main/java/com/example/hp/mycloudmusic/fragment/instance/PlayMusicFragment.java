@@ -3,6 +3,7 @@ package com.example.hp.mycloudmusic.fragment.instance;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.fragment.callback.OnProgressChangedListener;
+import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
 import com.example.hp.mycloudmusic.fragment.presenter.PlayMusicPresenter;
 import com.example.hp.mycloudmusic.fragment.view.IPlayMusicView;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
@@ -90,6 +92,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
     private LyricManager lyricManager ;
     private int mLinePosition = -1;
     private AbstractMusic mPlayingMusic;
+    private PlayMusicBackListener backListener;
 
     @Override
     protected int getContentView() {
@@ -110,7 +113,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
 
     @Override
     protected void initListener() {
-        getPlayService().setOnPlayerEventListener(new OnPlayerEventListener(){
+        getPlayService().setOnPlayerEventListener(getActivity().getClass().getName(), new OnPlayerEventListener(){
 
             @Override
             public void onUpdateProgress(int currentPosition) {
@@ -148,23 +151,47 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
         lyricManager.setOnProgressChangedListener(this);
         iv_back.setOnClickListener(this);
         mPlayingMusic = getPlayService().getPlayingMusic();
-        onchange(mPlayingMusic);
+//        onchange(mPlayingMusic);
+
+        ivNext.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.playing_back:
-                onBackPressed();
+//                if(backListener != null){
+//                    backListener.playMusicOnBack();
+//                    detachBackListener();
+//                }else {
+//                    onBackPressed();
+//                }
+                hideSelf();
                 break;
             case R.id.iv_play:
                 play();
+                break;
+            case R.id.iv_next:
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                ArtistDetailFragment fragment = FragmentFactory.getInstance(null).getArtistDetailFragment(null);
+                if(fragment.isAdded()){
+                    transaction.show(fragment).hide(this);
+                }else{
+                    transaction.add(android.R.id.content,fragment).hide(this);
+                }
+                transaction.commit();
                 break;
             default:
                 activityListener.onClick(v);
                 break;
         }
 
+    }
+
+    private void hideSelf() {
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(0,R.anim.fragment_slide_out_right);
+        transaction.hide(this).commit();
     }
 
     private void play() {
@@ -187,6 +214,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
             tvTotalTime.setText(PlayerFormatUtils.formatTime(music.getDuration()));
             ivPlayPageBg.setImageBitmap(CoverLoader.getInstance().loadBlur(music));
             lyricView.setEmptyView(emptyView);
+            showNotLrc();
             mPresenter.setLrc(music);
         }
     }
@@ -194,6 +222,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
     @Override
     public void loadLrc(String lrcPath) {
         lyricView.hideEmptyView();
+        Log.e(TAG, "loadLrc: 隐藏 暂无歌词");
         InputStream is = null;
         try {
             is = new FileInputStream(new File(lrcPath));
@@ -208,15 +237,18 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
     @Override
     public void showNotLrc() {
         lyricView.showEmptyView();
+        lyricManager.notLrc();
     }
 
     @Override
     public void onProgressChanged(SpannableStringBuilder builder, int position, boolean refresh) {
-        Log.e(TAG, "onProgressChanged: position="+position+"refresh="+refresh);
+//        Log.e(TAG, "onProgressChanged: position="+position+"refresh="+refresh);
         if(mLinePosition!=position || refresh){
             mLinePosition = position;
-            lyricView.setText(builder);
-            lyricView.setCurrentPosition(position);
+            if(lyricView != null) {
+                lyricView.setText(builder);
+                lyricView.setCurrentPosition(position);
+            }
         }
     }
 
@@ -232,8 +264,27 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                iv_back.setEnabled(true);
+                if(iv_back != null) {
+                    iv_back.setEnabled(true);
+                }
             }
         },300);
+    }
+
+    public void setBackListener(PlayMusicBackListener listener){
+        this.backListener = listener;
+    }
+    public void detachBackListener(){
+        this.backListener = null;
+    }
+
+    public interface PlayMusicBackListener{
+        void playMusicOnBack();
+    }
+
+    @Override
+    public void onDestroyView() {
+        getPlayService().detachOnPlayerEventListener(getActivity().getClass().getName());
+        super.onDestroyView();
     }
 }

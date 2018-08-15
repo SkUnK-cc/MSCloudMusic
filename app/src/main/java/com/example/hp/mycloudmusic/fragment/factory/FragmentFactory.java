@@ -1,12 +1,14 @@
 package com.example.hp.mycloudmusic.fragment.factory;
 
 import com.example.hp.mycloudmusic.fragment.callback.ClickListener;
+import com.example.hp.mycloudmusic.fragment.instance.ArtistDetailFragment;
 import com.example.hp.mycloudmusic.fragment.instance.LocalFragment;
 import com.example.hp.mycloudmusic.fragment.instance.MeFragment;
 import com.example.hp.mycloudmusic.fragment.instance.MergeFragment;
 import com.example.hp.mycloudmusic.fragment.instance.MusicFragment;
 import com.example.hp.mycloudmusic.fragment.instance.PlayMusicFragment;
 import com.example.hp.mycloudmusic.fragment.instance.SearchFragment;
+import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
 
 public class FragmentFactory {
     private static FragmentFactory mFragmentFactory;
@@ -14,8 +16,9 @@ public class FragmentFactory {
     private MusicFragment mMusicFragment;
     private MeFragment mMeFragment;
     private LocalFragment mLocalFragment;
-    private PlayMusicFragment mPlayMusicFragment;
-    private MergeFragment mMergeFragment;
+    public PlayMusicFragment mPlayMusicFragment;
+    public MergeFragment mMergeFragment;
+    private ArtistDetailFragment artistDetailFragment;
 
     private ClickListener listener;
 
@@ -110,5 +113,17 @@ public class FragmentFactory {
             }
         }
         return mMergeFragment;
+    }
+
+    public ArtistDetailFragment getArtistDetailFragment(Artist artist){
+        if(artistDetailFragment == null){
+            synchronized(FragmentFactory.class){
+                if(artistDetailFragment == null){
+                    artistDetailFragment = ArtistDetailFragment.newInstance(artist);
+                    return artistDetailFragment;
+                }
+            }
+        }
+        return artistDetailFragment;
     }
 }

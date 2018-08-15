@@ -42,7 +42,7 @@ public class MArtistRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerHol
             @Override
             public void onClick(View v) {
                 if(listener != null){
-                    listener.onClick(mList.get(position).getTing_uid());
+                    listener.onClick(mList.get(position));
                 }
             }
         });
@@ -61,7 +61,7 @@ public class MArtistRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerHol
      * 接口
      */
     public interface IClickArtistListener{
-        void onClick(String ting_uid);
+        void onClick(Artist artist);
     }
 
     public void setOnClickListener(IClickArtistListener listener) {

@@ -1,10 +1,10 @@
 package com.example.hp.mycloudmusic.fragment.instance;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.merge.MArtistRecyclerAdapter;
@@ -25,6 +25,13 @@ public class MergeArtistFragment extends BaseFragment {
 
     private Artist_info artistInfo;
     private List<Artist> mList;
+
+    private FragmentTransaction transaction;
+
+    @Override
+    protected int getContentView() {
+        return R.layout.fragment_merge_artist;
+    }
 
     public MergeArtistFragment() {
         mList = new ArrayList<>();
@@ -58,23 +65,26 @@ public class MergeArtistFragment extends BaseFragment {
 
     @Override
     protected void initView() {
+        transaction = getActivity().getSupportFragmentManager().beginTransaction();
         adapter = new MArtistRecyclerAdapter(getContext());
         adapter.setOnClickListener(new MArtistRecyclerAdapter.IClickArtistListener() {
             @Override
-            public void onClick(String ting_uid) {
-                Toast.makeText(getContext(), "you click artist!", Toast.LENGTH_SHORT).show();
-                ArtistDetailActivity.toArtistDetailActivity(getContext(),ting_uid);
+            public void onClick(Artist artist) {
+                ArtistDetailActivity.toArtistDetailActivity(getContext(),artist);
+//                ArtistDetailFragment fragment = ArtistDetailFragment.newInstance(artist);
+//                ArtistDetailFragment fragment = FragmentFactory.getInstance(null).getArtistDetailFragment(artist);
+//                if(fragment.isAdded()){
+//                    transaction.show(fragment);
+//                }else{
+//                    transaction.add(android.R.id.content,fragment);
+//                }
+//                transaction.commit();
             }
         });
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    protected int getContentView() {
-        return R.layout.fragment_merge_artist;
     }
 
     public void setData(Artist_info artist_info) {

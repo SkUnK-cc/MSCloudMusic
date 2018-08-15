@@ -44,11 +44,13 @@ public class PlayMusicPresenter extends BasePresenter<IPlayMusicView> {
             Log.e(TAG, "lrcPath : "+lrcPath);
             if(lrcPath != null && !TextUtils.isEmpty(lrcPath)){
                 //从本地(已下载或歌曲文件夹)
-                Log.e(TAG, "setLrc: 无法从本地获取歌词");
+                Log.e(TAG, "setLrc: 找到歌词路径");
                 mView.loadLrc(lrcPath);
             }else{
                 getLrcFromNet(music);
             }
+        }else{
+            getLrcFromNet(music);
         }
     }
 
@@ -71,6 +73,8 @@ public class PlayMusicPresenter extends BasePresenter<IPlayMusicView> {
                         }else{
                             mView.showNotLrc();
                         }
+                        Log.e(TAG, "onNext: "+(musicSearchSugResp.isValid()?"有效":"无效"));
+                        Log.e(TAG, "onNext: " + musicSearchSugResp.error_code);
                     }
 
                     @Override

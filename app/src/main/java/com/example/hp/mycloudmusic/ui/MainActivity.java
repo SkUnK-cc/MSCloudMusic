@@ -24,11 +24,13 @@ import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.base.BaseAppHelper;
 import com.example.hp.mycloudmusic.fragment.callback.ClickListener;
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
+import com.example.hp.mycloudmusic.fragment.instance.ArtistDetailFragment;
 import com.example.hp.mycloudmusic.fragment.instance.LocalFragment;
 import com.example.hp.mycloudmusic.fragment.instance.MeFragment;
 import com.example.hp.mycloudmusic.fragment.instance.MusicFragment;
 import com.example.hp.mycloudmusic.fragment.instance.PlayMusicFragment;
 import com.example.hp.mycloudmusic.fragment.instance.SearchFragment;
+import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.mvp.presenter.MainPresenter;
 import com.example.hp.mycloudmusic.mvp.view.IMainView;
@@ -121,44 +123,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
 //            Log.e(TAG, "initPlayServiceListener: service is null!!!");
             return;
         }
-//        Log.e(TAG, "initPlayServiceListener: service is not null");
-//        getPlayService().setOnPlayerEventListener(new OnPlayerEventListener(){
-//
-//            @Override
-//            public void onUpdateProgress(int currentPosition) {
-//                playMusicFragment.onUpdateProgress(currentPosition);
-//            }
-//
-//            @Override
-//            public void onPlayerStart() {
-//
-//            }
-//
-//            @Override
-//            public void onBufferingUpdate(int percent) {
-//
-//            }
-//
-//            @Override
-//            public void onChange(AudioBean music) {
-//                Log.e(TAG, "onchange: 调用onchange方法0");
-//                Log.e(TAG, "onChange: "+music==null?"music=null":"music!=null" );
-//                Log.e(TAG, "onChange: "+playMusicFragment==null?"fragment=null":"fragment!=null" );
-//                if(playMusicFragment.isAdded()){
-//                    Log.e(TAG, "onChange: fragment is add");
-//                }else{
-//                    Log.e(TAG, "onChange: fragment is  not  add");
-//                }
-//                if(music != null && playMusicFragment!=null && playMusicFragment.isAdded()){
-//                    playMusicFragment.onchange(music);
-//                }else{
-//                    Message message = Message.obtain();
-//                    message.what = WAIT_PLAYFRAGMENT_ADD;
-//                    message.obj = music;
-//                    handler.sendMessageDelayed(message,300);
-//                }
-//            }
-//        });
     }
 
     Handler handler  = new Handler(){
@@ -278,14 +242,14 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         if (currentFragment != null){
             transaction.hide(currentFragment);
         }
+        Log.e(TAG, "addOrShowFragment: test");
         if(!fragment.isAdded()){
-            Log.d(TAG, "!fragment.isAdded()");
+            Log.e(TAG, "!fragment.isAdded()");
             transaction.add(R.id.framelayout,fragment).commit();
         }else{
-            Log.d(TAG, "fragment.isAdded()");
+            Log.e(TAG, "fragment.isAdded()");
             transaction.show(fragment).commit();
         }
-
         currentFragment = fragment;
     }
 
@@ -325,18 +289,26 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
      */
     private void hidePlayingFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(0,R.anim.fragment_slide_out);
+        transaction.setCustomAnimations(0,R.anim.fragment_slide_out_right);
         transaction.hide(playMusicFragment);
         transaction.commitAllowingStateLoss();
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        PlayMusicFragment fragment = FragmentFactory.getInstance(this).getmPlayMusicFragment();
+//        if(fragment.isAdded()){
+//            transaction.remove(fragment);
+//        }
+//        transaction.commitAllowingStateLoss();
     }
 
     private void showPlayingFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.fragment_slide_from_right,0);
         if(playMusicFragment == null){
+            Log.e(TAG, "showPlayingFragment: add");
             playMusicFragment = FragmentFactory.getInstance(this).getmPlayMusicFragment();
             transaction.add(android.R.id.content,playMusicFragment);
-        }else{
+        }else if(playMusicFragment.isAdded()){
+            Log.e(TAG, "showPlayingFragment: show");
             transaction.show(playMusicFragment);
         }
         isShowPlayFragment = true;
@@ -345,7 +317,14 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
 
     @Override
     public void onBackPressed() {
-        if(playMusicFragment != null && isShowPlayFragment){
+        Log.e(TAG, "onBackPressed: activity");
+        playMusicFragment = FragmentFactory.getInstance(this).mPlayMusicFragment;
+        boolean bool = playMusicFragment == null;
+        Log.e(TAG, "onBackPressed: playmusic is null?"+bool);
+        Log.e(TAG, "onBackPressed: is added?"+playMusicFragment.isAdded());
+        Log.e(TAG, "onBackPressed: is hidden?"+playMusicFragment.isHidden());
+        if(playMusicFragment != null && playMusicFragment.isAdded() && !playMusicFragment.isHidden()){
+            Log.e(TAG, "onBackPressed: hide playmusic fragment!!!");
             isShowPlayFragment = false;
             hidePlayingFragment();
             return;
@@ -383,7 +362,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
     public void onLocalItemClick(int position) {
         showPlayingFragment();
         if(checkPlayingChange(LOCAL_PLAYING,position)) {
-            List<AudioBean> musicList = BaseAppHelper.get().getMusicList();
+            List<AbstractMusic> musicList = BaseAppHelper.get().getMusicList();
             BaseAppHelper.get().getPlayService().play(musicList, position);
         }
     }
@@ -419,7 +398,30 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
 
     @Override
     protected void onStop() {
-        super.onStop();
 //        Log.e(TAG, "--------------------------------------------onStop: -----");
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        PlayMusicFragment fragment = FragmentFactory.getInstance(this).getmPlayMusicFragment();
+        if(fragment != null && fragment.isAdded()){
+            transaction.remove(fragment);
+        }
+        transaction.commitAllowingStateLoss();
+        super.onStop();
+    }
+
+    public void showTest() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.fragment_slide_from_right, R.anim.fragment_slide_out_left);
+        playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment();
+        ArtistDetailFragment detailFragment = FragmentFactory.getInstance(null).getArtistDetailFragment(null);
+        if (playMusicFragment != null && !playMusicFragment.isAdded()) {
+            Log.e("click: ","add");
+            transaction.add(android.R.id.content, playMusicFragment);
+//            transaction.replace(android.R.id.content,playMusicFragment)
+        } else if (playMusicFragment.isAdded()) {
+            Log.e("click: ","show");
+//            transaction.show(playMusicFragment)
+            transaction.show(playMusicFragment).hide(detailFragment);
+        }
+        transaction.commitAllowingStateLoss();
     }
 }
