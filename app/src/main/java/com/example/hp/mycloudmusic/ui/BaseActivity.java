@@ -37,8 +37,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
         initData();
     }
 
-//    protected abstract void setupActivityComponent(AppComponent appComponent);
-
     public PlayService getPlayService(){
         PlayService playService = BaseAppHelper.get().getPlayService();
         if(playService == null){
@@ -46,7 +44,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
         }
         return playService;
     }
-
 
     protected abstract void initData();
 
@@ -56,10 +53,23 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
 
     protected abstract int getContentView();
 
-//    public LiteOrm getLiteOrm(){
-//        return mLiteOrm;
-//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+    //        Log.e(TAG, "--------------------------------------------onStart-----" );
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "--------------------------------------------onResume-------");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        Log.e(TAG, "--------------------------------------------onPause----");
+    }
 
     @Override
     protected void onStop() {

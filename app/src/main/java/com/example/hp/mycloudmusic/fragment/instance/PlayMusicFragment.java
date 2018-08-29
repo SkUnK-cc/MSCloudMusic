@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.fragment.callback.OnProgressChangedListener;
-import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
 import com.example.hp.mycloudmusic.fragment.presenter.PlayMusicPresenter;
 import com.example.hp.mycloudmusic.fragment.view.IPlayMusicView;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
@@ -35,6 +34,7 @@ import butterknife.Bind;
 
 /**
  * fragment添加后，生命周期方法不会重复调用
+ * fragment生命周期和它所关联的Activity生命周期有关
  * 当activity不可见时，fragment会调用pause->stop-》start->resume
  */
 public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implements View.OnClickListener, OnProgressChangedListener ,IPlayMusicView {
@@ -147,45 +147,32 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
     @Override
     protected void initView() {
         ivPlay.setOnClickListener(this);
+        ivNext.setOnClickListener(this);
+        ivPrev.setOnClickListener(this);
         lyricManager = new LyricManager();
         lyricManager.setOnProgressChangedListener(this);
         iv_back.setOnClickListener(this);
         mPlayingMusic = getPlayService().getPlayingMusic();
-//        onchange(mPlayingMusic);
-
-        ivNext.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.playing_back:
-//                if(backListener != null){
-//                    backListener.playMusicOnBack();
-//                    detachBackListener();
-//                }else {
-//                    onBackPressed();
-//                }
                 hideSelf();
                 break;
             case R.id.iv_play:
                 play();
                 break;
             case R.id.iv_next:
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                ArtistDetailFragment fragment = FragmentFactory.getInstance(null).getArtistDetailFragment(null);
-                if(fragment.isAdded()){
-                    transaction.show(fragment).hide(this);
-                }else{
-                    transaction.add(android.R.id.content,fragment).hide(this);
-                }
-                transaction.commit();
+                getPlayService().next();
                 break;
+            case R.id.iv_prev:
+                getPlayService().prev();
             default:
                 activityListener.onClick(v);
                 break;
         }
-
     }
 
     private void hideSelf() {
@@ -201,7 +188,6 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
     }
 
     public void onchange(AbstractMusic music) {
-        Log.e(TAG, "onchange: 调用onchange方法1");
         if(music != null) {
             Log.e(TAG, "onchange: 调用onchange方法2");
             tvTitle.setText(music.getTitle());
@@ -209,8 +195,10 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
             sbProgress.setProgress(getPlayService().getCurrentPosition());
             sbProgress.setSecondaryProgress(0);
             sbProgress.setMax((int) music.getDuration());         //最大值不显示,仍以毫秒为单位
+            ivPlay.setSelected(true);
             mLastProgress = 0;
             tvCurrentTime.setText("00:00");
+            Log.e(TAG, "onchange: 音乐时长: "+music.getDuration());
             tvTotalTime.setText(PlayerFormatUtils.formatTime(music.getDuration()));
             ivPlayPageBg.setImageBitmap(CoverLoader.getInstance().loadBlur(music));
             lyricView.setEmptyView(emptyView);

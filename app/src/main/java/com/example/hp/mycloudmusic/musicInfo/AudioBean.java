@@ -96,9 +96,6 @@ public class AudioBean extends AbstractMusic{
         this.coverPath = coverPath;
     }
 
-    public long getDuration() {
-        return duration;
-    }
 
     public void setDuration(long duration) {
         this.duration = duration;
@@ -151,6 +148,12 @@ public class AudioBean extends AbstractMusic{
     public Uri getDataSource() {
         return Uri.fromFile(new File(path));
     }
+
+    @Override
+    public long getDuration() {
+        return duration;
+    }
+
     private int viewId;
 
     public int getViewId() {

@@ -306,6 +306,24 @@ public class PlayService extends Service {
         }
     }
 
+    public void next() {
+        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+        if(mPlayingPosition == audioMusics.size()-1){
+            play(0);
+        }else{
+            play(mPlayingPosition+1);
+        }
+    }
+
+    public void prev(){
+        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+        if(mPlayingPosition == 0){
+            play(audioMusics.size()-1);
+        }else{
+            play(mPlayingPosition-1);
+        }
+    }
+
     private List<OnPlayerEventListener> getListeners(){
         List<OnPlayerEventListener> list = new ArrayList<>();
         if(listenerMap.size()!= 0){
@@ -386,6 +404,7 @@ public class PlayService extends Service {
     private MediaPlayer.OnErrorListener mOnErrorListener = new MediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
+            Log.e(TAG, "onError: media player occured error : "+extra);
             return false;
         }
     };
@@ -434,9 +453,6 @@ public class PlayService extends Service {
         }
     }
 
-    private void next() {
-
-    }
     private void pause() {
         if(mPlayingMusic == null){
             return;
@@ -521,6 +537,7 @@ public class PlayService extends Service {
 
     @Override
     public void onDestroy() {
+        mPlayer.release();
         super.onDestroy();
     }
 }

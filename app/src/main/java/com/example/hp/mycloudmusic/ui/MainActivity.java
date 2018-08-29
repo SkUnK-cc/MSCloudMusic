@@ -7,9 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -31,7 +29,6 @@ import com.example.hp.mycloudmusic.fragment.instance.MusicFragment;
 import com.example.hp.mycloudmusic.fragment.instance.PlayMusicFragment;
 import com.example.hp.mycloudmusic.fragment.instance.SearchFragment;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
-import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.mvp.presenter.MainPresenter;
 import com.example.hp.mycloudmusic.mvp.view.IMainView;
 import com.example.hp.mycloudmusic.service.PlayService;
@@ -88,14 +85,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         if(savedInstanceState != null){
             bundle = savedInstanceState;
         }
-//        Log.e(TAG, "onCreate.." );
         permissionCheck();
         checkPlayService();
     }
     public void checkPlayService() {
         if(BaseAppHelper.get().getPlayService() == null){
             Intent intent = new Intent(this, PlayService.class);
-//            Log.e(TAG, "checkPlayService: to start service");
             isBind = bindService(intent,playConnection, Context.BIND_AUTO_CREATE);
         }
     }
@@ -110,9 +105,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
             PlayService playService = ((PlayService.PlayBinder) service).getPlayService();
             BaseAppHelper.get().setPlayService(playService);
             initPlayServiceListener();
-//            Log.e(TAG, "onServiceConnected: ");
         }
-
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.e(TAG, "onServiceDisconnected");
@@ -120,33 +113,32 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
     };
     private void initPlayServiceListener() {
         if(getPlayService() == null){
-//            Log.e(TAG, "initPlayServiceListener: service is null!!!");
             return;
         }
     }
 
-    Handler handler  = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what){
-                case WAIT_PLAYFRAGMENT_ADD:
-                    if(playMusicFragment.isAdded()){
-                        Log.e(TAG, "调用framgnet方法onchange");
-                        if(msg.obj!=null && msg.obj instanceof AudioBean){
-                            AudioBean music = (AudioBean) msg.obj;
-                            playMusicFragment.onchange(music);
-                        }
-                    }else{
-                        Message message = Message.obtain();
-                        message.obj = msg.obj;
-                        message.what = WAIT_PLAYFRAGMENT_ADD;
-                        handler.sendMessageDelayed(message,300);
-                    }
-                    break;
-            }
-        }
-    };
+//    Handler handler  = new Handler(){
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            switch (msg.what){
+//                case WAIT_PLAYFRAGMENT_ADD:
+//                    if(playMusicFragment.isAdded()){
+//                        Log.e(TAG, "调用framgnet方法onchange");
+//                        if(msg.obj!=null && msg.obj instanceof AudioBean){
+//                            AudioBean music = (AudioBean) msg.obj;
+//                            playMusicFragment.onchange(music);
+//                        }
+//                    }else{
+//                        Message message = Message.obtain();
+//                        message.obj = msg.obj;
+//                        message.what = WAIT_PLAYFRAGMENT_ADD;
+//                        handler.sendMessageDelayed(message,300);
+//                    }
+//                    break;
+//            }
+//        }
+//    };
 
     private void permissionCheck() {
         if(ContextCompat.checkSelfPermission(MainActivity.this,
@@ -155,7 +147,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
                     {Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
         }
     }
-
 
     @Override
     protected void initData() {
@@ -169,12 +160,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
 
     @Override
     protected void initView() {
-//        if(!checkServiceAlive()){
-//
-//        }
         initFragment();
     }
-
 
     private void initFragment() {
         if(bundle != null) {
@@ -375,25 +362,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
             playingPosition = position;
             return true;
         }
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        Log.e(TAG, "--------------------------------------------onStart-----" );
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e(TAG, "--------------------------------------------onResume-------");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        Log.e(TAG, "--------------------------------------------onPause----");
     }
 
     @Override

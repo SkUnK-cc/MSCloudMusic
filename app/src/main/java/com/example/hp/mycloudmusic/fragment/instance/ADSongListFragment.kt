@@ -1,7 +1,6 @@
 package com.example.hp.mycloudmusic.fragment.instance
 
 import android.os.Bundle
-import android.util.Log
 import com.example.hp.mycloudmusic.R
 import com.example.hp.mycloudmusic.adapter.recyclerview.CommonViewHolder
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi
@@ -68,19 +67,21 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
     }
 
     fun showPlayMusicFragment(){
-        val transaction = activity!!.supportFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(R.anim.fragment_slide_from_right, 0)
-//        val playMusicFragment = PlayMusicFragment()
+//        val transaction = activity!!.supportFragmentManager.beginTransaction()
+//        transaction.setCustomAnimations(R.anim.fragment_slide_from_right, 0)
+////        val playMusicFragment = PlayMusicFragment()
+//        val playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment()
+//        playMusicFragment.setBackListener(this)
+//        if (playMusicFragment != null && !playMusicFragment.isAdded) {
+//            Log.e("click: ","add")
+//            transaction.add(android.R.id.content, playMusicFragment)
+//        } else if (playMusicFragment!!.isAdded) {
+//            Log.e("click: ","show")
+//            transaction.show(playMusicFragment)
+//        }
+//        transaction.commitAllowingStateLoss()
         val playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment()
-        playMusicFragment.setBackListener(this)
-        if (playMusicFragment != null && !playMusicFragment.isAdded) {
-            Log.e("click: ","add")
-            transaction.add(android.R.id.content, playMusicFragment)
-        } else if (playMusicFragment!!.isAdded) {
-            Log.e("click: ","show")
-            transaction.show(playMusicFragment)
-        }
-        transaction.commitAllowingStateLoss()
+        addOrShowFragmentOnActivity(android.R.id.content,playMusicFragment,R.anim.fragment_slide_from_right)
     }
 
     override fun playMusicOnBack() {
