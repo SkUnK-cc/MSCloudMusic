@@ -14,10 +14,10 @@
     <dimen name="category_list_paddingleft">20dp</dimen>
 
     <!--本地音乐Item布局-->
-    <dimen name="music_item_height">60dp</dimen>
+    <dimen name="music_item_height">50dp</dimen>
     <dimen name="music_item_padleft">11dp</dimen>
-    <dimen name="music_item_padtop">9dp</dimen>
-    <dimen name="music_item_title_size">18sp</dimen>
+    <dimen name="music_item_padtop">8dp</dimen>
+    <dimen name="music_item_title_size">17sp</dimen>
     <dimen name="music_item_padright">10dp</dimen>
 
 

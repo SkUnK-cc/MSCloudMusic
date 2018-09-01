@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="popup_images">
+        <item>@drawable/ic_icon_add_playback</item>
+        <item>@drawable/ic_icon_add_list</item>
+        <item>@drawable/ic_icon_download</item>
+        <item>@drawable/ic_icon_artist2</item>
+        <item>@drawable/ic_icon_album</item>
+        <item>@drawable/ic_icon_video</item>
+        <item>@drawable/ic_icon_delete</item>
+    </string-array>
+    <string-array name="popup_titles">
+        <item>下一首播放</item>
+        <item>收藏到歌单</item>
+        <item>下载</item>
+        <item>歌手：</item>
+        <item>专辑：</item>
+        <item>查看视频</item>
+        <item>删除</item>
+    </string-array>
+</resources>

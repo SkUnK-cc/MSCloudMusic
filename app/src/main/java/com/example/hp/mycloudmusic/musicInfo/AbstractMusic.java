@@ -31,6 +31,8 @@ public abstract class AbstractMusic implements Serializable,Parcelable,Parcelabl
 
     public abstract String getType();
 
+    public abstract String getAlbumTitle();
+
     /**
      * 获取专辑图片
      * @return

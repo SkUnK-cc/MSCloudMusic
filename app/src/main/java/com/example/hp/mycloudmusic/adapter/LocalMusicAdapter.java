@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.hp.mycloudmusic.R;
-import com.example.hp.mycloudmusic.fragment.callback.ClickListener;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 
 import java.util.ArrayList;
@@ -40,6 +39,13 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.My
                     mItemListener.onLocalItemClick(holder.getAdapterPosition());
                 }
             });
+            holder.more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mItemListener.clickMore(holder.getAdapterPosition());
+                }
+            });
+
         }
         return holder;
     }
@@ -80,5 +86,11 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.My
 
     public void setOnItemClickListener(ClickListener listener){
         mItemListener = listener;
+    }
+
+    public interface ClickListener{
+        void onClick(View view);
+        void onLocalItemClick(int position);
+        void clickMore(int position);
     }
 }

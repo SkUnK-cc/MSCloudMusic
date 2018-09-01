@@ -46,8 +46,8 @@ public class Song extends AbstractMusic implements IQueryResult{
      "author":"山弟",
      "pic_small":"http://qukufile2.qianqian.com/data2/pic/a1d2f25a0fd6ac3b93027a53b82e414f/591517598/591517598.jpg@s_1,w_90,h_90",
      "song_id":"591517652",
-     "all_artist_id":"591517581",
-     "ting_uid":"340422426"
+     "all_artist_id":"591517581",   与artist的artist_id一样
+     "ting_uid":"340422426"         与artist的ting_uid一样
      */
     //播放时使用songid
     public String resource_type_ext;
@@ -137,6 +137,11 @@ public class Song extends AbstractMusic implements IQueryResult{
     @Override
     public String getType() {
         return TYPE_ONLINE;
+    }
+
+    @Override
+    public String getAlbumTitle() {
+        return album_title;
     }
 
     @Override

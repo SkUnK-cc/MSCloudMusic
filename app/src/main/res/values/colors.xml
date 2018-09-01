@@ -24,4 +24,5 @@
     <color name="colorTextLight">#d1d1d1</color>
     <color name="colorTextBlack">#666666</color>
     <color name="colorTextColorLight">#999999</color>
+    <color name="pop_item_text">#2c2c2c</color>
 </resources>

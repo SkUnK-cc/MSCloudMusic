@@ -65,6 +65,11 @@ public class SongSug extends AbstractMusic implements IQueryResult{
     }
 
     @Override
+    public String getAlbumTitle() {
+        return null;
+    }
+
+    @Override
     public String getAlbumPic() {
         return null;
     }

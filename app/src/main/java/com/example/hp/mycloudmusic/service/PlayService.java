@@ -74,7 +74,6 @@ public class PlayService extends Service {
         return mPlayingMusic;
     }
 
-
     //将MyServiceHandler声明为静态类(不持有对外部类的隐式引用)，防止内存泄漏
     private static class MyServiceHandler extends Handler{
         private final WeakReference<PlayService> mPlayService;
@@ -291,7 +290,11 @@ public class PlayService extends Service {
         }
         mPlayingPosition = position;
         AbstractMusic music = getMusicList().get(mPlayingPosition);
-        play(music);
+        if((music.getType()).equals(AbstractMusic.TYPE_LOCAL)){
+            play(music);
+        }else if((music.getType()).equals(AbstractMusic.TYPE_ONLINE)){
+            getSongInfoFromNet((Song) music);
+        }
     }
 
     private void play(AbstractMusic music) {
@@ -351,6 +354,11 @@ public class PlayService extends Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void addNextPlayMusic(AbstractMusic music) {
+        if(music==null)return;
+        audioMusics.add(mPlayingPosition+1,music);
     }
 
 

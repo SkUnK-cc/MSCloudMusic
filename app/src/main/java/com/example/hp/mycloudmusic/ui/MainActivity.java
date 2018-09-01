@@ -307,9 +307,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         Log.e(TAG, "onBackPressed: activity");
         playMusicFragment = FragmentFactory.getInstance(this).mPlayMusicFragment;
         boolean bool = playMusicFragment == null;
-        Log.e(TAG, "onBackPressed: playmusic is null?"+bool);
-        Log.e(TAG, "onBackPressed: is added?"+playMusicFragment.isAdded());
-        Log.e(TAG, "onBackPressed: is hidden?"+playMusicFragment.isHidden());
+//        Log.e(TAG, "onBackPressed: playmusic is null?"+bool);
+//        Log.e(TAG, "onBackPressed: is added?"+playMusicFragment.isAdded());
+//        Log.e(TAG, "onBackPressed: is hidden?"+playMusicFragment.isHidden());
         if(playMusicFragment != null && playMusicFragment.isAdded() && !playMusicFragment.isHidden()){
             Log.e(TAG, "onBackPressed: hide playmusic fragment!!!");
             isShowPlayFragment = false;

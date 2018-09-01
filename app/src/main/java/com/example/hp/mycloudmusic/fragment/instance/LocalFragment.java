@@ -5,17 +5,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.LocalMusicAdapter;
 import com.example.hp.mycloudmusic.base.BaseAppHelper;
-import com.example.hp.mycloudmusic.fragment.callback.ClickListener;
+import com.example.hp.mycloudmusic.custom.PopupWindowManager;
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
+import com.example.hp.mycloudmusic.util.DisplayUtil;
 import com.example.hp.mycloudmusic.util.FileScanManager;
 
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ import java.util.List;
 
 import butterknife.Bind;
 
-public class LocalFragment extends BaseFragment implements View.OnClickListener, ClickListener {
+public class LocalFragment extends BaseFragment implements View.OnClickListener, LocalMusicAdapter.ClickListener {
 
     @Bind(R.id.load_tip)
     TextView loadTip;
@@ -139,5 +142,16 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
             musicList.addAll(localMusicList);
             BaseAppHelper.get().getPlayService().play(musicList,pos);
         }
+    }
+
+    @Override
+    public void clickMore(int position) {
+        AbstractMusic music = localMusicList.get(position);
+        PopupWindowManager manager = new PopupWindowManager.Builder(getActivity(),R.layout.song_more_popup, ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getContext(),300))
+                .hasMv(false)
+                .hasDelete(true)
+                .setMusic(music)
+                .build()
+                .showAtLocation(back, Gravity.BOTTOM,0,0);
     }
 }

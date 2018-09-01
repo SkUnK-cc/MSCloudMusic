@@ -60,6 +60,11 @@ public class AudioBean extends AbstractMusic{
         return TYPE_LOCAL;
     }
 
+    @Override
+    public String getAlbumTitle() {
+        return album;
+    }
+
     public void setType(int type) {
         this.type = type;
     }

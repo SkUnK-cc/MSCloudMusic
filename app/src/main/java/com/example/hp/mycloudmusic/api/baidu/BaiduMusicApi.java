@@ -34,6 +34,9 @@ public interface BaiduMusicApi {
                                           @Query("page_no") int pageNo,
                                           @Query("page_size") int pageSize);
 
+    /**
+     * artistid 和 tinguid 可以只填一个
+     */
     @GET(V1_TING + "?method=" + GET_ARTISTSONGLIST)
     Observable<ArtistSongListResp> getArtistSongList(@Query("tinguid") String tinguid,
                                                      @Query("artistid") String artistid,

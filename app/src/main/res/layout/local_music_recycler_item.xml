@@ -5,7 +5,7 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:paddingLeft="@dimen/music_item_padleft"
     android:paddingTop="@dimen/music_item_padtop"
-    android:paddingRight="@dimen/music_item_padright">
+    >
 
 
     <TextView
@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:textSize="@dimen/music_item_title_size"
+        android:textColor="@android:color/black"
         tool:text="演员"/>
 
     <TextView
@@ -21,13 +22,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tool:text="薛之谦"
+        android:textSize="13sp"
         android:layout_below="@id/local_music_title"/>
 
     <ImageView
         android:id="@+id/local_music_more"
-        android:layout_width="@dimen/img"
-        android:layout_height="@dimen/img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="10dp"
         android:src="@drawable/ic_icon_more"
+        android:scaleType="centerCrop"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"/>
 
