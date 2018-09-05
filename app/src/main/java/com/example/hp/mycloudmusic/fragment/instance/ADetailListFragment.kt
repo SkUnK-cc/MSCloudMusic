@@ -9,7 +9,7 @@ import com.example.hp.mycloudmusic.adapter.recyclerview.CommonViewHolder
 import com.example.hp.mycloudmusic.api.RetrofitFactory
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi
 import com.example.hp.mycloudmusic.custom.FullyLinearLayoutManager
-import com.example.hp.mycloudmusic.musicInfo.merge.Artist
+import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistInfoResp
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter
 import kotlinx.android.synthetic.main.fragment_adetail_song.*
 
@@ -17,7 +17,7 @@ abstract class ADetailListFragment<T : BasePresenter<*>?,D>: BaseFragment<T>() {
     companion object{
         var ARTIST = "ARTIST"
     }
-    protected var artist:Artist? = null
+    protected var artist:ArtistInfoResp? = null
     protected var adapter: CommonAdapter<D>? = null
     protected var mPagenum = 0
     protected var mData = ArrayList<D>()
@@ -63,5 +63,5 @@ abstract class ADetailListFragment<T : BasePresenter<*>?,D>: BaseFragment<T>() {
         return RetrofitFactory.provideBaiduApi()
     }
 
-    abstract fun getListFromNet(artist: Artist)
+    abstract fun getListFromNet(artist: ArtistInfoResp)
 }

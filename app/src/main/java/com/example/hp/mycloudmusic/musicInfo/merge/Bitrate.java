@@ -58,6 +58,11 @@ public class Bitrate extends AbstractMusic{
     }
 
     @Override
+    public Artist obtainArtist() {
+        return null;
+    }
+
+    @Override
     public String getAlbumPic() {
         return getFirstItem().getSongPicSmall();
     }

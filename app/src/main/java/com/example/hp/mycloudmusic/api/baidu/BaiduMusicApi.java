@@ -1,5 +1,6 @@
 package com.example.hp.mycloudmusic.api.baidu;
 
+import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistInfoResp;
 import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistSongListResp;
 import com.example.hp.mycloudmusic.musicInfo.lyric.Lrc;
 import com.example.hp.mycloudmusic.musicInfo.merge.QueryMergeResp;
@@ -19,6 +20,7 @@ public interface BaiduMusicApi {
     String SONG_LRC = "baidu.ting.song.lry";
     String GET_ARTISTSONGLIST = "baidu.ting.artist.getSongList";
     String SONG_PLAY = "baidu.ting.song.play";
+    String GET_ARTISTINFO = "baidu.ting.artist.getinfo";
     int pagenSize = 20;
     String DownloadUrl = "http://ting.baidu.com/data/music/links?songIds=";
     /**
@@ -48,4 +50,8 @@ public interface BaiduMusicApi {
 
     @GET(V1_TING + "?method=" + SONG_PLAY)
     Observable<SongPlayResp> querySong(@Query("songid") String songid);
+
+    @GET(V1_TING + "?method=" + GET_ARTISTINFO)
+    Observable<ArtistInfoResp> getArtistInfo(@Query("artistid")String artistid,
+                                             @Query("tinguid")String tinguid);
 }

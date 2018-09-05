@@ -5,6 +5,7 @@ import android.os.Parcel;
 
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.IQueryResult;
+import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
 
 public class SongSug extends AbstractMusic implements IQueryResult{
 
@@ -66,6 +67,11 @@ public class SongSug extends AbstractMusic implements IQueryResult{
 
     @Override
     public String getAlbumTitle() {
+        return null;
+    }
+
+    @Override
+    public Artist obtainArtist() {
         return null;
     }
 

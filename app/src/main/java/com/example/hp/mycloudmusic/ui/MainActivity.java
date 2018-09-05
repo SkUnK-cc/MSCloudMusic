@@ -88,6 +88,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         permissionCheck();
         checkPlayService();
     }
+
+    @Override
+    protected void initPresenter() {
+
+    }
+
     public void checkPlayService() {
         if(BaseAppHelper.get().getPlayService() == null){
             Intent intent = new Intent(this, PlayService.class);

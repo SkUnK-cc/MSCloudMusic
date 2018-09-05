@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/transparent">
     <ImageView
-        android:id="@+id/search_back"
+        android:id="@+id/artist_detail_bar_back"
         android:layout_width="?attr/actionBarSize"
         android:layout_height="match_parent"
         android:src="@drawable/ic_icon_back_white"
@@ -15,7 +15,7 @@
         android:layout_alignParentLeft="true"/>
 
     <TextView
-        android:id="@+id/search_bar_text"
+        android:id="@+id/artist_detail_bar_title"
         android:layout_width="170dp"
         android:layout_height="match_parent"
         android:text="hello world heieh!33333333333333"
@@ -30,7 +30,7 @@
         android:textSize="23sp"
         android:textColor="@android:color/black"/>
     <ImageView
-        android:id="@+id/search_playing"
+        android:id="@+id/artist_detail_bar_playing"
         android:layout_width="?attr/actionBarSize"
         android:layout_height="?attr/actionBarSize"
         android:src="@drawable/ic_icon_music_play"

@@ -6,8 +6,8 @@ import com.example.hp.mycloudmusic.adapter.recyclerview.CommonViewHolder
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic
+import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistInfoResp
 import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistSongListResp
-import com.example.hp.mycloudmusic.musicInfo.merge.Artist
 import com.example.hp.mycloudmusic.musicInfo.merge.Song
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter
 import com.example.hp.mycloudmusic.service.PlayService
@@ -21,7 +21,7 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
 
 
     companion object{
-        fun newInstance(artist: Artist) : ADSongListFragment<*>{
+        fun newInstance(artist: ArtistInfoResp) : ADSongListFragment<*>{
             var fragment = ADSongListFragment<BasePresenter<*>>()
             var bundle = Bundle()
             bundle.putParcelable(ARTIST,artist)
@@ -30,7 +30,7 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
         }
     }
 
-    override fun getListFromNet(artist: Artist) {
+    override fun getListFromNet(artist: ArtistInfoResp) {
         getBaiduApi().getArtistSongList(artist.ting_uid,artist.artist_id,mPagenum*BaiduMusicApi.pagenSize,BaiduMusicApi.pagenSize)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

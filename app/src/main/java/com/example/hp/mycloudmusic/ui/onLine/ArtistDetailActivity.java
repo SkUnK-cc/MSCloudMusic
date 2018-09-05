@@ -10,7 +10,9 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.merge.TabFragmentPagerAdapter;
 import com.example.hp.mycloudmusic.custom.SimpleViewPagerIndicator;
@@ -19,7 +21,10 @@ import com.example.hp.mycloudmusic.fragment.callback.ClickListener;
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
 import com.example.hp.mycloudmusic.fragment.instance.ADSongListFragment;
 import com.example.hp.mycloudmusic.fragment.instance.PlayMusicFragment;
+import com.example.hp.mycloudmusic.fragment.view.IActivityDetailView;
+import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistInfoResp;
 import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
+import com.example.hp.mycloudmusic.mvp.presenter.ArtistDetailPresenter;
 import com.example.hp.mycloudmusic.ui.BaseActivity;
 import com.example.hp.mycloudmusic.util.DisplayUtil;
 
@@ -28,7 +33,7 @@ import java.util.List;
 
 import butterknife.Bind;
 
-public class ArtistDetailActivity extends BaseActivity implements SimpleViewPagerIndicator.IndicatorClickListener, StickNavLayout.MyStickyListener, View.OnClickListener, ClickListener {
+public class ArtistDetailActivity extends BaseActivity<ArtistDetailPresenter> implements SimpleViewPagerIndicator.IndicatorClickListener, StickNavLayout.MyStickyListener, View.OnClickListener, ClickListener, IActivityDetailView {
     public static final String ARTIST = "ARTIST";
     public static final String BUNDLE = "BUNDLE";
     public static final String[] titles = new String[]{"单曲","专辑","MV","歌手信息"};
@@ -42,11 +47,14 @@ public class ArtistDetailActivity extends BaseActivity implements SimpleViewPage
     SimpleViewPagerIndicator mIndicator;
     @Bind(R.id.id_stickynavlayout_viewpager)
     ViewPager mViewPager;
-    @Bind(R.id.search_back)
+    @Bind(R.id.artist_detail_bar_back)
     ImageView ivBack;
+    @Bind(R.id.artist_detail_bar_title)
+    TextView tvTitle;
 
     private TabFragmentPagerAdapter mAdapter;
     private Artist artist;
+    private ArtistInfoResp info;
 
     private List<Fragment> mFragments = new ArrayList<>();
 
@@ -57,13 +65,13 @@ public class ArtistDetailActivity extends BaseActivity implements SimpleViewPage
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent intent = getIntent();
-        Bundle bundle = intent.getBundleExtra(BUNDLE);
-        artist = bundle.getParcelable(ARTIST);
-        if(artist == null){
-            return;
-        }
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    protected void initPresenter() {
+        mPresenter = new ArtistDetailPresenter();
     }
 
     @Override
@@ -77,6 +85,13 @@ public class ArtistDetailActivity extends BaseActivity implements SimpleViewPage
 //        ViewGroup.LayoutParams layoutParams = iv_avatar.getLayoutParams();
 //        layoutParams.height = layoutParams.height+500;
 //        iv_avatar.setLayoutParams(layoutParams);
+        Intent intent = getIntent();
+        Bundle bundle = intent.getBundleExtra(BUNDLE);
+        artist = bundle.getParcelable(ARTIST);
+        if(artist == null){
+            finish();
+        }
+        mPresenter.getArtistInfo(artist);
     }
 
     @Override
@@ -86,6 +101,7 @@ public class ArtistDetailActivity extends BaseActivity implements SimpleViewPage
 
     @Override
     protected void initView() {
+
         ivBack.setOnClickListener(this);
 
         mIndicator.setIndicatorClickListener(this);
@@ -102,9 +118,9 @@ public class ArtistDetailActivity extends BaseActivity implements SimpleViewPage
             public void onPageScrollStateChanged(int state) {
             }
         });
-        for(int i=0;i<titles.length;i++){
-            mFragments.add(ADSongListFragment.Companion.newInstance(artist));
-        }
+//        for(int i=0;i<titles.length;i++){
+//            mFragments.add(ADSongListFragment.Companion.newInstance(artist));
+//        }
         mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),mFragments);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(mAdapter.getCount());
@@ -156,7 +172,7 @@ public class ArtistDetailActivity extends BaseActivity implements SimpleViewPage
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.search_back:
+            case R.id.artist_detail_bar_back:
                 finish();
                 break;
             default:
@@ -178,5 +194,26 @@ public class ArtistDetailActivity extends BaseActivity implements SimpleViewPage
         }
         transaction.commitAllowingStateLoss();
         super.onStop();
+    }
+
+    /**
+     * 成功获取artist信息
+     * @param resp
+     */
+    @Override
+    public void obtainInfoSuccess(ArtistInfoResp resp) {
+       for(int i=0;i<titles.length;i++){
+            mFragments.add(ADSongListFragment.Companion.newInstance(resp));
+       }
+       mAdapter.notifyDataSetChanged();
+       tvTitle.setText(resp.name);
+        Glide.with(this)
+                .load(resp.avatar_s500)
+                .into(iv_avatar);
+    }
+
+    @Override
+    public void obtainInfoFailed() {
+
     }
 }

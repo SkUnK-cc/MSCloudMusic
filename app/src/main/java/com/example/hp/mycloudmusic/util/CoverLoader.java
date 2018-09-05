@@ -92,7 +92,7 @@ public class CoverLoader {
         Bitmap bitmap;
         if(music.getType() == AudioBean.TYPE_LOCAL ){
             AudioBean audioBean = (AudioBean) music;
-            bitmap = loadCoverFromMediaStore(audioBean.getAlbumId());
+            bitmap = loadCoverFromMediaStore(audioBean.getAlbumIdLocal());
         }else{
 //            bitmap = loadCoverFromFile(music.getCoverPath());
             bitmap = null;
@@ -150,8 +150,8 @@ public class CoverLoader {
         }
         if (music.getType() == AbstractMusic.TYPE_LOCAL) {
             AudioBean audioBean = (AudioBean) music;
-            if (audioBean.getAlbumId() > 0) {
-                return String.valueOf(audioBean.getAlbumId()).concat(AbstractMusic.TYPE_LOCAL);
+            if (audioBean.getAlbumIdLocal() > 0) {
+                return String.valueOf(audioBean.getAlbumIdLocal()).concat(AbstractMusic.TYPE_LOCAL);
             }
         } else {
             return null;

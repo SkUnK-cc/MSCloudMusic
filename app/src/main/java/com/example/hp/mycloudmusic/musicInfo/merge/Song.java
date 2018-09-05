@@ -84,7 +84,7 @@ public class Song extends AbstractMusic implements IQueryResult{
     public String author;
     public String pic_small;      //专辑封面
     public String song_id;        //歌曲id
-    public String all_artist_id;
+    public String all_artist_id;  //歌手id
     public String ting_uid;       //歌手id
 
     public Bitrate bitrate;
@@ -142,6 +142,15 @@ public class Song extends AbstractMusic implements IQueryResult{
     @Override
     public String getAlbumTitle() {
         return album_title;
+    }
+
+    @Override
+    public Artist obtainArtist() {
+        Artist create = new Artist();
+        create.author = author;
+        create.artist_id = artist_id;
+        create.ting_uid = ting_uid;
+        return create;
     }
 
     @Override

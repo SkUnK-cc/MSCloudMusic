@@ -3,27 +3,44 @@ package com.example.hp.mycloudmusic.musicInfo;
 import android.net.Uri;
 import android.os.Parcel;
 
+import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
+import com.example.hp.mycloudmusic.musicInfo.merge.Song;
 import com.litesuits.orm.db.annotation.Column;
+import com.litesuits.orm.db.annotation.PrimaryKey;
 import com.litesuits.orm.db.annotation.Table;
+import com.litesuits.orm.db.enums.AssignType;
 
 import java.io.File;
 
 @Table("tb_audio")
 public class AudioBean extends AbstractMusic{
     public static final String COL_ID="_id";
+    public static final String COL_LOCAL_ID = "local_id";
     public static final String COL_TYPE="type";
     public static final String COL_TITLE="title";
     public static final String COL_ARTIST="artist";
     public static final String COL_ALBUM="album";
-    public static final String COL_ALBUM_ID="album_id";
+    public static final String COL_ALBUM_ID_LOCAL="album_id_local";
     public static final String COL_COVER_PATH="cover_path";
     public static final String COL_DURATION="duration";
     public static final String COL_PATH = "duration";
     public static final String COL_FILE_NAME = "file_name";
     public static final String COL_FILE_SIZE = "file_size";
 
-    @Column(COL_ID)
+    public static final String COL_SONG_ID = "song_id";
+    public static final String COL_TING_UID = "ting_uid";
+    public static final String COL_ALBUM_ID = "album_id";
+    public static final String COL_HAS_MV = "has_mv";
+    public static final String COL_ARTIST_ID = "artist_id";
+    public static final String COL_ALL_ARTIST_ID = "all_artist_id";
+    public static final String COL_LRCLINK = "lrclink";
+    public static final String COL_PIC_SMALL = "pic_small";
+
+
+    @PrimaryKey(AssignType.AUTO_INCREMENT)
     private long id;
+    @Column(COL_LOCAL_ID)
+    private long local_id;
     @Column(COL_TYPE)
     private int type;
     @Column(COL_TITLE)
@@ -32,8 +49,8 @@ public class AudioBean extends AbstractMusic{
     private String artist;
     @Column(COL_ALBUM)
     private String album;
-    @Column(COL_ALBUM_ID)
-    private long albumId;
+    @Column(COL_ALBUM_ID_LOCAL)
+    private long albumIdLocal;
     @Column(COL_COVER_PATH)
     private String coverPath;
     @Column(COL_DURATION)
@@ -45,7 +62,35 @@ public class AudioBean extends AbstractMusic{
     @Column(COL_FILE_SIZE)
     private long fileSize;
 
+    @Column(COL_SONG_ID)
+    private String song_id;
+    @Column(COL_TING_UID)
+    private String ting_uid;
+    @Column(COL_ALBUM_ID)
+    private String album_id;
+    @Column(COL_HAS_MV)
+    private String has_mv;
+    @Column(COL_ARTIST_ID)
+    private String artist_id;
+    @Column(COL_ALL_ARTIST_ID)
+    private String all_artist_id;
+    @Column(COL_LRCLINK)
+    private String lrclink;
+    @Column(COL_PIC_SMALL)
+    private String pic_small;
+
     public AudioBean(){
+    }
+
+    //用Song构造一个AudioBean存入数据库,待完成
+    public AudioBean(Song song){
+        this.title = song.title;
+        this.artist = song.author;
+        this.artist_id = song.artist_id;
+        this.ting_uid = song.ting_uid;
+        this.album = song.album_title;
+        this.album_id = song.album_id;
+        this.duration = song.getDuration();
     }
 
     public long getId() {
@@ -56,6 +101,14 @@ public class AudioBean extends AbstractMusic{
         this.id = id;
     }
 
+    public long getLocal_id() {
+        return local_id;
+    }
+
+    public void setLocal_id(long local_id) {
+        this.local_id = local_id;
+    }
+
     public String getType() {
         return TYPE_LOCAL;
     }
@@ -63,6 +116,16 @@ public class AudioBean extends AbstractMusic{
     @Override
     public String getAlbumTitle() {
         return album;
+    }
+
+    //这里最好新建一个Artist，如果保存该Artist，当AudioBean中变量的值改变时，需要同时修改Artist中的变量
+    @Override
+    public Artist obtainArtist() {
+        Artist create = new Artist();
+        create.author = artist;
+        create.artist_id = artist_id==null?"":artist_id;
+        create.ting_uid = ting_uid==null?"":ting_uid;
+        return create;
     }
 
     public void setType(int type) {
@@ -85,12 +148,12 @@ public class AudioBean extends AbstractMusic{
         this.album = album;
     }
 
-    public long getAlbumId() {
-        return albumId;
+    public long getAlbumIdLocal() {
+        return albumIdLocal;
     }
 
-    public void setAlbumId(long albumId) {
-        this.albumId = albumId;
+    public void setAlbumIdLocal(long albumIdLocal) {
+        this.albumIdLocal = albumIdLocal;
     }
 
     public String getCoverPath() {
@@ -130,6 +193,69 @@ public class AudioBean extends AbstractMusic{
         this.fileSize = fileSize;
     }
 
+    public String getSong_id() {
+        return song_id;
+    }
+
+    public void setSong_id(String song_id) {
+        this.song_id = song_id;
+    }
+
+    public String getTing_uid() {
+        return ting_uid;
+    }
+
+    public void setTing_uid(String ting_uid) {
+        this.ting_uid = ting_uid;
+    }
+
+    public String getPic_small() {
+        return pic_small;
+    }
+
+    public void setPic_small(String pic_small) {
+        this.pic_small = pic_small;
+    }
+
+    public String getAlbum_id() {
+        return album_id;
+    }
+
+    public void setAlbum_id(String album_id) {
+        this.album_id = album_id;
+    }
+
+    public String getHas_mv() {
+        return has_mv;
+    }
+
+    public void setHas_mv(String has_mv) {
+        this.has_mv = has_mv;
+    }
+
+    public String getArtist_id() {
+        return artist_id;
+    }
+
+    public void setArtist_id(String artist_id) {
+        this.artist_id = artist_id;
+    }
+
+    public String getAll_artist_id() {
+        return all_artist_id;
+    }
+
+    public void setAll_artist_id(String all_artist_id) {
+        this.all_artist_id = all_artist_id;
+    }
+
+    public String getLrclink() {
+        return lrclink;
+    }
+
+    public void setLrclink(String lrclink) {
+        this.lrclink = lrclink;
+    }
 
     @Override
     public String getTitle() {
@@ -179,7 +305,7 @@ public class AudioBean extends AbstractMusic{
         dest.writeString(artist);
         dest.writeInt(type);
         dest.writeString(album);
-        dest.writeLong(albumId);
+        dest.writeLong(albumIdLocal);
         dest.writeString(coverPath);
         dest.writeLong(duration);
         dest.writeString(path);
@@ -198,7 +324,7 @@ public class AudioBean extends AbstractMusic{
         artist = source.readString();
         type = source.readInt();
         album = source.readString();
-        albumId = source.readLong();
+        albumIdLocal = source.readLong();
         coverPath = source.readString();
         duration = source.readLong();
         path = source.readString();

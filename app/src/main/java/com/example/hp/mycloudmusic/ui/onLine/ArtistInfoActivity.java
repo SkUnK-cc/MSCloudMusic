@@ -24,7 +24,7 @@ import java.util.List;
 
 import butterknife.Bind;
 
-public class ArtistInfoActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, ArtistDetailScrollView.MyOnScrollListener {
+public abstract class ArtistInfoActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, ArtistDetailScrollView.MyOnScrollListener {
     public static final String TAG = "ArtistInfoActivity";
     public static final String UID = "UID";
 
@@ -32,8 +32,8 @@ public class ArtistInfoActivity extends BaseActivity implements RadioGroup.OnChe
     ImageView iv_avatar;
     @Bind(R.id.artist_iv_front_avatar)
     ImageView iv_front;
-    @Bind(R.id.search_bar_text)
-    TextView tvBarText;
+    @Bind(R.id.artist_detail_bar_title)
+    TextView tvTitle;
     @Bind(R.id.ll_detail)
     LinearLayout llDetail;
     @Bind(R.id.radio_group)
@@ -56,12 +56,6 @@ public class ArtistInfoActivity extends BaseActivity implements RadioGroup.OnChe
 
     @Override
     protected void initData() {
-        tvBarText.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateData();
-            }
-        },2000);
     }
 
     private void updateData() {
@@ -94,7 +88,7 @@ public class ArtistInfoActivity extends BaseActivity implements RadioGroup.OnChe
     @Override
     protected void initView() {
         radioGroup.setOnCheckedChangeListener(this);
-        tvBarText.setSelected(true);
+        tvTitle.setSelected(true);
         vpWorksList.addOnPageChangeListener(new OnDetailPageChangeListener());
 
         fragmentList = new ArrayList<>();

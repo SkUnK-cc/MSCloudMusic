@@ -27,6 +27,9 @@ public class Artist implements IQueryResult,Parcelable{
     public String artist_id;
     public String artist_desc;
 
+    public Artist(){
+
+    }
 
     @Override
     public String getName() {

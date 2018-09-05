@@ -37,6 +37,6 @@
 
     </com.example.hp.mycloudmusic.custom.StickNavLayout>
 
-    <include layout="@layout/online_search_bar"/>
+    <include layout="@layout/artist_detail_bar"/>
 
 </RelativeLayout>

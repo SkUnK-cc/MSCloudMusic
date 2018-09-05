@@ -33,7 +33,7 @@ public class ArtistDetailFragment extends BaseFragment implements StickNavLayout
     SimpleViewPagerIndicator mIndicator;
     @Bind(R.id.id_stickynavlayout_viewpager)
     ViewPager mViewPager;
-    @Bind(R.id.search_back)
+    @Bind(R.id.artist_detail_bar_back)
     ImageView ivBack;
 
     private TabFragmentPagerAdapter mAdapter;
@@ -85,7 +85,7 @@ public class ArtistDetailFragment extends BaseFragment implements StickNavLayout
         });
         for(int i=0;i<titles.length;i++){
 //            mFragments.add(ADetailSongFragment.newInstance(artist));
-            mFragments.add(ADSongListFragment.Companion.newInstance(artist));
+//            mFragments.add(ADSongListFragment.Companion.newInstance(artist));
         }
         mAdapter = new TabFragmentPagerAdapter(getActivity().getSupportFragmentManager(),mFragments);
         mViewPager.setAdapter(mAdapter);
@@ -129,7 +129,7 @@ public class ArtistDetailFragment extends BaseFragment implements StickNavLayout
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.search_back:
+            case R.id.artist_detail_bar_back:
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.hide(this);
                 transaction.commit();

@@ -26,16 +26,22 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
         ButterKnife.bind(this);
         if(Build.VERSION.SDK_INT >= 21){
             View decorView = getWindow().getDecorView();
-            //int option = View.SYSTEM_UI_FLAG_VISIBLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             int option = View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             decorView.setSystemUiVisibility(option);
 //            getWindow().setStatusBarColor(Color.parseColor("#9C27B0"));
             getWindow().setStatusBarColor(Color.TRANSPARENT);//设置状态栏的背景色
         }
+        initPresenter();
+        if(mPresenter!=null){
+            mPresenter.attach(this);
+        }
         initView();
         initListener();
         initData();
     }
+
+    //通过该方法由子类实例具体的presenter，父类无法实例具体的presenter
+    protected abstract void initPresenter();
 
     public PlayService getPlayService(){
         PlayService playService = BaseAppHelper.get().getPlayService();
@@ -79,6 +85,9 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
 
     @Override
     protected void onDestroy() {
+        if(mPresenter!=null){
+            mPresenter.detach();
+        }
         Log.e(TAG, "onDestroy: "+getClass().getName());
         super.onDestroy();
     }

@@ -16,4 +16,5 @@ public class BasePresenter<V extends IBaseView> {
     public void detach(){
         this.mView = null;
     }
+
 }

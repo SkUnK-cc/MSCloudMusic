@@ -3,6 +3,7 @@ package com.example.hp.mycloudmusic.musicInfo;
 import android.net.Uri;
 import android.os.Parcelable;
 
+import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
 import com.example.hp.mycloudmusic.util.PlayerFormatUtils;
 
 import java.io.Serializable;
@@ -24,7 +25,6 @@ public abstract class AbstractMusic implements Serializable,Parcelable,Parcelabl
 
     public abstract String getArtist();
 
-
     public abstract Uri getDataSource();
 
     public abstract long getDuration();
@@ -32,6 +32,8 @@ public abstract class AbstractMusic implements Serializable,Parcelable,Parcelabl
     public abstract String getType();
 
     public abstract String getAlbumTitle();
+
+    public abstract Artist obtainArtist();
 
     /**
      * 获取专辑图片

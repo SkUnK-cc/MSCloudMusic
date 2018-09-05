@@ -17,7 +17,9 @@ import com.example.hp.mycloudmusic.adapter.listview.PopupAdapter;
 import com.example.hp.mycloudmusic.adapter.listview.PopupItem;
 import com.example.hp.mycloudmusic.base.BaseAppHelper;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
+import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
 import com.example.hp.mycloudmusic.service.PlayService;
+import com.example.hp.mycloudmusic.ui.onLine.ArtistDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ public class PopupWindowManager {
     private Activity mActivity;
     private boolean hasMv;
     private boolean hasDelete;
+    private boolean hasDownload;
     private int width;
     private int height;
     private PopupWindowListener listener;
@@ -50,10 +53,13 @@ public class PopupWindowManager {
                 case R.drawable.ic_icon_add_list:
                     break;
                 case R.drawable.ic_icon_artist2:
+                    Artist create = music.obtainArtist();
+                    ArtistDetailActivity.toArtistDetailActivity(mActivity,create);
                     break;
                 default:
                     break;
             }
+            popupWindow.dismiss();
         }
     };
 
@@ -64,6 +70,7 @@ public class PopupWindowManager {
         this.mActivity = builder.activity;
         this.hasMv = builder.hasMv;
         this.hasDelete = builder.hasDelete;
+        this.hasDownload = builder.hasDownload;
         this.width = builder.width;
         this.height = builder.height;
         this.listener = builder.listener;
@@ -83,9 +90,11 @@ public class PopupWindowManager {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PopupItem item = list.get(position);
                 if(listener != null) {
-                    PopupItem item = list.get(position);
                     listener.onItemClick(item.imageId, music);
+                }else{
+                    defListener.onItemClick(item.imageId,music);
                 }
             }
         });
@@ -128,6 +137,9 @@ public class PopupWindowManager {
                 }
                 item.title = item.title.concat(music.getAlbumTitle());
                 break;
+            case R.drawable.ic_icon_download:
+                if(hasDownload == false)return null;
+                break;
         }
         return item;
     }
@@ -169,6 +181,7 @@ public class PopupWindowManager {
         private int height;
         private boolean hasMv;
         private boolean hasDelete;
+        private boolean hasDownload;
         private PopupWindowListener listener;
         private AbstractMusic music;
         public Builder(Activity activity,int contentviewid,int width,int height){
@@ -191,6 +204,10 @@ public class PopupWindowManager {
         }
         public Builder setMusic(AbstractMusic music){
             this.music = music;
+            return this;
+        }
+        public Builder hasDownload(boolean hasDownload){
+            this.hasDownload = hasDownload;
             return this;
         }
         public PopupWindowManager build() {
