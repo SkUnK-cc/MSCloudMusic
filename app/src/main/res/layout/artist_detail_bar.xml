@@ -5,7 +5,7 @@
     android:paddingTop="20dp"
     xmlns:tool="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@android:color/transparent">
+    android:background="@color/alpha_20_black">
     <ImageView
         android:id="@+id/artist_detail_bar_back"
         android:layout_width="?attr/actionBarSize"
@@ -28,7 +28,7 @@
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:textSize="23sp"
-        android:textColor="@android:color/black"/>
+        android:textColor="@color/colorWhite"/>
     <ImageView
         android:id="@+id/artist_detail_bar_playing"
         android:layout_width="?attr/actionBarSize"

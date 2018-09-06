@@ -29,6 +29,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/local_music_title"
                 android:textSize="@dimen/textSize"
+                android:textColor="@color/colorWhite"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"/>
 

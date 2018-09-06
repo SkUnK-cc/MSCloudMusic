@@ -72,7 +72,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         initData();
     }
 
-//    protected abstract void setupActivityComponent(AppComponent appComponent);
+    //    protected abstract void setupActivityComponent(AppComponent appComponent);
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

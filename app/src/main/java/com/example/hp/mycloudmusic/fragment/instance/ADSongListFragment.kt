@@ -18,8 +18,6 @@ import io.reactivex.schedulers.Schedulers
 
 class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),PlayMusicFragment.PlayMusicBackListener{
 
-
-
     companion object{
         fun newInstance(artist: ArtistInfoResp) : ADSongListFragment<*>{
             var fragment = ADSongListFragment<BasePresenter<*>>()
@@ -28,6 +26,15 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun onVisible() {
+        artist = arguments!!.getParcelable(ARTIST)
+        artist?.let { getListFromNet(it) }
+    }
+
+    override fun onInvisible() {
+
     }
 
     override fun getListFromNet(artist: ArtistInfoResp) {

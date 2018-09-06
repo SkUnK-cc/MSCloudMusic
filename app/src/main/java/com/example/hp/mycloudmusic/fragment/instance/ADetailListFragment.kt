@@ -21,10 +21,9 @@ abstract class ADetailListFragment<T : BasePresenter<*>?,D>: BaseFragment<T>() {
     protected var adapter: CommonAdapter<D>? = null
     protected var mPagenum = 0
     protected var mData = ArrayList<D>()
+    protected var visible: Boolean = false
 
     override fun initData() {
-        artist = arguments?.getParcelable(ARTIST)
-        artist?.let { getListFromNet(it) }
     }
 
     override fun initListener() {
@@ -48,6 +47,21 @@ abstract class ADetailListFragment<T : BasePresenter<*>?,D>: BaseFragment<T>() {
         })
         rv_detail_song.adapter = adapter
     }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if(userVisibleHint){
+            visible = true
+            onVisible()
+        }else{
+            visible = false
+            onInvisible()
+        }
+    }
+
+    abstract fun onVisible()
+
+    abstract fun onInvisible()
 
     abstract fun mOnItemClick(position: Int)
 
