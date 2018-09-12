@@ -1,10 +1,7 @@
 package com.example.hp.mycloudmusic.fragment.instance
 
-import android.view.View
-import android.view.ViewGroup
 import com.example.hp.mycloudmusic.R
 import com.example.hp.mycloudmusic.adapter.recyclerview.CommonAdapter
-import com.example.hp.mycloudmusic.adapter.recyclerview.CommonOnItemClickListener
 import com.example.hp.mycloudmusic.adapter.recyclerview.CommonViewHolder
 import com.example.hp.mycloudmusic.api.RetrofitFactory
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi
@@ -31,22 +28,11 @@ abstract class ADetailListFragment<T : BasePresenter<*>?,D>: BaseFragment<T>() {
 
     override fun initView() {
         rv_detail_song.layoutManager = FullyLinearLayoutManager(context)
-        adapter = object : CommonAdapter<D>(context,getItemLayout(),mData){
-            override fun convert(holder: CommonViewHolder, data: D) {
-                mConvert(holder,data)
-            }
-        }
-        (adapter as CommonAdapter<D>).setOnItemClickListener(object : CommonOnItemClickListener<D>{
-            override fun onItemClick(parent: ViewGroup?, view: View?, t: D, position: Int) {
-                mOnItemClick(position)
-            }
-
-            override fun onItemLongClick(parent: ViewGroup?, view: View?, t: D, position: Int): Boolean {
-                return false
-            }
-        })
+        initAdapter()
         rv_detail_song.adapter = adapter
     }
+
+    abstract fun initAdapter()
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
@@ -54,7 +40,6 @@ abstract class ADetailListFragment<T : BasePresenter<*>?,D>: BaseFragment<T>() {
             visible = true
             onVisible()
         }else{
-            visible = false
             onInvisible()
         }
     }

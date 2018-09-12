@@ -24,7 +24,7 @@ import java.util.List;
 public class MSongRecyclerAdapter extends RecyclerView.Adapter<MSongRecyclerAdapter.MSViewHolder> {
 
     private Context mContext;
-    private List<Song> list;        //该list应该在提前初始化
+    private List<Song> list;        //该list应该提前初始化
 
     private IClickMSPopupMenuItem popListener;
 

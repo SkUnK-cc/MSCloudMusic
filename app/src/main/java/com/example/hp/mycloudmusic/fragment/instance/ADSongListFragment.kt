@@ -1,9 +1,13 @@
 package com.example.hp.mycloudmusic.fragment.instance
 
 import android.os.Bundle
+import android.view.Gravity
+import android.view.ViewGroup
 import com.example.hp.mycloudmusic.R
 import com.example.hp.mycloudmusic.adapter.recyclerview.CommonViewHolder
+import com.example.hp.mycloudmusic.adapter.recyclerview.OnlineSong.OnlineSongRecyclerAdapter
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi
+import com.example.hp.mycloudmusic.custom.PopupWindowManager
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic
 import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistInfoResp
@@ -11,12 +15,16 @@ import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistSongListResp
 import com.example.hp.mycloudmusic.musicInfo.merge.Song
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter
 import com.example.hp.mycloudmusic.service.PlayService
+import com.example.hp.mycloudmusic.util.DisplayUtil
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),PlayMusicFragment.PlayMusicBackListener{
+
+
+    var popupWindow: PopupWindowManager? = null
 
     companion object{
         fun newInstance(artist: ArtistInfoResp) : ADSongListFragment<*>{
@@ -35,6 +43,24 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
 
     override fun onInvisible() {
 
+    }
+
+    override fun initAdapter() {
+        adapter = OnlineSongRecyclerAdapter(context!!,mData)
+        (adapter as OnlineSongRecyclerAdapter).setOnlineSongClickListener(object: OnlineSongRecyclerAdapter.OnlineSongClickListener{
+            override fun onMoreClick(position: Int) {
+                showPopupWindow(position)
+            }
+
+            override fun onInfoClick(position: Int) {
+                val service: PlayService = playService
+                if(service.checkPlayingChange(mData.get(position))){
+                    service.play(mData as List<AbstractMusic>?,position)
+                    showPlayMusicFragment()
+                }
+            }
+
+        })
     }
 
     override fun getListFromNet(artist: ArtistInfoResp) {
@@ -73,20 +99,7 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
         showPlayMusicFragment()
     }
 
-    fun showPlayMusicFragment(){
-//        val transaction = activity!!.supportFragmentManager.beginTransaction()
-//        transaction.setCustomAnimations(R.anim.fragment_slide_from_right, 0)
-////        val playMusicFragment = PlayMusicFragment()
-//        val playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment()
-//        playMusicFragment.setBackListener(this)
-//        if (playMusicFragment != null && !playMusicFragment.isAdded) {
-//            Log.e("click: ","add")
-//            transaction.add(android.R.id.content, playMusicFragment)
-//        } else if (playMusicFragment!!.isAdded) {
-//            Log.e("click: ","show")
-//            transaction.show(playMusicFragment)
-//        }
-//        transaction.commitAllowingStateLoss()
+    fun showPlayMusicFragment() {
         val playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment()
         addOrShowFragmentOnActivity(android.R.id.content,playMusicFragment,R.anim.fragment_slide_from_right)
     }
@@ -100,5 +113,15 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
             transaction.hide(playMusicFragment)
         }
         transaction.commitAllowingStateLoss()
+    }
+
+    fun showPopupWindow(position: Int){
+        popupWindow = PopupWindowManager.Builder(activity,R.layout.song_more_popup, ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(context, 300F))
+                .hasDownload(true)
+                .hasMv(mData.get(position).has_mv!=0)
+                .hasDelete(false)
+                .setMusic(mData.get(position))
+                .build()
+                .showAtLocation(view, Gravity.BOTTOM,0,0)
     }
 }

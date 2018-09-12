@@ -26,7 +26,7 @@
             android:id="@+id/merge_song_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="遇见111111"
+            tools:text="遇见"
             android:textSize="17sp"
             android:textColor="@android:color/black"
             android:letterSpacing="0.1"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/merge_song_title"
             android:layout_marginTop="3dp"
-            tools:text="孙燕姿2222222222222222222222222222222222222222222222222222222222222222222"
+            tools:text="孙燕姿"
 
             android:ellipsize="marquee"
             android:singleLine="true"

@@ -8,6 +8,9 @@ import android.text.TextUtils;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -78,6 +81,11 @@ public class FileMusicUtils {
         return getFileName(title,artist)+".lrc";
     }
 
+    @NotNull
+    public static String getLocalMusicName(@Nullable String title, @Nullable String artist) {
+        return getFileName(title,artist)+".mp3";
+    }
+
     private static String getFileName(String title, String artist) {
         artist = stringFilter(artist);
         title = stringFilter(title);
@@ -104,9 +112,13 @@ public class FileMusicUtils {
         Matcher matcher = p.matcher(fileName);
         return matcher.replaceAll("").trim();
     }
-
     public static String getLrcDir() {
         String dir = getAppDir()+"/Lyric/";
+        return mkdir(dir);
+    }
+
+    public static String getLocalMusicDir(){
+        String dir = getAppDir()+"/LocalMusic/";
         return mkdir(dir);
     }
 

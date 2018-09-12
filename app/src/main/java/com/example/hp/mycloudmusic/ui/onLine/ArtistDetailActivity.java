@@ -207,9 +207,9 @@ public class ArtistDetailActivity extends BaseActivity<ArtistDetailPresenter> im
        }
        mAdapter.notifyDataSetChanged();
        tvTitle.setText(resp.name);
-        Glide.with(this)
-                .load(resp.avatar_s500)
-                .into(iv_avatar);
+       Glide.with(this)
+               .load(resp.avatar_s500)
+               .into(iv_avatar);
     }
 
     @Override

@@ -254,6 +254,11 @@ public class PlayService extends Service {
         }
     }
 
+    private boolean checkListChange(List<AbstractMusic> musicList) {
+        if(musicList == audioMusics)return false;
+        return true;
+    }
+
     private void getSongInfoFromNet(final Song song) {
         RetrofitFactory.provideBaiduApi()
                 .querySong(song.getSong_id())

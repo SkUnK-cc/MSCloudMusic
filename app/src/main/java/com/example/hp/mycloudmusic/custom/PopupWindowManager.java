@@ -56,6 +56,9 @@ public class PopupWindowManager {
                     Artist create = music.obtainArtist();
                     ArtistDetailActivity.toArtistDetailActivity(mActivity,create);
                     break;
+                case R.drawable.ic_icon_download:
+
+                    break;
                 default:
                     break;
             }
@@ -165,7 +168,7 @@ public class PopupWindowManager {
         });
     }
 
-    public void initPopupWindow(){
+    private void initPopupWindow(){
         popupWindow = new PopupWindow(contentView,width,height);
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popupWindow.setOutsideTouchable(true);
