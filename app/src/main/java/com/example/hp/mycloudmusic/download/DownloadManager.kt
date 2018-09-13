@@ -45,26 +45,7 @@ class DownloadManager {
 
     private var downCalls: HashMap<String,Call> = HashMap<String,Call>()
     var client: OkHttpClient? = null
-    var ArrayList<>
-
-    private var downloadObserver: DownloadObserver = object: DownloadObserver(){
-
-        override fun onSubscribe(d: Disposable) {
-            super.onSubscribe(d)
-        }
-
-        override fun onNext(t: DownloadInfo) {
-            super.onNext(t)
-        }
-
-        override fun onComplete() {
-            super.onComplete()
-        }
-
-        override fun onError(e: Throwable) {
-            super.onError(e)
-        }
-    }
+    var listeners: HashMap<String,ArrayList<DownloadListener>> = HashMap()
 
     private fun DownloadManager(){
         client = OkHttpClient.Builder().build()
@@ -75,13 +56,6 @@ class DownloadManager {
         var lrcFileName = FileMusicUtils.getLrcFileName(song.title, song.artist)
         var lrcFile: File = File(FileMusicUtils.getLrcDir() +lrcFileName)
         getSongNetInfo(song)
-        if(!TextUtils.isEmpty(song.lrclink) && !lrcFile.exists()){
-            downloadLrc(FileMusicUtils.getLrcDir(),lrcFileName,song.lrclink)
-        }
-    }
-
-    fun downloadLrc(lrcDir: String, lrcFileName: String, lrclink: String) {
-
     }
 
     fun getSongNetInfo(song: Song){
@@ -112,7 +86,33 @@ class DownloadManager {
                 .flatMap { Observable.create(DownloadSubscribe(downloadInfo)) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe()
+                .subscribe(object: DownloadObserver(downloadInfo){
+                    override fun onSubscribe(d: Disposable) {
+                        super.onSubscribe(d)
+                    }
+
+                    override fun onNext(t: DownloadInfo) {
+                        super.onNext(t)
+                        var specListeners = listeners.get(t.url)
+                        if(specListeners == null)return
+                        for(l in specListeners){
+                            l.onNext(t)
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        super.onError(e)
+                    }
+
+                    override fun onComplete() {
+                        super.onComplete()
+                        var specListeners = listeners.get(mInfo?.url)
+                        if(specListeners == null)return
+                        for(l in specListeners){
+                            l.onComplete(mInfo)
+                        }
+                    }
+                })
     }
 
     private fun getDownloadInfo(downloadInfo: DownloadInfo){
@@ -154,6 +154,24 @@ class DownloadManager {
         }
         return downloadInfo
 
+    }
+
+    fun addListener(urlString: String,listener: DownloadListener?){
+        if(listener==null)return
+        if(listeners.containsKey(urlString)){
+            listeners.get(urlString)?.add(listener)
+        }else{
+            var array = ArrayList<DownloadListener>()
+            array.add(listener!!)
+            listeners.put(urlString,array)
+        }
+    }
+
+    fun removeListener(urlString: String,listener: DownloadListener?){
+        if(listener==null)return
+        if(listeners.containsKey(urlString)){
+            listeners.get(urlString)?.remove(listener)
+        }
     }
 
     private inner class DownloadSubscribe : ObservableOnSubscribe<DownloadInfo> {
@@ -211,7 +229,7 @@ class DownloadManager {
 
     interface DownloadListener{
         fun onNext(downloadInfo: DownloadInfo)
-        fun onComplete()
+        fun onComplete(downloadInfo: DownloadInfo?)
     }
 }
 

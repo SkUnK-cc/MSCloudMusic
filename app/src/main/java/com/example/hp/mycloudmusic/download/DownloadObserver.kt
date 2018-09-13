@@ -4,8 +4,10 @@ import io.reactivex.disposables.Disposable
 
 abstract class DownloadObserver : Observer<DownloadInfo> {
 
-    constructor(){
+    protected var mInfo: DownloadInfo? = null
 
+    constructor(info : DownloadInfo){
+        this.mInfo = info
     }
     override fun onComplete() {
 
@@ -15,6 +17,7 @@ abstract class DownloadObserver : Observer<DownloadInfo> {
     }
 
     override fun onNext(t: DownloadInfo) {
+        if(mInfo == null)this.mInfo = t
     }
 
     override fun onError(e: Throwable) {
