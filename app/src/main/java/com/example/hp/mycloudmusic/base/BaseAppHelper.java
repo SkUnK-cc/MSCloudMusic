@@ -8,6 +8,8 @@ import java.util.List;
 
 public class BaseAppHelper {
     private PlayService mplayService;
+
+    private Boolean localMusicChanged = false;
     /**
      * 本地音乐播放列表
      */
@@ -31,5 +33,12 @@ public class BaseAppHelper {
 
     public static BaseAppHelper get(){
         return SingletonHolder.INSTANCE;
+    }
+
+    public void setLocalMusicChanged(boolean chenged){
+        this.localMusicChanged = chenged;
+    }
+    public boolean getLocalMusicChanged(){
+        return localMusicChanged;
     }
 }

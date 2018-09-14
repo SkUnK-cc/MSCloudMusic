@@ -19,6 +19,7 @@ abstract class ADetailListFragment<T : BasePresenter<*>?,D>: BaseFragment<T>() {
     protected var mPagenum = 0
     protected var mData = ArrayList<D>()
     protected var visible: Boolean = false
+    protected var needLoad: Boolean = true
 
     override fun initData() {
     }
@@ -36,7 +37,7 @@ abstract class ADetailListFragment<T : BasePresenter<*>?,D>: BaseFragment<T>() {
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if(userVisibleHint){
+        if(userVisibleHint && needLoad){
             visible = true
             onVisible()
         }else{

@@ -1,6 +1,7 @@
 package com.example.hp.mycloudmusic.fragment.instance
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import com.example.hp.mycloudmusic.R
@@ -37,6 +38,7 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
     }
 
     override fun onVisible() {
+        Log.e("ADSongListFragment","调用onVisible方法加载歌曲")
         artist = arguments!!.getParcelable(ARTIST)
         artist?.let { getListFromNet(it) }
     }
@@ -69,6 +71,7 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object: Observer<ArtistSongListResp>{
                     override fun onComplete() {
+                        needLoad = false
                     }
                     override fun onSubscribe(d: Disposable) {
                     }

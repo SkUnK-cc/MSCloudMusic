@@ -69,7 +69,7 @@ public class AudioBean extends AbstractMusic{
     @Column(COL_ALBUM_ID)
     private String album_id;
     @Column(COL_HAS_MV)
-    private String has_mv;
+    private int has_mv;
     @Column(COL_ARTIST_ID)
     private String artist_id;
     @Column(COL_ALL_ARTIST_ID)
@@ -86,10 +86,17 @@ public class AudioBean extends AbstractMusic{
     public AudioBean(Song song){
         this.title = song.title;
         this.artist = song.author;
-        this.artist_id = song.artist_id;
-        this.ting_uid = song.ting_uid;
         this.album = song.album_title;
+        this.duration = song.getDuration();
+
+        this.song_id = song.song_id;
+        this.ting_uid = song.ting_uid;
         this.album_id = song.album_id;
+        this.has_mv = song.has_mv;
+        this.artist_id = song.artist_id;
+        this.all_artist_id = song.all_artist_id;
+        this.artist = song.author;
+        this.album = song.album_title;
         this.duration = song.getDuration();
     }
 
@@ -225,11 +232,11 @@ public class AudioBean extends AbstractMusic{
         this.album_id = album_id;
     }
 
-    public String getHas_mv() {
+    public int getHas_mv() {
         return has_mv;
     }
 
-    public void setHas_mv(String has_mv) {
+    public void setHas_mv(int has_mv) {
         this.has_mv = has_mv;
     }
 
@@ -298,12 +305,14 @@ public class AudioBean extends AbstractMusic{
         return 0;
     }
 
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
+        dest.writeLong(local_id);
+        dest.writeInt(type);
         dest.writeString(title);
         dest.writeString(artist);
-        dest.writeInt(type);
         dest.writeString(album);
         dest.writeLong(albumIdLocal);
         dest.writeString(coverPath);
@@ -311,6 +320,14 @@ public class AudioBean extends AbstractMusic{
         dest.writeString(path);
         dest.writeString(fileName);
         dest.writeLong(fileSize);
+
+        dest.writeString(song_id);
+        dest.writeString(ting_uid);
+        dest.writeString(album_id);
+        dest.writeInt(has_mv);
+        dest.writeString(artist_id);
+        dest.writeString(all_artist_id);
+        dest.writeString(lrclink);
     }
 
     @Override
@@ -320,9 +337,10 @@ public class AudioBean extends AbstractMusic{
 
     public AudioBean(Parcel source) {
         id = source.readLong();
+        local_id = source.readLong();
+        type = source.readInt();
         title = source.readString();
         artist = source.readString();
-        type = source.readInt();
         album = source.readString();
         albumIdLocal = source.readLong();
         coverPath = source.readString();
@@ -330,6 +348,14 @@ public class AudioBean extends AbstractMusic{
         path = source.readString();
         fileName = source.readString();
         fileSize = source.readLong();
+
+        song_id = source.readString();
+        ting_uid = source.readString();
+        album_id = source.readString();
+        has_mv = source.readInt();
+        artist_id = source.readString();
+        all_artist_id = source.readString();
+        lrclink = source.readString();
     }
 
     @Override

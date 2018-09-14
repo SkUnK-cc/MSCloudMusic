@@ -1,7 +1,11 @@
 package com.example.hp.mycloudmusic.download
 
 import android.text.TextUtils
+import android.util.Log
+import android.widget.Toast
+import com.example.hp.mycloudmusic.CMApplication
 import com.example.hp.mycloudmusic.api.RetrofitFactory
+import com.example.hp.mycloudmusic.base.BaseAppHelper
 import com.example.hp.mycloudmusic.musicInfo.AudioBean
 import com.example.hp.mycloudmusic.musicInfo.merge.Song
 import com.example.hp.mycloudmusic.musicInfo.songPlay.SongPlayResp
@@ -18,6 +22,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
 import java.io.RandomAccessFile
 import java.util.concurrent.atomic.AtomicReference
@@ -29,7 +34,7 @@ class DownloadManager {
         private final val INSTANCE:AtomicReference<DownloadManager> = AtomicReference()
         fun getInstance(): DownloadManager{
             while(true) {
-                var current: DownloadManager = INSTANCE.get()
+                var current: DownloadManager? = INSTANCE.get()//此处get方法可能返回null，current应为可空类型
                 if (current != null) {
                     return current
                 }
@@ -47,18 +52,17 @@ class DownloadManager {
     var client: OkHttpClient? = null
     var listeners: HashMap<String,ArrayList<DownloadListener>> = HashMap()
 
-    private fun DownloadManager(){
+    constructor (){
         client = OkHttpClient.Builder().build()
     }
 
     fun downloadSong(song: Song){
-        var audioBean: AudioBean = AudioBean(song)
-        var lrcFileName = FileMusicUtils.getLrcFileName(song.title, song.artist)
-        var lrcFile: File = File(FileMusicUtils.getLrcDir() +lrcFileName)
+        Log.e("DownloadManager","downloadSong")
         getSongNetInfo(song)
     }
 
     fun getSongNetInfo(song: Song){
+        Log.e("DownloadManager","getSongNetInfo")
         RetrofitFactory.provideBaiduApi()
                 .querySong(song.getSong_id())
                 .subscribeOn(Schedulers.io())
@@ -80,10 +84,10 @@ class DownloadManager {
 
     private fun download(song: Song, downloadInfo: DownloadInfo?) {
         if(downloadInfo == null || downloadInfo.url.equals(""))return
+        Log.e("DownloadManager","download")
         Observable.just(downloadInfo)
-                .filter { !downCalls.containsKey(downloadInfo.url) }
-                .flatMap { Observable.just(getDownloadInfo(it)) }
-                .flatMap { Observable.create(DownloadSubscribe(downloadInfo)) }
+                .filter { !downCalls.containsKey(it.url) }
+                .flatMap { it -> Observable.create(DownloadSubscribe(it)) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object: DownloadObserver(downloadInfo){
@@ -93,6 +97,7 @@ class DownloadManager {
 
                     override fun onNext(t: DownloadInfo) {
                         super.onNext(t)
+                        Log.e("DownloadManager","正在下载..."+t.getDown())
                         var specListeners = listeners.get(t.url)
                         if(specListeners == null)return
                         for(l in specListeners){
@@ -106,18 +111,27 @@ class DownloadManager {
 
                     override fun onComplete() {
                         super.onComplete()
-                        var specListeners = listeners.get(mInfo?.url)
+                        var audioBean = AudioBean(song)
+                        audioBean.fileName = mInfo!!.fileName
+                        audioBean.path = mInfo!!.dir+mInfo!!.fileName
+                        CMApplication.provideLiteOrm().insert(audioBean)
+                        BaseAppHelper.get().localMusicChanged = true
+                        Log.e("DownloadManager",audioBean.title+audioBean.artist+" 下载完成！")
+                        Toast.makeText(CMApplication.getAppContext(),audioBean.title+audioBean.artist+" 下载完成！",Toast.LENGTH_SHORT)
+                        if(mInfo == null)return
+                        var specListeners = listeners.get(mInfo!!.url)
                         if(specListeners == null)return
                         for(l in specListeners){
                             l.onComplete(mInfo)
                         }
+
                     }
                 })
     }
 
-    private fun getDownloadInfo(downloadInfo: DownloadInfo){
-        var contentLength:Long = getContentLength(downloadInfo.url)
-        downloadInfo.total = contentLength
+    private fun getDownloadInfo(downloadInfo: DownloadInfo?){
+        var contentLength:Long = getContentLength(downloadInfo!!.url)
+        downloadInfo!!.total = contentLength
         var file:File = File(downloadInfo.dir,downloadInfo.fileName)
         if(file.exists()){
             downloadInfo.progress = file.length()
@@ -129,12 +143,17 @@ class DownloadManager {
         var request: Request = Request.Builder()
                 .url(url)
                 .build()
-        var response: Response = client!!.newCall(request).execute()
-        if(response!=null && response.isSuccessful){
-            var contentLength: Long= response.body()!!.contentLength()
-            response.close()
-            if(contentLength==0L)return DownloadInfo.TOTAL_ERROR
-            return contentLength
+        try {
+            var response: Response = client!!.newCall(request).execute()
+            Log.e("getContentLength","执行完成")
+            if (response != null && response.isSuccessful) {
+                var contentLength: Long = response.body()!!.contentLength()
+                response.close()
+                if (contentLength == 0L) return DownloadInfo.TOTAL_ERROR
+                return contentLength
+            }
+        }catch (e:IOException){
+            e.printStackTrace()
         }
         return DownloadInfo.TOTAL_ERROR
     }
@@ -179,13 +198,16 @@ class DownloadManager {
 
         constructor(downloadInfo:DownloadInfo){
             this.downloadInfo = downloadInfo
+            getDownloadInfo(downloadInfo)
         }
 
         override fun subscribe(e: ObservableEmitter<DownloadInfo>) {
+            Log.e("DownloadSubscribe","subscribe")
             download(downloadInfo,e)
         }
 
         private fun download(info: DownloadInfo?,e: ObservableEmitter<DownloadInfo>) {
+            Log.e("DownloadSubscribe","DownloadSubscribe")
             if(info == null)return
             var link = info.url
             var downloadedLength = info.progress
@@ -208,9 +230,12 @@ class DownloadManager {
                 var buffer: ByteArray = ByteArray(2048)
                 //kotlin 中等式(赋值)不是一个表达式
                 while ((input.read(buffer)) != -1) {
+                    Log.e("DownloadSubscribe","while循环")
                     info.progress += buffer.size
                     saveFile.write(buffer, 0, buffer.size)
                     //这里传入整个downloadInfo链
+                    if(e==null) Log.e("DownloadSubscribe","e 为空")
+
                     e.onNext(downloadInfo!!)
                 }
             }finally{
@@ -232,4 +257,5 @@ class DownloadManager {
         fun onComplete(downloadInfo: DownloadInfo?)
     }
 }
+
 

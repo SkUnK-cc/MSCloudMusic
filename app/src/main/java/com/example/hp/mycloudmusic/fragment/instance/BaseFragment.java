@@ -132,7 +132,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         transaction.hide(fragment).commit();
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

@@ -65,13 +65,22 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
         }
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.e(TAG, "onHiddenChanged: "+hidden);
+        if( !hidden && BaseAppHelper.get().getLocalMusicChanged()){
+            startScan();
+        }
+    }
+
     private void startScan() {
         new AsyncTask<Void, String, List<AudioBean>>() {
             @Override
             protected List<AudioBean> doInBackground(Void... voids) {
                 //先同步到localMusicList,再更新到adapter
-                localMusicList = FileScanManager.getInstance(liteOrm).getAudioFromDb();
                 Log.e(TAG, "doInBackground: 从数据库获取音乐");
+                localMusicList = FileScanManager.getInstance(liteOrm).getAudioFromDb();
                 if(localMusicList == null || localMusicList.size()==0){
                     Log.e(TAG, "doInBackground: 从本地扫描获取音乐");
                     localMusicList = FileScanManager.getInstance(liteOrm).scanMusic(getContext());

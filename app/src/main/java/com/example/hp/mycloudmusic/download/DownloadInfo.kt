@@ -17,4 +17,10 @@ class DownloadInfo {
         this.url = url
         this.internal = internal
     }
+
+    fun getDown():Long{
+        var interDown:Long = 0
+        if(internal!=null)interDown = internal!!.getDown()
+        return progress+interDown
+    }
 }

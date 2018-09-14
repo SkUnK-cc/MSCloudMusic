@@ -16,8 +16,10 @@ import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.listview.PopupAdapter;
 import com.example.hp.mycloudmusic.adapter.listview.PopupItem;
 import com.example.hp.mycloudmusic.base.BaseAppHelper;
+import com.example.hp.mycloudmusic.download.DownloadManager;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
+import com.example.hp.mycloudmusic.musicInfo.merge.Song;
 import com.example.hp.mycloudmusic.service.PlayService;
 import com.example.hp.mycloudmusic.ui.onLine.ArtistDetailActivity;
 
@@ -57,7 +59,7 @@ public class PopupWindowManager {
                     ArtistDetailActivity.toArtistDetailActivity(mActivity,create);
                     break;
                 case R.drawable.ic_icon_download:
-
+                    DownloadManager.Companion.getInstance().downloadSong((Song) music);
                     break;
                 default:
                     break;
