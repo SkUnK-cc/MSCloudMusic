@@ -118,9 +118,6 @@ public class ArtistDetailActivity extends BaseActivity<ArtistDetailPresenter> im
             public void onPageScrollStateChanged(int state) {
             }
         });
-//        for(int i=0;i<titles.length;i++){
-//            mFragments.add(ADSongListFragment.Companion.newInstance(artist));
-//        }
         mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),mFragments);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(mAdapter.getCount());

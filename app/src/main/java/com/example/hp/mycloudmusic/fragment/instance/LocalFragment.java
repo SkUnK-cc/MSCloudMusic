@@ -99,7 +99,9 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
                     BaseAppHelper.get().getMusicList().clear();
                     BaseAppHelper.get().getMusicList().addAll(list);
                 }
+                BaseAppHelper.get().setLocalMusicChanged(false);
             }
+
         }.execute();
         if(liteOrm == null) {
             Log.e(TAG, "liteOrm is null");

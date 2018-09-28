@@ -29,9 +29,8 @@ import java.util.concurrent.atomic.AtomicReference
 //多文件下载
 class DownloadManager {
 
-
     companion object {
-        private final val INSTANCE:AtomicReference<DownloadManager> = AtomicReference()
+        private val INSTANCE:AtomicReference<DownloadManager> = AtomicReference()
         fun getInstance(): DownloadManager{
             while(true) {
                 var current: DownloadManager? = INSTANCE.get()//此处get方法可能返回null，current应为可空类型
@@ -124,7 +123,6 @@ class DownloadManager {
                         for(l in specListeners){
                             l.onComplete(mInfo)
                         }
-
                     }
                 })
     }
@@ -144,6 +142,9 @@ class DownloadManager {
                 .url(url)
                 .build()
         try {
+            Log.e("getContentLength","执行")
+            if(client == null)Log.e("getContentLength","client is null!")
+
             var response: Response = client!!.newCall(request).execute()
             Log.e("getContentLength","执行完成")
             if (response != null && response.isSuccessful) {
@@ -238,6 +239,7 @@ class DownloadManager {
 
                     e.onNext(downloadInfo!!)
                 }
+                downCalls.remove(link)
             }finally{
                 if(input!=null) {
                     input.close()
