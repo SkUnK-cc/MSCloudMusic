@@ -25,7 +25,7 @@ import com.example.hp.mycloudmusic.util.DisplayUtil;
 public class StickNavLayout extends LinearLayout implements NestedScrollingParent {
     public static final String TAG = "StickNavLayout";
 
-    private View mNav;
+    private View mNav;      //单曲、专辑等 导航栏
     private ViewPager mViewPager;
 
     private OverScroller mScroller;
@@ -124,7 +124,7 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
      * dispatchNestedPreScroll在ScrollView、ListView的Action_Move中被调用
      * 然后父View就会被回调public void onNestedPreScroll(View target, int dx, int dy, int[] consumed)。
      */
-    private int mNavTop = -1;
+    private int mNavTop = -1;       //单曲、专辑等 导航栏的top
     private int mViewPagerTop = -1;
     private int avatar_height = -1;
     @Override
@@ -155,6 +155,7 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
                 }
             }
         }else if(dy > 0){
+            //往上拉
             if(mNav.getTop() > mNavTop){
                 if(mNav.getTop()-moveY < mNavTop){
                     mNav.layout(mNav.getLeft(),mNavTop,mNav.getRight(),mNavTop+mNav.getHeight());

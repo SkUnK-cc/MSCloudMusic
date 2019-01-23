@@ -1,13 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/mymusicbar"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@color/titlebar"
+        android:paddingTop="20dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+            <TextView
+                android:id="@+id/mymusictitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mymusictitle"
+                android:textSize="@dimen/textSize"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="@color/white_96p"
+        android:paddingTop="20dp">
+        <com.example.hp.mycloudmusic.custom.imageview.RoundImageView
+            android:id="@+id/img_myself_head"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/user_default"
+            android:scaleType="centerCrop"
+            android:layout_centerInParent="true"
+            app:borderRadius="25dp"
+            app:type="circle" />
+        <!--<com.example.hp.mycloudmusic.custom.imageview.MyCircleImageView-->
+            <!--android:id="@+id/img_myself_head"-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="100dp"-->
+            <!--android:src="@drawable/user_default"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:scaleType="centerCrop"/>-->
+        <TextView
+            android:id="@+id/tv_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:layout_below="@+id/img_myself_head"
+            android:layout_centerHorizontal="true"
+            android:text="请先登录"
+            android:textSize="17sp"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:paddingTop="5dp"
+            android:paddingRight="6dp">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/myself_manage" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="管理"
+                android:textColor="@color/colorWhite"/>
+        </LinearLayout>
+    </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MeFragment"
-        android:textSize="30dp"
-        android:layout_gravity="center"/>
 
 </LinearLayout>

@@ -47,6 +47,11 @@ public class ADetailSongFragment extends BaseFragment {
     private ArtistInfoActivity activity;
     private ArtistDetailScrollView parentScrollView;
 
+    @Override
+    protected int getContentView() {
+        return R.layout.fragment_adetail_song;
+    }
+
     @SuppressLint("ValidFragment")
     public ADetailSongFragment(){
     }
@@ -151,11 +156,6 @@ public class ADetailSongFragment extends BaseFragment {
             transaction.show(playMusicFragment);
         }
         transaction.commit();
-    }
-
-    @Override
-    protected int getContentView() {
-        return R.layout.fragment_adetail_song;
     }
 
     @Override

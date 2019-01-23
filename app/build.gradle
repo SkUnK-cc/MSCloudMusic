@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
+//apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 27
@@ -22,10 +22,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:support-v4:27.1.1'
@@ -35,15 +39,13 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     //recyclerview
     implementation 'com.android.support:recyclerview-v7:27.1.1'
-
+    implementation 'com.github.wuxiaogui593:recyclerLib:v1.3'
     //glide
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     //butterknife
     implementation 'com.jakewharton:butterknife:7.0.1'
-    kapt 'com.jakewharton:butterknife:7.0.1'
-
-//    implementation 'com.nineoldandroids:library:2.4.0'
-
+    //    kapt 'com.jakewharton:butterknife:7.0.1'
+    //    implementation 'com.nineoldandroids:library:2.4.0'
     //网络请求
     implementation 'io.reactivex.rxjava2:rxjava:2.1.3'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
@@ -53,17 +55,19 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
-
     //dagger2
-//    compileOnly 'org.glassfish:javax.annotation:10.0-b28'
-//    implementation 'com.google.dagger:dagger:2.5'
-//    annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
+    //    compileOnly 'org.glassfish:javax.annotation:10.0-b28'
+    //    implementation 'com.google.dagger:dagger:2.5'
+    //    annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
     implementation 'com.google.dagger:dagger:2.5'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
-
+    implementation files('libs/open_sdk_r6019_lite.jar')
 }
 repositories {
     mavenCentral()
+}
+kapt{
+    generateStubs = true
 }
 

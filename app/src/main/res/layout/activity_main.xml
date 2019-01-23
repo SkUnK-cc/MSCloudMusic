@@ -18,7 +18,7 @@
         android:layout_height="@dimen/main_bottom_bar"
         android:orientation="horizontal"
         android:paddingTop="7dp"
-        android:background="@color/bottom_bar">
+        android:background="@color/colorWhite">
 
         <RadioButton
             android:id="@+id/bottom_radio_search"

@@ -16,13 +16,11 @@ import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
-
 public abstract class SearchLyric implements IExecutor {
 
     public static final String TAG = "SearchLyric";
     private String title;
     private String artist;
-
     private static final String KUGOULYRIC = "http://m.kugou.com/";
 
     public SearchLyric(String title,String artist){
