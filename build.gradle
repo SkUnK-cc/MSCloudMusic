@@ -30,3 +30,12 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+ext{
+    recyclerview = "27.1.1"
+    myrecyclerlib = "v1.3"
+    glide = "3.7.0"
+    butterknife = "7.0.1"
+}
+
+println "In MSCloudMusic,gradle id is "+gradle.hashCode()
+

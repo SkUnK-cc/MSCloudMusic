@@ -43,7 +43,6 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     protected void initData() {
-
     }
 
     @Override

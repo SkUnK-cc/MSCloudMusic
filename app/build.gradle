@@ -11,6 +11,7 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+        flavorDimensions "versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
 
@@ -18,6 +19,10 @@ android {
     }
     buildTypes {
         release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -37,13 +42,16 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //依赖library
+    implementation project(":commonlib")
     //recyclerview
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.github.wuxiaogui593:recyclerLib:v1.3'
+    implementation "com.android.support:recyclerview-v7:$recyclerview"
+    implementation "com.github.wuxiaogui593:recyclerLib:$myrecyclerlib"
     //glide
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation "com.github.bumptech.glide:glide:$glide"
     //butterknife
-    implementation 'com.jakewharton:butterknife:7.0.1'
+    implementation "com.jakewharton:butterknife:$butterknife"
     //    kapt 'com.jakewharton:butterknife:7.0.1'
     //    implementation 'com.nineoldandroids:library:2.4.0'
     //网络请求
@@ -70,4 +78,5 @@ repositories {
 kapt{
     generateStubs = true
 }
+//println "In MSCloudMusic,gradle id is "+gradle.hashCode()
 
