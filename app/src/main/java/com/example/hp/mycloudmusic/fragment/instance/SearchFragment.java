@@ -3,10 +3,14 @@ package com.example.hp.mycloudmusic.fragment.instance;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -30,7 +34,7 @@ import java.util.List;
 
 import butterknife.Bind;
 
-public class SearchFragment extends BaseFragment implements View.OnClickListener{
+public class SearchFragment extends BaseFragment implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener{
 
     public static final String TAG = "SearchFragment";
     private int etOriginalWidth = 0;
@@ -48,6 +52,8 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
     ImageView ivPlaying;
     @Bind(R.id.cancel)
     TextView tvCancel;
+    @Bind(R.id.swipeLayout)
+    SwipeRefreshLayout mSwipeLayout;
 
     @Bind(R.id.id_search_fragment_recyclerview)
     RecyclerView mRecyclerView;
@@ -90,6 +96,16 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     protected void initView() {
+
+        mSwipeLayout.setColorSchemeColors(Color.BLUE,
+                Color.GREEN,
+                Color.YELLOW,
+                Color.RED);
+        mSwipeLayout.setDistanceToTriggerSync(300);
+        mSwipeLayout.setProgressBackgroundColorSchemeColor(Color.WHITE);
+        mSwipeLayout.setSize(SwipeRefreshLayout.LARGE);
+        mSwipeLayout.setOnRefreshListener(this);
+
         fragmentManager = getActivity().getSupportFragmentManager();
 //        etSearch.clearFocus();
         etSearch.setOnTouchListener(new View.OnTouchListener() {
@@ -146,6 +162,15 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                 Toast.makeText(getContext(), "two item per line!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void onRefresh(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeLayout.setRefreshing(false);
+            }
+        },3000);
     }
 
     private void showCancel() {

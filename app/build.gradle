@@ -46,8 +46,8 @@ dependencies {
     //依赖library
     implementation project(":commonlib")
     //recyclerview
-    implementation "com.android.support:recyclerview-v7:$recyclerview"
-    implementation "com.github.wuxiaogui593:recyclerLib:$myrecyclerlib"
+    implementation "com.android.support:recyclerview-v7:27.1.1"
+    implementation "com.github.wuxiaogui593:recyclerLib:v1.3"
     //glide
     implementation "com.github.bumptech.glide:glide:$glide"
     //butterknife
@@ -78,5 +78,4 @@ repositories {
 kapt{
     generateStubs = true
 }
-//println "In MSCloudMusic,gradle id is "+gradle.hashCode()
 
