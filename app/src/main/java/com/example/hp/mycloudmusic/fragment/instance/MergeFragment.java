@@ -43,6 +43,11 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
 
     private String search_word;
 
+    @Override
+    protected int getContentView() {
+        return R.layout.merge_fragment;
+    }
+
     public MergeFragment() {
 
     }
@@ -91,11 +96,6 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
         viewPager.setCurrentItem(0);
 
         rgMerge.setOnCheckedChangeListener(this);
-    }
-
-    @Override
-    protected int getContentView() {
-        return R.layout.merge_fragment;
     }
 
     @Override

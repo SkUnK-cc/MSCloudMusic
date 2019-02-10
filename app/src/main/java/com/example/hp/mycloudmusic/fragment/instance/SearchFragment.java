@@ -97,10 +97,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
     @Override
     protected void initView() {
 
-        mSwipeLayout.setColorSchemeColors(Color.BLUE,
-                Color.GREEN,
-                Color.YELLOW,
-                Color.RED);
+        mSwipeLayout.setColorSchemeColors(Color.parseColor("#9C27B0"));
         mSwipeLayout.setDistanceToTriggerSync(300);
         mSwipeLayout.setProgressBackgroundColorSchemeColor(Color.WHITE);
         mSwipeLayout.setSize(SwipeRefreshLayout.LARGE);

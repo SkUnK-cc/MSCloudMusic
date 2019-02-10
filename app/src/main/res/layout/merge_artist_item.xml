@@ -3,16 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/merge_artist_info"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="70dp"
     android:paddingLeft="10dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
+    android:paddingTop="3dp"
+    android:paddingBottom="4dp"
     android:paddingRight="13dp"
     android:orientation="horizontal">
     <ImageView
         android:id="@+id/merge_artist_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="65dp"
+        android:layout_height="match_parent"
         android:src="@drawable/taylor_swift"
         tools:scaleType="fitXY"/>
     <TextView
