@@ -5,6 +5,8 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hp.mycloudmusic.R;
@@ -21,9 +23,16 @@ public class MergeSongFragment extends BaseFragment {
 
     @Bind(R.id.merge_song_recyclerview)
     RecyclerView rvSong;
+    @Bind(R.id.tv_noMore)
+    TextView tvNoMore;
 
     private Song_info songInfo;
     private MSongRecyclerAdapter adapter;
+
+    @Override
+    protected int getContentView() {
+        return R.layout.fragment_merge_song;
+    }
 
     public MergeSongFragment() {
 
@@ -80,11 +89,6 @@ public class MergeSongFragment extends BaseFragment {
     }
 
     @Override
-    protected int getContentView() {
-        return R.layout.fragment_merge_song;
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
     }
@@ -101,7 +105,15 @@ public class MergeSongFragment extends BaseFragment {
         if(adapter == null){
             Log.e(TAG, "updateAdapter: adapter is null");
         }
+
         adapter.updateData(data);
         adapter.notifyDataSetChanged();
+        if (data == null){
+            tvNoMore.setVisibility(View.VISIBLE);
+        }else if(data.size()==0){
+            tvNoMore.setVisibility(View.VISIBLE);
+        }else{
+            tvNoMore.setVisibility(View.GONE);
+        }
     }
 }

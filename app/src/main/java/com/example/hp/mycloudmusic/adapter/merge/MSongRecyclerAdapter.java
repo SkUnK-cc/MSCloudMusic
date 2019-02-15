@@ -119,7 +119,11 @@ public class MSongRecyclerAdapter extends RecyclerView.Adapter<MSongRecyclerAdap
         this.popListener = listener;
     }
 
-    public void updateData(List<Song> list){
-        this.list = list;
+    public void updateData(List<Song> newList){
+        if(newList==null){
+            list.clear();
+        }else {
+            this.list = newList;
+        }
     }
 }

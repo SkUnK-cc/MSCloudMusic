@@ -3,6 +3,8 @@ package com.example.hp.mycloudmusic.api;
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -13,8 +15,26 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitFactory {
-    public static BaiduMusicApi provideBaiduApi(){
 
+    private static final Map<String,Object> serviceMap = new ConcurrentHashMap<>();
+
+    public static BaiduMusicApi provideBaiduApi(){
+        Object value;
+        if(serviceMap.containsKey(BaiduMusicApi.HOST)){
+            Object obj = serviceMap.get(BaiduMusicApi.HOST);
+            if(obj==null){
+                value = createBaiduApi();
+                serviceMap.put(BaiduMusicApi.HOST,value);
+            }else{
+                value = obj;
+            }
+        }else{
+            value = createBaiduApi();
+            serviceMap.put(BaiduMusicApi.HOST,value);
+        }
+        return (BaiduMusicApi) value;
+    }
+    public static BaiduMusicApi createBaiduApi(){
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(new Interceptor() {
             @Override

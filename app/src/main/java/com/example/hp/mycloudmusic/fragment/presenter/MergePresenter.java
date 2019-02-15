@@ -5,7 +5,6 @@ import android.util.Log;
 import com.example.hp.mycloudmusic.api.RetrofitFactory;
 import com.example.hp.mycloudmusic.fragment.view.IMergeView;
 import com.example.hp.mycloudmusic.musicInfo.merge.QueryMergeResp;
-import com.example.hp.mycloudmusic.musicInfo.merge.Song;
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter;
 import com.litesuits.orm.LiteOrm;
 
@@ -37,8 +36,8 @@ public class MergePresenter extends BasePresenter<IMergeView> {
                     @Override
                     public void onNext(QueryMergeResp queryMergeResp) {
                         if(queryMergeResp!=null && queryMergeResp.isValid()){
-                            Song song = queryMergeResp.result.getSong_info().getSong_list().get(0);
-                            Log.e(TAG, "onNext: "+song.getTitle()+"\n"+song.getArtist());
+//                            Song song = queryMergeResp.result.getSong_info().getSong_list().get(0);
+//                            Log.e(TAG, "onNext: "+song.getTitle()+"\n"+song.getArtist());
                             mView.showMergeData(queryMergeResp);
                         }else{
 
