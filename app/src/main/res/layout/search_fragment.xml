@@ -28,7 +28,7 @@
 
         <ImageView
             android:id="@+id/the_music_playing"
-            android:layout_width="?attr/actionBarSize"
+            android:layout_width="?android:attr/actionBarSize"
             android:layout_height="match_parent"
             android:src="@drawable/ic_icon_music_play"
             android:layout_alignParentRight="true"
@@ -37,7 +37,7 @@
 
         <TextView
             android:id="@+id/cancel"
-            android:layout_width="?attr/actionBarSize"
+            android:layout_width="?android:attr/actionBarSize"
             android:layout_height="match_parent"
             android:gravity="center"
             android:textSize="18sp"

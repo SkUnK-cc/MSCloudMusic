@@ -97,6 +97,8 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
     @Override
     protected void initView() {
 
+        setEtWidth();
+
         mSwipeLayout.setColorSchemeColors(Color.parseColor("#9C27B0"));
         mSwipeLayout.setDistanceToTriggerSync(300);
         mSwipeLayout.setProgressBackgroundColorSchemeColor(Color.WHITE);
@@ -161,6 +163,20 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
         });
     }
 
+    private void setEtWidth() {
+        int etOw = etSearch.getLayoutParams().width;
+        int etOp = etSearch.getPaddingLeft();
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        int sW = wm.getDefaultDisplay().getWidth();
+        int iv = ivPlaying.getLayoutParams().width;
+        int barPad = rlSearchBar.getPaddingLeft();
+        int cW = screenWidth - iv - barPad;
+
+        int w = sW-2*iv-barPad;
+        etSearch.getLayoutParams().width = w;
+        etSearch.requestLayout();
+    }
+
     public void onRefresh(){
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -189,7 +205,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
             int iv = ivPlaying.getLayoutParams().width;
             int barPad = rlSearchBar.getPaddingLeft();
             changeWidth = screenWidth - iv - barPad;
-            Log.e(TAG, "all=" + screenWidth + "\niv=" + iv + "barPad=" + barPad + "\noriginal=" + etOriginalWidth + "\nchange=" + changeWidth);
+            //Log.e(TAG, "all=" + screenWidth + "\niv=" + iv + "barPad=" + barPad + "\noriginal=" + etOriginalWidth + "\nchange=" + changeWidth);
         }
         isEditChanged = true;
         ValueAnimator widthAnimator = ValueAnimator.ofInt(etOriginalWidth,changeWidth);
