@@ -75,7 +75,6 @@ dependencies {
 repositories {
     mavenCentral()
 }
-kapt{
+kapt {
     generateStubs = true
 }
-

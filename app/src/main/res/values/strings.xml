@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MSCloudMusic</string>
     <string name="mymusictitle">我的音乐</string>
+    <string name="myaccount">我的账号</string>
     <string name="local_music_title">本地音乐</string>
     <string name="bottom_radio_discover">发现</string>
     <string name="bottom_radio_music">我的</string>

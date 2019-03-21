@@ -18,7 +18,7 @@
                 android:id="@+id/mymusictitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/mymusictitle"
+                android:text="@string/myaccount"
                 android:textSize="@dimen/textSize"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"/>

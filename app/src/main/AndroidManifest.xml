@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".CMApplication"
@@ -17,17 +17,16 @@
         <activity
             android:name=".ui.MainActivity"
             android:theme="@style/MainActivityTheme"
-            android:windowSoftInputMode="adjustResize">
-
-        </activity>
+            android:windowSoftInputMode="adjustResize"></activity>
 
         <service
             android:name=".service.PlayService"
             android:enabled="true" />
 
-        <!--<activity android:name=".ui.onLine.ArtistInfoActivity" />-->
-        <activity android:name=".ui.onLine.ArtistDetailActivity"></activity>
-        <activity android:name=".ui.SplashActivity"
+        <!-- <activity android:name=".ui.onLine.ArtistInfoActivity" /> -->
+        <activity android:name=".ui.onLine.ArtistDetailActivity" />
+        <activity
+            android:name=".ui.SplashActivity"
             android:theme="@style/AppTheme.Full">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,12 +36,14 @@
         </activity>
         <activity
             android:name="com.tencent.tauth.AuthActivity"
-            android:noHistory="true"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="tencent222222" />
             </intent-filter>
         </activity>
@@ -51,6 +52,8 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="behind"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".ui.user.RegisterActivity" />
+        <activity android:name=".ui.user.LoginActivity"></activity>
     </application>
 
 </manifest>

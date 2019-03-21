@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.custom.imageview.RoundImageView;
+import com.example.hp.mycloudmusic.ui.user.LoginActivity;
 import com.example.hp.mycloudmusic.util.Util;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.common.Constants;
@@ -69,6 +70,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.img_myself_head:
+                //onQQLogin();
                 onClickLogin();
                 break;
             default:
@@ -77,6 +79,11 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void onClickLogin() {
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        startActivity(intent);
+    }
+
+    private void onQQLogin() {
         if(!mTencent.isSessionValid()){
             mTencent.login(getActivity(),"all",loginListener,true);
         }else{

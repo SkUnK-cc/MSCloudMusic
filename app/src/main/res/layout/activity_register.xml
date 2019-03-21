@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_register">
+
+    <include layout="@layout/register_bar"/>
+
+    <LinearLayout
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal">
+        <EditText
+            android:id="@+id/et_register_phone_num"
+            android:layout_width="330dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_register_edit"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:hint="请输入手机号"
+            android:paddingLeft="15dp"/>
+        <EditText
+            android:id="@+id/et_register_username"
+            android:layout_width="330dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_register_edit"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:hint="请输入用户名"
+            android:paddingLeft="15dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="13dp"
+            android:text="设置您的登录密码"
+            android:layout_marginTop="10dp"
+            android:textSize="11sp"
+            android:textColor="@color/colorPrimaryDark"/>
+        <EditText
+            android:id="@+id/et_register_password"
+            android:layout_width="330dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_register_edit"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:hint="请输入登录密码"
+            android:paddingLeft="15dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="14dp"
+            android:text="密码由6-20位英文字母,数字或符号组成"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
+            android:textColor="@color/colorPrimaryDark"/>
+        <EditText
+            android:id="@+id/et_register_password_againt"
+            android:layout_width="330dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_register_edit"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="14dp"
+            android:hint="请再次输入密码"
+            android:paddingLeft="15dp"/>
+        <Button
+            android:id="@+id/bt_register_next"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_register_next"
+            android:text="注册"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/tv_register_agreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text=""
+            android:layout_gravity="end"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+
+</LinearLayout>

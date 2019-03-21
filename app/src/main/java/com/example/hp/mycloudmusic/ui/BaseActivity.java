@@ -22,6 +22,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "onCreate: "+getClass().getName());
+        doBeforeContentView();
         setContentView(getContentView());
         ButterKnife.bind(this);
         if(Build.VERSION.SDK_INT >= 21){
@@ -38,6 +39,10 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
         initView();
         initListener();
         initData();
+    }
+
+    protected void doBeforeContentView(){
+
     }
 
     //通过该方法由子类实例具体的presenter，父类无法实例具体的presenter
