@@ -1,6 +1,7 @@
 package com.example.hp.mycloudmusic.api;
 
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi;
+import com.example.hp.mycloudmusic.api.cloudmusic.CloudMusicApi;
 
 import java.io.IOException;
 import java.util.Map;
@@ -34,6 +35,45 @@ public class RetrofitFactory {
         }
         return (BaiduMusicApi) value;
     }
+    public static CloudMusicApi provideCloudMusicApi(){
+        Object value;
+        if(serviceMap.containsKey(CloudMusicApi.host)){
+            Object obj = serviceMap.get(CloudMusicApi.host);
+            if(obj==null){
+                value = createCloudMusicApi();
+                serviceMap.put(CloudMusicApi.host,value);
+            }else{
+                value = obj;
+            }
+        }else{
+            value = createCloudMusicApi();
+            serviceMap.put(CloudMusicApi.host,value);
+        }
+        return (CloudMusicApi) value;
+    }
+
+    private static CloudMusicApi createCloudMusicApi() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder()
+                        .removeHeader("User-Agent")
+                        .addHeader("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:0.9.4)")
+                        .build();
+                return chain.proceed(newRequest);
+            }
+        });
+        OkHttpClient client = builder.build();
+        return new Retrofit.Builder()
+                .baseUrl(CloudMusicApi.host)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build()
+                .create(CloudMusicApi.class);
+    }
+
     public static BaiduMusicApi createBaiduApi(){
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(new Interceptor() {
