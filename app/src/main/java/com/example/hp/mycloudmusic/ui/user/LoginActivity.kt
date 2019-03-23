@@ -1,5 +1,7 @@
 package com.example.hp.mycloudmusic.ui.user
 
+import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.example.hp.mycloudmusic.R
@@ -8,6 +10,7 @@ import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter
 import com.example.hp.mycloudmusic.mvp.view.IBaseView
 import com.example.hp.mycloudmusic.ui.BaseActivity
 import com.example.hp.mycloudmusic.userinfo.LoginInfo
+import com.example.hp.mycloudmusic.userinfo.User
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -28,6 +31,7 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
 
     override fun initListener() {
         bt_login.setOnClickListener(this)
+        bt_register.setOnClickListener(this)
     }
 
     override fun initView() {
@@ -36,7 +40,13 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
     override fun onClick(v: View) {
         when(v.id){
             R.id.bt_login -> loginPost()
+            R.id.bt_register -> toRegister()
         }
+    }
+
+    private fun toRegister() {
+        var intent = Intent(this,RegisterActivity::class.java)
+        startActivityForResult(intent,6)
     }
 
     fun loginPost(){
@@ -47,7 +57,7 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
             return
         }
         RetrofitFactory.provideCloudMusicApi()
-                .login("",password,phonenum)
+                .login(phonenum,password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object: Observer<LoginInfo>{
@@ -59,10 +69,12 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
                     }
 
                     override fun onNext(t: LoginInfo) {
-                        if(t!=null && t.code==0){
-                            Toast.makeText(this@LoginActivity,"登陆成功",Toast.LENGTH_SHORT).show()
-                        }else{
-                            Toast.makeText(this@LoginActivity,"登录失败",Toast.LENGTH_SHORT).show()
+                        if(t==null)return
+                        if( t.code==0){
+                            Toast.makeText(this@LoginActivity,t.msg,Toast.LENGTH_SHORT).show()
+                            Log.e("resp",t.toString())
+                        }else if(t.code==1){
+                            Toast.makeText(this@LoginActivity,t.msg,Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -72,7 +84,13 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
                 })
     }
 
-
-
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(resultCode){
+            RegisterActivity.REGISTER_SUCCESS -> {
+                var user: User = data?.getParcelableExtra<User>("user") ?: return
+                et_login_phone_num.setText(user.phonenum)
+                et_login_password.setText(user.password)
+            }
+        }
+    }
 }
