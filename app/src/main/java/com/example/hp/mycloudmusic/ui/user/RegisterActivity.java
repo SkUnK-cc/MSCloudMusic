@@ -128,6 +128,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     }
                     @Override
                     public void onError(Throwable e) {
+                        Toast.makeText(RegisterActivity.this,"网络出错，请重试",Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public void onComplete() {

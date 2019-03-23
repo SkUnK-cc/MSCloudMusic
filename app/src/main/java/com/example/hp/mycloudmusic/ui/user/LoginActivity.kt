@@ -79,8 +79,8 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
                     }
 
                     override fun onError(e: Throwable) {
+                        Toast.makeText(this@LoginActivity,"网络出错，请重试",Toast.LENGTH_SHORT).show()
                     }
-
                 })
     }
 
