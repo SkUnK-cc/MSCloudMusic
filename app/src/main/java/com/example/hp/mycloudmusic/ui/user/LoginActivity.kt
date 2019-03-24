@@ -16,6 +16,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.register_bar.*
 
 class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickListener {
     override fun getContentView(): Int {
@@ -32,6 +33,7 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
     override fun initListener() {
         bt_login.setOnClickListener(this)
         bt_register.setOnClickListener(this)
+        iv_register_back.setOnClickListener(this)
     }
 
     override fun initView() {
@@ -41,6 +43,7 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
         when(v.id){
             R.id.bt_login -> loginPost()
             R.id.bt_register -> toRegister()
+            R.id.iv_register_back -> finish()
         }
     }
 

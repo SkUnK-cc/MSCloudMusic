@@ -58,7 +58,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
             mTencent = Tencent.createInstance(mAppid, getContext());
         }
         ivHead.setOnClickListener(this);
-        ivHead.setImageResource(R.drawable.test_img);
+        //ivHead.setImageResource(R.drawable.test_img);
     }
 
     @Override

@@ -27,7 +27,6 @@ public class MergeAlbumFragment extends Fragment {
     public static MergeAlbumFragment newInstance() {
         MergeAlbumFragment fragment = new MergeAlbumFragment();
         Bundle args = new Bundle();
-
         fragment.setArguments(args);
         return fragment;
     }

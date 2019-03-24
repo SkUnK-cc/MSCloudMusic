@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.example.hp.mycloudmusic.api.RetrofitFactory;
 import com.example.hp.mycloudmusic.ui.BaseActivity;
 import com.example.hp.mycloudmusic.userinfo.LoginInfo;
 import com.example.hp.mycloudmusic.util.DensityUtil;
+import com.example.hp.mycloudmusic.util.Util;
 
 import butterknife.Bind;
 import io.reactivex.Observer;
@@ -100,6 +102,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         String phonenum = etPhonenum.getText().toString();
         String password = etPassword.getText().toString();
         String password2 = etPsdAgaint.getText().toString();
+        if(TextUtils.isEmpty(username) || TextUtils.isEmpty(phonenum) ||
+                TextUtils.isEmpty(password) || TextUtils.isEmpty(password2)){
+            Util.toastMessage(this,"用户名、手机号或密码不能为空!");
+            return;
+        }
+        if(!isValidPhone(phonenum)){
+            Util.toastMessage(this,"手机号码格式错误!");
+        }
         if(!checkPassword(password,password2))return;
         RetrofitFactory.provideCloudMusicApi()
                 .register(username,phonenum,password)
@@ -134,6 +144,11 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     public void onComplete() {
                     }
                 });
+    }
+
+    private boolean isValidPhone(String phone) {
+        String telRegex = "^((13[0-9])|(15[^4])|(18[0-9])|(17[0-8])|(147,145))\\d{8}$";
+        return !TextUtils.isEmpty(phone) && phone.matches(telRegex);
     }
 
     private boolean checkPassword(String password1,String password2){

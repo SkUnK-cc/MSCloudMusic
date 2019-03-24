@@ -184,6 +184,12 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         Log.e(TAG, getClass().getName()+" : onDestroy");
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.e(TAG, getClass().getName()+" : onDetach");
+    }
+
     public void startActivity(Class<?> cls){
         startActivity(cls,null);
     }

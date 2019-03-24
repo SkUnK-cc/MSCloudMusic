@@ -93,6 +93,7 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
         fragmentList.add(mergeAlbumFragment);
         adapter = new TabFragmentPagerAdapter(getChildFragmentManager(),fragmentList);
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setCurrentItem(0);
 
         rgMerge.setOnCheckedChangeListener(this);

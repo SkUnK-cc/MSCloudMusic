@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 
 public interface CloudMusicApi {
 
-    String host = "http://127.0.0.1:8080/";
+    String host = "http://39.108.123.251:8080/";
 
     @FormUrlEncoded
     @POST("CloudMusicProject/login.do")
