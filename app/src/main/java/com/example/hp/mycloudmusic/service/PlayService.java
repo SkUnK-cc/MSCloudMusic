@@ -1,5 +1,6 @@
 package com.example.hp.mycloudmusic.service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.musicInfo.merge.Song;
 import com.example.hp.mycloudmusic.musicInfo.songPlay.SongPlayResp;
+import com.example.hp.mycloudmusic.service.broadcast.NotificationBroadcast;
 import com.example.hp.mycloudmusic.service.listener.OnPlayerEventListener;
 import com.example.hp.mycloudmusic.service.receiver.NoisyAudioStreamReceiver;
 import com.example.hp.mycloudmusic.util.AudioFocusManager;
@@ -69,6 +71,8 @@ public class PlayService extends Service {
     public static final int UPDATE_PLAY_PROGRESS_SHOW = 0;
 
     private final Handler handler = new MyServiceHandler(this);
+
+    private NotificationUtils notificationUtils;
 
     public AbstractMusic getPlayingMusic() {
         return mPlayingMusic;
@@ -164,10 +168,25 @@ public class PlayService extends Service {
         super.onCreate();
         Log.e(TAG, "onCreate: service is on create!");
         audioMusics = new ArrayList<>();
-        NotificationUtils.init(this);       //初始化NotificationUtils
+        registerReceiver();
+        setNotification();
         createMediaPlayer();
         initAudioFocusManager();
     }
+
+    private void registerReceiver() {
+        NotificationBroadcast broadcast = new NotificationBroadcast();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
+        registerReceiver(broadcast,intentFilter);
+    }
+
+    private void setNotification(){
+        notificationUtils = new NotificationUtils(this);       //初始化NotificationUtils
+        Notification notification = notificationUtils.getPlayMusicNotification();
+        startForeground(1,notification);
+    }
+
     private void initAudioFocusManager() {
         mAudioFocusManager = new AudioFocusManager(this);
     }
@@ -190,7 +209,6 @@ public class PlayService extends Service {
                     break;
             }
         }
-
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -221,6 +239,7 @@ public class PlayService extends Service {
         }else if(isPausing()){
             start();
         }else{
+            if(getPlayingPosition()==-1)return;
             play(getPlayingPosition());
         }
     }
@@ -550,6 +569,7 @@ public class PlayService extends Service {
 
     @Override
     public void onDestroy() {
+        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
         mPlayer.release();
         super.onDestroy();
     }

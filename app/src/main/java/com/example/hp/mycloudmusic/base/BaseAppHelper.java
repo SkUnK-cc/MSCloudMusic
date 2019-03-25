@@ -15,6 +15,17 @@ public class BaseAppHelper {
      */
     private List<AbstractMusic> mMusicList = new ArrayList<>();
 
+    /**
+     * 单例
+     */
+    private static class SingletonHolder{
+        public static BaseAppHelper INSTANCE= new BaseAppHelper();
+    }
+
+    public static BaseAppHelper get(){
+        return SingletonHolder.INSTANCE;
+    }
+
     public void setPlayService(PlayService playService) {
         mplayService = playService;
     }
@@ -25,14 +36,6 @@ public class BaseAppHelper {
 
     public List<AbstractMusic> getMusicList() {
         return mMusicList;
-    }
-
-    private static class SingletonHolder{
-        public static BaseAppHelper INSTANCE= new BaseAppHelper();
-    }
-
-    public static BaseAppHelper get(){
-        return SingletonHolder.INSTANCE;
     }
 
     public void setLocalMusicChanged(boolean chenged){
