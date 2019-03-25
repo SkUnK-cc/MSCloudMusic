@@ -116,8 +116,8 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
         getPlayService().setOnPlayerEventListener(getActivity().getClass().getName(), new OnPlayerEventListener(){
 
             @Override
-            public void onUpdateProgress(int currentPosition) {
-                updateProgress(currentPosition);
+            public void onUpdateProgress(int currentPosition, int duration) {
+                updateProgress(currentPosition,duration);
             }
 
             @Override
@@ -162,6 +162,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
                 hideSelf();
                 break;
             case R.id.iv_play:
+                ivPlay.setPressed(!ivPlay.isPressed());
                 play();
                 break;
             case R.id.iv_next:
@@ -195,6 +196,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
             sbProgress.setProgress(getPlayService().getCurrentPosition());
             sbProgress.setSecondaryProgress(0);
             sbProgress.setMax((int) music.getDuration());         //最大值不显示,仍以毫秒为单位
+            Log.e(TAG, "onchange: sbProgress.max = "+sbProgress.getMax());
             ivPlay.setSelected(true);
             mLastProgress = 0;
             tvCurrentTime.setText("00:00");
@@ -202,7 +204,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
             tvTotalTime.setText(PlayerFormatUtils.formatTime(music.getDuration()));
             ivPlayPageBg.setImageBitmap(CoverLoader.getInstance().loadBlur(music));
             lyricView.setEmptyView(emptyView);
-            showNotLrc();
+            //showNotLrc();
             mPresenter.setLrc(music);
         }
     }
@@ -240,10 +242,21 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
         }
     }
 
-    public void updateProgress(int currentPosition) {
+    public void updateProgress(int currentPosition, int duration) {
         if(currentPosition>0){
             lyricManager.setCurrentTimeMillis(currentPosition);
         }
+
+        sbProgress.setProgress(getPlayService().getCurrentPosition());
+        sbProgress.setSecondaryProgress(0);
+        sbProgress.setMax((int) getPlayService().getmPlayer().getDuration());         //最大值不显示,仍以毫秒为单位
+        Log.e(TAG, "onchange: sbProgress.max = "+sbProgress.getMax());
+        ivPlay.setSelected(true);
+        mLastProgress = 0;
+        tvCurrentTime.setText(PlayerFormatUtils.formatTime(getPlayService().getCurrentPosition()));
+        Log.e(TAG, "onchange: 音乐时长: "+getPlayService().getmPlayer().getDuration());
+        tvTotalTime.setText(PlayerFormatUtils.formatTime(getPlayService().getmPlayer().getDuration()));
+
     }
 
     private void onBackPressed() {

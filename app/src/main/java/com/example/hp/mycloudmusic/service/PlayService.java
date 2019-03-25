@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -23,7 +24,7 @@ import com.example.hp.mycloudmusic.service.broadcast.NotificationBroadcast;
 import com.example.hp.mycloudmusic.service.listener.OnPlayerEventListener;
 import com.example.hp.mycloudmusic.service.receiver.NoisyAudioStreamReceiver;
 import com.example.hp.mycloudmusic.util.AudioFocusManager;
-import com.example.hp.mycloudmusic.util.NotificationUtils;
+import com.example.hp.mycloudmusic.util.NotificationHelper;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -72,7 +73,11 @@ public class PlayService extends Service {
 
     private final Handler handler = new MyServiceHandler(this);
 
-    private NotificationUtils notificationUtils;
+    /**
+     * Notification
+     */
+    private NotificationHelper notificationHelper;
+    Notification notification;
 
     public AbstractMusic getPlayingMusic() {
         return mPlayingMusic;
@@ -182,8 +187,15 @@ public class PlayService extends Service {
     }
 
     private void setNotification(){
-        notificationUtils = new NotificationUtils(this);       //初始化NotificationUtils
-        Notification notification = notificationUtils.getPlayMusicNotification();
+        notificationHelper = new NotificationHelper(this);       //初始化NotificationUtils
+        String song="",singer="";
+        int progress=0;
+        if(mPlayingMusic!=null){
+            song = mPlayingMusic.getTitle();
+            singer = mPlayingMusic.getAlbumPic();
+            progress = (int)(((float)mPlayer.getCurrentPosition() / (float)mPlayer.getDuration())*100);
+        }
+        notification = notificationHelper.getPlayMusicNotification(song,singer,progress);
         startForeground(1,notification);
     }
 
@@ -323,6 +335,7 @@ public class PlayService extends Service {
 
     private void play(AbstractMusic music) {
         mPlayingMusic = music;
+        Log.e(TAG, "play: "+music.getTitle()+"/"+music.getDuration()+"/");
         createMediaPlayer();
         initPlayer(music);
         if(listenerMap!=null){
@@ -385,6 +398,9 @@ public class PlayService extends Service {
         audioMusics.add(mPlayingPosition+1,music);
     }
 
+    public MediaPlayer getmPlayer() {
+        return mPlayer;
+    }
 
     /**-------------------------------mediaPlayer监听方法------------------------------------------*/
     /**
@@ -418,6 +434,7 @@ public class PlayService extends Service {
     private MediaPlayer.OnCompletionListener mOnCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
+            Log.e(TAG, "onCompletion: 被调用");
             next();
         }
     };
@@ -528,17 +545,36 @@ public class PlayService extends Service {
     private void updatePlayProgressShow() {
         if(isPlaying() && listenerMap!=null){
             int currentPosition= mPlayer.getCurrentPosition();
+            int duration = mPlayer.getDuration();
             Log.d(TAG, "PlayService 调用activity onUpdateProgress方法 ");
 //            mPlayerEventListener.onUpdateProgress(currentPosition);
             if(listenerMap!=null){
                 List<OnPlayerEventListener> list = getListeners();
                 for(int i=0;i<list.size();i++){
-                    list.get(i).onUpdateProgress(currentPosition);
+                    list.get(i).onUpdateProgress(currentPosition, duration);
                 }
             }
         }
         Log.d(TAG, "updatePlayProgressShow" );
+        updateNotification();
         handler.sendEmptyMessageDelayed(UPDATE_PLAY_PROGRESS_SHOW,300);
+    }
+
+    private void updateNotification() {
+        if(notificationHelper==null){
+            setNotification();
+        } else {
+            String song = "", singer = "";
+            int progress = 0;
+            if (mPlayingMusic != null) {
+                song = mPlayingMusic.getTitle();
+                singer = mPlayingMusic.getArtist();
+                progress = (int)(((float)mPlayer.getCurrentPosition() / (float)mPlayer.getDuration())*100);
+//                Log.e(TAG, mPlayer.getCurrentPosition()+"/"+mPlayer.getDuration());
+//                Log.e(TAG, progress+"");
+            }
+            notificationHelper.updateNotification(song, singer, progress);
+        }
     }
 
     //默认状态应该是原始状态，STATE_IDLE
@@ -571,6 +607,9 @@ public class PlayService extends Service {
     public void onDestroy() {
         handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
         mPlayer.release();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(true);
+        }
         super.onDestroy();
     }
 }

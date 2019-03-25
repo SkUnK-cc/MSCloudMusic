@@ -3,7 +3,7 @@ package com.example.hp.mycloudmusic.service.listener;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 
 public interface OnPlayerEventListener {
-    void onUpdateProgress(int currentPosition);
+    void onUpdateProgress(int currentPosition, int duration);
 
     void onPlayerStart();
 

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.widget.RemoteViews;
 
 import com.example.hp.mycloudmusic.R;
@@ -15,12 +16,14 @@ import com.example.hp.mycloudmusic.service.broadcast.NotificationBroadcast;
 
 import static android.app.Notification.VISIBILITY_SECRET;
 
-public class NotificationUtils {
+public class NotificationHelper {
 
     private NotificationManager manager;
     private Context context;
+    private RemoteViews remoteViews;
+    private NotificationCompat.Builder builder;
 
-    public NotificationUtils(Context context){
+    public NotificationHelper(Context context){
         this.context = context;
         init();
     }
@@ -36,22 +39,27 @@ public class NotificationUtils {
     }
 
     private NotificationCompat.Builder getNotificationBuilder(){
+        if(builder!=null){
+            return builder;
+        }
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel = new NotificationChannel("channel_id","channel_name",NotificationManager.IMPORTANCE_LOW);
             channel.setLockscreenVisibility(VISIBILITY_SECRET);
             manager.createNotificationChannel(channel);
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-//        builder.setContentTitle("新消息来了");
-//        builder.setContentText("内容");
-        builder.setSmallIcon(R.drawable.ic_icon_add_list);
-        return builder;
+        builder.setSmallIcon(R.drawable.ic_icon_quantum_statistical);
+        this.builder = builder;
+        return this.builder;
     }
 
-    public Notification getPlayMusicNotification(){
+    public Notification getPlayMusicNotification(String song ,String singer,int progress){
         NotificationCompat.Builder builder = getNotificationBuilder();
 
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_play_music);
+        remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_play_music);
+        remoteViews.setTextViewText(R.id.notify_song, TextUtils.isEmpty(song)?"未知":song);
+        remoteViews.setTextViewText(R.id.notify_singer,TextUtils.isEmpty(singer)?"未知":singer);
+        remoteViews.setProgressBar(R.id.notify_progress_bar,100,progress,false);
 
         Intent intent = new Intent(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,intent,0);
@@ -60,8 +68,12 @@ public class NotificationUtils {
         builder.setCustomContentView(remoteViews);
         builder.setCustomBigContentView(remoteViews);
 
-//        manager.notify(3,builder.build());
         return builder.build();
+    }
+
+    public void updateNotification(String song,String singer,int progress){
+        Notification newNotification = getPlayMusicNotification(song,singer,progress);
+        manager.notify(1,newNotification);
     }
 
     public void cancelNotification(){
