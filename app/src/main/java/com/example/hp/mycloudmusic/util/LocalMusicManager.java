@@ -15,29 +15,29 @@ import java.util.List;
 
 import static java.lang.Long.parseLong;
 
-public class FileScanManager {
+public class LocalMusicManager {
 
-    private static final String TAG = "FileScanManager";
+    private static final String TAG = "LocalMusicManager";
 
     private LiteOrm mLiteOrm;
-    private static FileScanManager mInstance;
+    private static LocalMusicManager mInstance;
     //当没有明确的对象作为锁，只是想让一段代码同步时，可以创建一个特殊的对象来充当锁
     private static final Object mLock = new Object();
     private static final Object wLock = new Object();
 
 
-    public static FileScanManager getInstance(LiteOrm liteOrm){
+    public static LocalMusicManager getInstance(LiteOrm liteOrm){
         if(mInstance == null){
             synchronized (mLock){
                 if(mInstance==null) {
-                    mInstance = new FileScanManager(liteOrm);
+                    mInstance = new LocalMusicManager(liteOrm);
                 }
             }
         }
         return mInstance;
     }
 
-    private FileScanManager(LiteOrm liteOrm){
+    private LocalMusicManager(LiteOrm liteOrm){
         this.mLiteOrm = liteOrm;
     }
 
@@ -109,5 +109,10 @@ public class FileScanManager {
         musicList = mLiteOrm.query(qb);
         Log.e(TAG, "getAudioFromDb------------------------------------------------->");
         return musicList;
+    }
+
+    public void deleteAudio(AudioBean audioBean){
+        mLiteOrm.delete(audioBean);
+
     }
 }

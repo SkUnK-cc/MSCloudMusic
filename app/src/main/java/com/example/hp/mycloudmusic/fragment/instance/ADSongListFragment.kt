@@ -8,7 +8,7 @@ import com.example.hp.mycloudmusic.R
 import com.example.hp.mycloudmusic.adapter.recyclerview.CommonViewHolder
 import com.example.hp.mycloudmusic.adapter.recyclerview.OnlineSong.OnlineSongRecyclerAdapter
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi
-import com.example.hp.mycloudmusic.custom.PopupWindowManager
+import com.example.hp.mycloudmusic.custom.popupwindow.PopupWindowManager
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic
 import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistInfoResp

@@ -1,5 +1,6 @@
 package com.example.hp.mycloudmusic.fragment.instance;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,12 +15,15 @@ import android.widget.TextView;
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.LocalMusicAdapter;
 import com.example.hp.mycloudmusic.base.BaseAppHelper;
-import com.example.hp.mycloudmusic.custom.PopupWindowManager;
+import com.example.hp.mycloudmusic.custom.popupwindow.DefPopupWindowListener;
+import com.example.hp.mycloudmusic.custom.popupwindow.PopupWindowManager;
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.util.DisplayUtil;
-import com.example.hp.mycloudmusic.util.FileScanManager;
+import com.example.hp.mycloudmusic.util.LocalMusicManager;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +47,30 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
     private LocalMusicAdapter adapter;
     private List<AudioBean> localMusicList;
 
+    private AsyncTask mTask;
+
     private static final String TAG = "LocalFragment";
+
+    class LocalPopupWindowListener extends DefPopupWindowListener {
+
+        public LocalPopupWindowListener(@NotNull Activity activity) {
+            super(activity);
+        }
+
+        @Override
+        public void onItemClick(int imageId, AbstractMusic music) {
+            switch (imageId){
+                case R.drawable.ic_icon_delete:
+                    int index = localMusicList.indexOf(music);
+                    localMusicList.remove(index);
+                    adapter.notifyItemRemoved(index);
+                    break;
+                default:
+                    super.onItemClick(imageId,music);
+                    break;
+            }
+        }
+    };
 
     @Override
     protected int getContentView() {
@@ -75,15 +102,15 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
     }
 
     private void startScan() {
-        new AsyncTask<Void, String, List<AudioBean>>() {
+        mTask = new AsyncTask<Void, String, List<AudioBean>>() {
             @Override
             protected List<AudioBean> doInBackground(Void... voids) {
                 //先同步到localMusicList,再更新到adapter
                 Log.e(TAG, "doInBackground: 从数据库获取音乐");
-                localMusicList = FileScanManager.getInstance(liteOrm).getAudioFromDb();
+                localMusicList = LocalMusicManager.getInstance(liteOrm).getAudioFromDb();
                 if(localMusicList == null || localMusicList.size()==0){
                     Log.e(TAG, "doInBackground: 从本地扫描获取音乐");
-                    localMusicList = FileScanManager.getInstance(liteOrm).scanMusic(getContext());
+                    localMusicList = LocalMusicManager.getInstance(liteOrm).scanMusic(getContext());
                 }
                 return localMusicList;
             }
@@ -102,7 +129,8 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
                 BaseAppHelper.get().setLocalMusicChanged(false);
             }
 
-        }.execute();
+        };
+        mTask.execute();
         if(liteOrm == null) {
             Log.e(TAG, "liteOrm is null");
         }else{
@@ -162,7 +190,19 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
                 .hasMv(false)
                 .hasDelete(true)
                 .setMusic(music)
+                .setListener(new LocalPopupWindowListener(getActivity()))
                 .build()
                 .showAtLocation(back, Gravity.BOTTOM,0,0);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mTask.cancel(true);
     }
 }

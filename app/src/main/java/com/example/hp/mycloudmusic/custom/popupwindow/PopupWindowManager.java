@@ -1,4 +1,4 @@
-package com.example.hp.mycloudmusic.custom;
+package com.example.hp.mycloudmusic.custom.popupwindow;
 
 import android.app.Activity;
 import android.content.res.TypedArray;
@@ -15,13 +15,7 @@ import android.widget.PopupWindow;
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.listview.PopupAdapter;
 import com.example.hp.mycloudmusic.adapter.listview.PopupItem;
-import com.example.hp.mycloudmusic.base.BaseAppHelper;
-import com.example.hp.mycloudmusic.download.DownloadManager;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
-import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
-import com.example.hp.mycloudmusic.musicInfo.merge.Song;
-import com.example.hp.mycloudmusic.service.PlayService;
-import com.example.hp.mycloudmusic.ui.onLine.ArtistDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,35 +36,6 @@ public class PopupWindowManager {
     static String[] titles = null;
     List<PopupItem> list = new ArrayList<>();
 
-    PopupWindowListener defListener = new PopupWindowListener() {
-        @Override
-        public void onItemClick(int imageId, AbstractMusic music) {
-            switch (imageId){
-                case R.drawable.ic_icon_add_playback:
-                    PlayService service = BaseAppHelper.get().getPlayService();
-                    if(service!=null){
-                        service.addNextPlayMusic(music);
-                    }
-                    break;
-                case R.drawable.ic_icon_add_list:
-                    break;
-                case R.drawable.ic_icon_artist2:
-                    Artist create = music.obtainArtist();
-                    ArtistDetailActivity.toArtistDetailActivity(mActivity,create);
-                    break;
-                case R.drawable.ic_icon_download:
-                    DownloadManager.Companion.getInstance().downloadSong((Song) music);
-                    break;
-                default:
-                    break;
-            }
-            popupWindow.dismiss();
-        }
-    };
-
-    public PopupWindowManager(){
-
-    }
     public PopupWindowManager(Builder builder){
         this.mActivity = builder.activity;
         this.hasMv = builder.hasMv;
@@ -78,13 +43,14 @@ public class PopupWindowManager {
         this.hasDownload = builder.hasDownload;
         this.width = builder.width;
         this.height = builder.height;
-        this.listener = builder.listener;
+        if(builder.listener!=null)
+            this.listener = builder.listener;
+        else
+            this.listener = new DefPopupWindowListener(mActivity);
         this.music = builder.music;
 
         this.contentView = LayoutInflater.from(mActivity).inflate(builder.contentviewid,null);
         initView(contentView);
-
-        //initPopupWindow(builder);
     }
 
     private void initView(View contentView) {
@@ -98,14 +64,14 @@ public class PopupWindowManager {
                 PopupItem item = list.get(position);
                 if(listener != null) {
                     listener.onItemClick(item.imageId, music);
-                }else{
-                    defListener.onItemClick(item.imageId,music);
                 }
+                popupWindow.dismiss();
             }
         });
     }
 
     private void initList() {
+        //初始化图标和标题
         if(resIds == null || titles == null) {
             Log.e("popup window ", "init resIds and titles!!!");
             TypedArray ar = mActivity.getResources().obtainTypedArray(R.array.popup_images);
@@ -117,6 +83,7 @@ public class PopupWindowManager {
             ar.recycle();
             titles = mActivity.getResources().getStringArray(R.array.popup_titles);
         }
+        //填充list
         for (int i = 0; i < resIds.length; i++) {
             PopupItem item = checkItem(i);
             if(item == null)continue;
@@ -124,6 +91,11 @@ public class PopupWindowManager {
         }
     }
 
+    /**
+     * 通过hasXX来判断是否需要改item，如果不需要则返回null，需要则填充信息，并返回该item
+     * @param i
+     * @return
+     */
     private PopupItem checkItem(int i){
         PopupItem item = new PopupItem(resIds[i],titles[i]);
         switch (resIds[i]){

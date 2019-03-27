@@ -29,12 +29,13 @@
                 android:text="歌曲名"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                 />
+                android:textColor="@color/colorWhite"/>
             <TextView
                 android:id="@+id/notify_singer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="歌手"/>
+                android:text="歌手"
+                android:textColor="@color/colorWhite"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -55,25 +56,24 @@
         android:layout_marginTop="10dp"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
-        android:gravity="center"
-        >
+        android:gravity="center">
         <Button
             android:id="@+id/notify_last_song"
             android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_icon_last_music"/>
+            android:background="@drawable/ic_icon_notify_last"/>
         <Button
             android:id="@+id/notify_pause"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:background="@drawable/ic_play_btn_pause"/>
+            android:background="@drawable/ic_notify_play2pause"/>
         <Button
             android:id="@+id/notify_next_song"
             android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_icon_next_music"/>
+            android:background="@drawable/ic_icon_notify_next"/>
     </LinearLayout>
 
 </LinearLayout>

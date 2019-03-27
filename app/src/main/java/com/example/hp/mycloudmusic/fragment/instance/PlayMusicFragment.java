@@ -162,7 +162,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
                 hideSelf();
                 break;
             case R.id.iv_play:
-                ivPlay.setPressed(!ivPlay.isPressed());
+                ivPlay.setSelected(!ivPlay.isSelected());
                 play();
                 break;
             case R.id.iv_next:
@@ -248,13 +248,13 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
         }
 
         sbProgress.setProgress(getPlayService().getCurrentPosition());
-        sbProgress.setSecondaryProgress(0);
+        sbProgress.setSecondaryProgress(getPlayService().getCurrentPosition());
         sbProgress.setMax((int) getPlayService().getmPlayer().getDuration());         //最大值不显示,仍以毫秒为单位
-        Log.e(TAG, "onchange: sbProgress.max = "+sbProgress.getMax());
+//        Log.e(TAG, "onchange: sbProgress.max = "+sbProgress.getMax());
         ivPlay.setSelected(true);
         mLastProgress = 0;
         tvCurrentTime.setText(PlayerFormatUtils.formatTime(getPlayService().getCurrentPosition()));
-        Log.e(TAG, "onchange: 音乐时长: "+getPlayService().getmPlayer().getDuration());
+//        Log.e(TAG, "onchange: 音乐时长: "+getPlayService().getmPlayer().getDuration());
         tvTotalTime.setText(PlayerFormatUtils.formatTime(getPlayService().getmPlayer().getDuration()));
 
     }

@@ -69,7 +69,7 @@ public class LyricManager {
     }
 
     public void notLrc(){
-        this.lyricInfo = null;
+        //this.lyricInfo = null;
     }
 
     public void setCurrentTimeMillis(int currentTimeMillis) {

@@ -48,6 +48,7 @@ public class NotificationHelper {
             manager.createNotificationChannel(channel);
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        //设置状态栏上的小图标，否则会报错
         builder.setSmallIcon(R.drawable.ic_icon_quantum_statistical);
         this.builder = builder;
         return this.builder;
@@ -61,9 +62,17 @@ public class NotificationHelper {
         remoteViews.setTextViewText(R.id.notify_singer,TextUtils.isEmpty(singer)?"未知":singer);
         remoteViews.setProgressBar(R.id.notify_progress_bar,100,progress,false);
 
-        Intent intent = new Intent(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,intent,0);
-        remoteViews.setOnClickPendingIntent(R.id.notify_pause,pendingIntent);
+        Intent intent_play2pause = new Intent(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
+        PendingIntent pending_play2pause = PendingIntent.getBroadcast(context,0,intent_play2pause,0);
+        remoteViews.setOnClickPendingIntent(R.id.notify_pause,pending_play2pause);
+
+        Intent intent_last = new Intent(NotificationBroadcast.Companion.getLAST_SONG());
+        PendingIntent pending_last = PendingIntent.getBroadcast(context,0,intent_last,0);
+        remoteViews.setOnClickPendingIntent(R.id.notify_last_song,pending_last);
+
+        Intent intent_next = new Intent(NotificationBroadcast.Companion.getNEXT_SONG());
+        PendingIntent pending_next = PendingIntent.getBroadcast(context,0,intent_next,0);
+        remoteViews.setOnClickPendingIntent(R.id.notify_next_song,pending_next);
 
         builder.setCustomContentView(remoteViews);
         builder.setCustomBigContentView(remoteViews);

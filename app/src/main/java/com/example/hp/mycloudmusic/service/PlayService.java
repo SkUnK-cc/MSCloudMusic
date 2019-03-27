@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -26,7 +28,6 @@ import com.example.hp.mycloudmusic.service.receiver.NoisyAudioStreamReceiver;
 import com.example.hp.mycloudmusic.util.AudioFocusManager;
 import com.example.hp.mycloudmusic.util.NotificationHelper;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +45,7 @@ public class PlayService extends Service {
     private boolean mReceiverTag = false;
 
     public int mPlayState = STATE_IDLE;
+    private WifiManager.WifiLock wifiLock;
 
     private NoisyAudioStreamReceiver mNoisyReceiver = new NoisyAudioStreamReceiver();
     private IntentFilter filter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
@@ -173,10 +175,16 @@ public class PlayService extends Service {
         super.onCreate();
         Log.e(TAG, "onCreate: service is on create!");
         audioMusics = new ArrayList<>();
+        acquireWifi();
         registerReceiver();
         setNotification();
         createMediaPlayer();
         initAudioFocusManager();
+    }
+
+    private void acquireWifi() {
+        wifiLock= ((WifiManager)getApplicationContext().getSystemService(this.WIFI_SERVICE)).createWifiLock(WifiManager.WIFI_MODE_FULL,"mylock");
+        wifiLock.acquire();
     }
 
     private void registerReceiver() {
@@ -207,6 +215,7 @@ public class PlayService extends Service {
         //先判断是否为空
         if(mPlayer == null){
             mPlayer = new MediaPlayer();
+            mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         }
     }
 
@@ -388,7 +397,7 @@ public class PlayService extends Service {
             mPlayer.setOnSeekCompleteListener(mOnSeekCompleteListener);
             mPlayer.setOnErrorListener(mOnErrorListener);
             mPlayer.setOnInfoListener(mOnInfoListener);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -547,7 +556,6 @@ public class PlayService extends Service {
             int currentPosition= mPlayer.getCurrentPosition();
             int duration = mPlayer.getDuration();
             Log.d(TAG, "PlayService 调用activity onUpdateProgress方法 ");
-//            mPlayerEventListener.onUpdateProgress(currentPosition);
             if(listenerMap!=null){
                 List<OnPlayerEventListener> list = getListeners();
                 for(int i=0;i<list.size();i++){
@@ -606,10 +614,29 @@ public class PlayService extends Service {
     @Override
     public void onDestroy() {
         handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
-        mPlayer.release();
+        releasePlayer();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(true);
         }
         super.onDestroy();
+    }
+
+    /**
+     * 在解绑的时候释放MediaPlayer
+     */
+    @Override
+    public boolean onUnbind(Intent intent) {
+        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+        releasePlayer();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(true);
+        }
+        return super.onUnbind(intent);
+    }
+
+    private void releasePlayer(){
+        if(mPlayer!=null)mPlayer.release();
+        wifiLock.release();
+        Log.e(TAG, "releasePlayer: player is release");
     }
 }
