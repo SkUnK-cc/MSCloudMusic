@@ -129,6 +129,10 @@ public class PlayService extends Service {
     private HashMap<String,OnPlayerEventListener> listenerMap = new HashMap<>();
     private PlayBinder mBinder = new PlayBinder();
 
+    /**
+     * Notification广播接受者
+     */
+    private NotificationBroadcast broadcast;
     public void setOnPlayerEventListener(String className,OnPlayerEventListener listener) {
 //        mPlayerEventListener = playerEventListener;
         if(listener!=null) {
@@ -188,10 +192,11 @@ public class PlayService extends Service {
     }
 
     private void registerReceiver() {
-        NotificationBroadcast broadcast = new NotificationBroadcast();
+        broadcast = new NotificationBroadcast();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
         registerReceiver(broadcast,intentFilter);
+        Log.e(TAG, "registerReceiver: true");
     }
 
     private void setNotification(){
@@ -613,12 +618,27 @@ public class PlayService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.e(TAG, "onDestroy: service");
         handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
-        releasePlayer();
+        releaseResource();
+        releaseBroadcast();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(true);
         }
         super.onDestroy();
+    }
+
+    private void releaseBroadcast() {
+        if(broadcast!=null){
+            synchronized (broadcast) {
+                if (broadcast != null) {
+                    unregisterReceiver(broadcast);
+                    broadcast=null;
+                } else {
+                    Log.e(TAG, "broadcast is null");
+                }
+            }
+        }
     }
 
     /**
@@ -627,16 +647,21 @@ public class PlayService extends Service {
     @Override
     public boolean onUnbind(Intent intent) {
         handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
-        releasePlayer();
+        releaseResource();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(true);
         }
         return super.onUnbind(intent);
     }
 
-    private void releasePlayer(){
-        if(mPlayer!=null)mPlayer.release();
-        wifiLock.release();
-        Log.e(TAG, "releasePlayer: player is release");
+    private void releaseResource(){
+        if(mPlayer!=null){
+            mPlayer.release();
+            Log.e(TAG, "releaseResource: player is release");
+        }
+
+        if(wifiLock.isHeld()){
+            wifiLock.release();
+        }
     }
 }

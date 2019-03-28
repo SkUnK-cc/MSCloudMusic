@@ -10,6 +10,7 @@ import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.litesuits.orm.LiteOrm;
 import com.litesuits.orm.db.assit.QueryBuilder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,7 +101,6 @@ public class LocalMusicManager {
 
         Log.e(TAG, "scanMusic------------------------------------------------------>");
         return musicList;
-
     }
 
     public List<AudioBean> getAudioFromDb() {
@@ -111,8 +111,24 @@ public class LocalMusicManager {
         return musicList;
     }
 
-    public void deleteAudio(AudioBean audioBean){
+    public void deleteAudio(AudioBean audioBean,Context context){
         mLiteOrm.delete(audioBean);
+        deleteFromLocal(audioBean,context);
+    }
 
+    private void deleteFromLocal(AudioBean audioBean,Context context){
+        String path = audioBean.getPath();
+        if(path!=null && !path.equals("")) {
+            File file = new File(path);
+            if (file.exists()) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        file.delete();
+                        Log.e(TAG, "run: delete file successful!");
+                    }
+                }).start();
+            }
+        }
     }
 }

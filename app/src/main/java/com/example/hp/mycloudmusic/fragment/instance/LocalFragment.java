@@ -47,7 +47,7 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
     private LocalMusicAdapter adapter;
     private List<AudioBean> localMusicList;
 
-    private AsyncTask mTask;
+    private AsyncTask<Void, String, List<AudioBean>> mTask;
 
     private static final String TAG = "LocalFragment";
 
@@ -61,9 +61,7 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
         public void onItemClick(int imageId, AbstractMusic music) {
             switch (imageId){
                 case R.drawable.ic_icon_delete:
-                    int index = localMusicList.indexOf(music);
-                    localMusicList.remove(index);
-                    adapter.notifyItemRemoved(index);
+                    removeLocalMusic(imageId,music);
                     break;
                 default:
                     super.onItemClick(imageId,music);
@@ -193,6 +191,16 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
                 .setListener(new LocalPopupWindowListener(getActivity()))
                 .build()
                 .showAtLocation(back, Gravity.BOTTOM,0,0);
+    }
+
+    private void removeLocalMusic(int imageId, AbstractMusic music){
+        int index = localMusicList.indexOf(music);
+
+        LocalMusicManager.getInstance(liteOrm).deleteAudio(localMusicList.get(index),getContext());
+
+        localMusicList.remove(index);
+        adapter.notifyItemRemoved(index);
+
     }
 
     @Override
