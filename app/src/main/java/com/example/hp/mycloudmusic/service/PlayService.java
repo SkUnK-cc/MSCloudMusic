@@ -208,7 +208,7 @@ public class PlayService extends Service {
             singer = mPlayingMusic.getAlbumPic();
             progress = (int)(((float)mPlayer.getCurrentPosition() / (float)mPlayer.getDuration())*100);
         }
-        notification = notificationHelper.getPlayMusicNotification(song,singer,progress);
+        notification = notificationHelper.getPlayMusicNotification(song,singer,progress,isPlaying());
         startForeground(1,notification);
     }
 
@@ -537,6 +537,7 @@ public class PlayService extends Service {
                 mReceiverTag = false;
                 unregisterReceiver(mNoisyReceiver);
             }
+            updateNotification();
         }
     }
 
@@ -586,7 +587,7 @@ public class PlayService extends Service {
 //                Log.e(TAG, mPlayer.getCurrentPosition()+"/"+mPlayer.getDuration());
 //                Log.e(TAG, progress+"");
             }
-            notificationHelper.updateNotification(song, singer, progress);
+            notificationHelper.updateNotification(song, singer, progress,isPlaying());
         }
     }
 
@@ -595,11 +596,11 @@ public class PlayService extends Service {
         return mPlayState == STATE_IDLE;
     }
 
-    private boolean isPausing() {
+    public boolean isPausing() {
         return mPlayState == STATE_PAUSE;
     }
 
-    private boolean isPlaying(){
+    public boolean isPlaying(){
         return mPlayState == STATE_PLAYING;
     }
 

@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.example.hp.mycloudmusic.R;
@@ -54,7 +56,7 @@ public class NotificationHelper {
         return this.builder;
     }
 
-    public Notification getPlayMusicNotification(String song ,String singer,int progress){
+    public Notification getPlayMusicNotification(String song ,String singer,int progress,boolean isPlaying){
         NotificationCompat.Builder builder = getNotificationBuilder();
 
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_play_music);
@@ -62,9 +64,21 @@ public class NotificationHelper {
         remoteViews.setTextViewText(R.id.notify_singer,TextUtils.isEmpty(singer)?"未知":singer);
         remoteViews.setProgressBar(R.id.notify_progress_bar,100,progress,false);
 
-        Intent intent_play2pause = new Intent(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
-        PendingIntent pending_play2pause = PendingIntent.getBroadcast(context,0,intent_play2pause,0);
-        remoteViews.setOnClickPendingIntent(R.id.notify_pause,pending_play2pause);
+        if(isPlaying) {
+            Log.e("Notification", "isPlaying");
+            remoteViews.setViewVisibility(R.id.notify_pause,View.VISIBLE);
+            remoteViews.setViewVisibility(R.id.notify_start,View.GONE);
+            Intent intent_pause = new Intent(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
+            PendingIntent pending_pause = PendingIntent.getBroadcast(context, 0, intent_pause, 0);
+            remoteViews.setOnClickPendingIntent(R.id.notify_pause, pending_pause);
+        }else {
+            Log.e("Notification", "no playing");
+            remoteViews.setViewVisibility(R.id.notify_start, View.VISIBLE);
+            remoteViews.setViewVisibility(R.id.notify_pause,View.GONE);
+            Intent intent_play = new Intent(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
+            PendingIntent pending_play = PendingIntent.getBroadcast(context, 0, intent_play, 0);
+            remoteViews.setOnClickPendingIntent(R.id.notify_start, pending_play);
+        }
 
         Intent intent_last = new Intent(NotificationBroadcast.Companion.getLAST_SONG());
         PendingIntent pending_last = PendingIntent.getBroadcast(context,0,intent_last,0);
@@ -80,8 +94,8 @@ public class NotificationHelper {
         return builder.build();
     }
 
-    public void updateNotification(String song,String singer,int progress){
-        Notification newNotification = getPlayMusicNotification(song,singer,progress);
+    public void updateNotification(String song,String singer,int progress,boolean isPlaying){
+        Notification newNotification = getPlayMusicNotification(song,singer,progress,isPlaying);
         manager.notify(1,newNotification);
     }
 

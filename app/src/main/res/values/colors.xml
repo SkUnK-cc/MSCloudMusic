@@ -16,6 +16,7 @@
     <color name="alpha_15_white">#26FFFFFF</color>
     <color name="alpha_35_black">#59000000</color>
     <color name="alpha_20_black">#33000000</color>
+    <color name="alpha_80_black">#cc000000</color>
     <color name="redTab">#F44336</color>
     <color name="redTab_30p">#4CF44336</color>
     <color name="artist_foreground">#4F6A6A6A</color>

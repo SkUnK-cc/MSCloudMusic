@@ -193,7 +193,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
             Log.e(TAG, "onchange: 调用onchange方法2");
             tvTitle.setText(music.getTitle());
             tvArtist.setText(music.getArtist());
-            sbProgress.setProgress(getPlayService().getCurrentPosition());
+            sbProgress.setProgress(0);
             sbProgress.setSecondaryProgress(0);
             sbProgress.setMax((int) music.getDuration());         //最大值不显示,仍以毫秒为单位
             Log.e(TAG, "onchange: sbProgress.max = "+sbProgress.getMax());

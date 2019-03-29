@@ -62,13 +62,25 @@
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:background="@drawable/ic_icon_notify_last"/>
-        <Button
-            android:id="@+id/notify_pause"
+        <FrameLayout
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:background="@drawable/ic_notify_play2pause"/>
+            android:layout_marginRight="40dp">
+            <Button
+                android:id="@+id/notify_pause"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="@drawable/ic_icon_notify_pause"/>
+            <Button
+                android:id="@+id/notify_start"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="@drawable/ic_icon_notify_play"/>
+        </FrameLayout>
+
         <Button
             android:id="@+id/notify_next_song"
             android:layout_width="40dp"
