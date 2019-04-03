@@ -14,13 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.fragment.callback.OnProgressChangedListener;
 import com.example.hp.mycloudmusic.fragment.presenter.PlayMusicPresenter;
 import com.example.hp.mycloudmusic.fragment.view.IPlayMusicView;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
+import com.example.hp.mycloudmusic.musicInfo.merge.Song;
 import com.example.hp.mycloudmusic.service.listener.OnPlayerEventListener;
-import com.example.hp.mycloudmusic.util.CoverLoader;
 import com.example.hp.mycloudmusic.util.LyricManager;
 import com.example.hp.mycloudmusic.util.PlayerFormatUtils;
 import com.example.hp.mycloudmusic.view.LyricView;
@@ -122,7 +123,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
 
             @Override
             public void onPlayerStart() {
-
+                ivPlay.setSelected(true);
             }
 
             @Override
@@ -139,7 +140,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
 
             @Override
             public void onPlayerPause() {
-                ivPlay.setSelected(true);
+                ivPlay.setSelected(false);
             }
         });
     }
@@ -162,7 +163,6 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
                 hideSelf();
                 break;
             case R.id.iv_play:
-                ivPlay.setSelected(!ivPlay.isSelected());
                 play();
                 break;
             case R.id.iv_next:
@@ -197,15 +197,32 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
             sbProgress.setSecondaryProgress(0);
             sbProgress.setMax((int) music.getDuration());         //最大值不显示,仍以毫秒为单位
             Log.e(TAG, "onchange: sbProgress.max = "+sbProgress.getMax());
-            ivPlay.setSelected(true);
             mLastProgress = 0;
             tvCurrentTime.setText("00:00");
             Log.e(TAG, "onchange: 音乐时长: "+music.getDuration());
             tvTotalTime.setText(PlayerFormatUtils.formatTime(music.getDuration()));
-            ivPlayPageBg.setImageBitmap(CoverLoader.getInstance().loadBlur(music));
+//            ivPlayPageBg.setImageBitmap(CoverLoader.getInstance().loadBlur(music));
+            loadPageBg(music);
             lyricView.setEmptyView(emptyView);
             //showNotLrc();
             mPresenter.setLrc(music);
+        }
+    }
+
+    private void loadPageBg(AbstractMusic music) {
+        if(music instanceof Song){
+            Song song = (Song) music;
+            Glide.with(getContext())
+                    .load(song.songInfo.getPic_huge())
+                    .placeholder(R.drawable.default_cover)
+                    .error(R.drawable.default_cover)
+                    .into(ivPlayPageBg);
+        }else {
+            Glide.with(getContext())
+                    .load(music.getAlbumPicPremium())
+                    .placeholder(R.drawable.default_cover)
+                    .error(R.drawable.default_cover)
+                    .into(ivPlayPageBg);
         }
     }
 
@@ -251,7 +268,6 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
         sbProgress.setSecondaryProgress(getPlayService().getCurrentPosition());
         sbProgress.setMax((int) getPlayService().getmPlayer().getDuration());         //最大值不显示,仍以毫秒为单位
 //        Log.e(TAG, "onchange: sbProgress.max = "+sbProgress.getMax());
-        ivPlay.setSelected(true);
         mLastProgress = 0;
         tvCurrentTime.setText(PlayerFormatUtils.formatTime(getPlayService().getCurrentPosition()));
 //        Log.e(TAG, "onchange: 音乐时长: "+getPlayService().getmPlayer().getDuration());

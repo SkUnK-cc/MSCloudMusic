@@ -11,9 +11,14 @@ import android.widget.Toast;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.merge.MSongRecyclerAdapter;
+import com.example.hp.mycloudmusic.base.BaseAppHelper;
+import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
+import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.merge.Song;
 import com.example.hp.mycloudmusic.musicInfo.merge.Song_info;
+import com.example.hp.mycloudmusic.service.PlayService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -69,7 +74,8 @@ public class MergeSongFragment extends BaseFragment {
     protected void initView() {
         Log.e(TAG, "initView: init adapter");
         adapter = new MSongRecyclerAdapter(getContext());
-        adapter.setOnClickListener(new MSongRecyclerAdapter.IClickMSPopupMenuItem(){
+
+        adapter.setOnClickListener(new MSongRecyclerAdapter.OnMergeSongClickListener(){
             @Override
             public void onClickMenuItem(int itemId, Song song) {
                 switch(itemId){
@@ -79,6 +85,16 @@ public class MergeSongFragment extends BaseFragment {
                     case R.id.merge_song_pop_artist:
                         Toast.makeText(getContext(),"you click artist!",Toast.LENGTH_SHORT).show();
                         break;
+                }
+            }
+            @Override
+            public void onClickItem(int position) {
+                PlayService playService = BaseAppHelper.get().getPlayService();
+                if(playService.checkPlayingChange(adapter.getData().get(position))){
+                    List<AbstractMusic> list = new ArrayList<>();
+                    list.addAll(adapter.getData());
+                    playService.play(list,position);
+                    showPlayMusicFragment();
                 }
             }
         });
@@ -115,5 +131,10 @@ public class MergeSongFragment extends BaseFragment {
         }else{
             tvNoMore.setVisibility(View.GONE);
         }
+    }
+
+    private void showPlayMusicFragment() {
+        PlayMusicFragment playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment();
+        addOrShowFragmentOnActivity(android.R.id.content,playMusicFragment,R.anim.fragment_slide_from_right);
     }
 }

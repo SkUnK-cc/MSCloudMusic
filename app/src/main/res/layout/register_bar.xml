@@ -4,7 +4,8 @@
     android:id="@+id/common_bar"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimaryDark"
+    android:paddingTop="20dp">
 
     <ImageView
         android:id="@+id/iv_register_back"

@@ -125,12 +125,12 @@
             android:layout_alignParentRight="true"
             android:src="@drawable/ic_play_btn_src_prs" />
     </RelativeLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end|center_vertical"
-        android:padding="10dp"
-        android:textColor="@color/colorWhite"
-        android:textSize="10sp"
-        android:text="制作人：潇湘剑雨"/>
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="end|center_vertical"-->
+        <!--android:padding="10dp"-->
+        <!--android:textColor="@color/colorWhite"-->
+        <!--android:textSize="10sp"-->
+        <!--android:text="制作人：潇湘剑雨"/>-->
 </LinearLayout>

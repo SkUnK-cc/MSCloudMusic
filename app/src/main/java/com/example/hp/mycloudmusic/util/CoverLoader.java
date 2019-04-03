@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.example.hp.mycloudmusic.CMApplication;
@@ -14,7 +15,10 @@ import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * 单例
@@ -63,11 +67,16 @@ public class CoverLoader {
     }
 
 
+    /**
+     * @param music music对象
+     * @param type  图片展示类型：模糊等
+     */
     private Bitmap loadCover(AbstractMusic music, String type) {
         Bitmap bitmap;
         String key = getKey(music,type);
+        Log.e("CoverLoader", "loadCover: "+key);
         if(TextUtils.isEmpty(key)){
-            //是local或者online的图片,否则key为null，不执行此段代码
+            //不是local或者online的图片,则key为null，执行此段代码
             bitmap = mCoverCache.get(KEY_NULL.concat(type));
             if(bitmap != null){
                 return bitmap;
@@ -76,6 +85,7 @@ public class CoverLoader {
             mCoverCache.put(KEY_NULL.concat(type),bitmap);
             return bitmap;
         }
+        // key 不为空
         bitmap = mCoverCache.get(key);
         if(bitmap != null){
             return bitmap;
@@ -89,20 +99,43 @@ public class CoverLoader {
     }
 
     private Bitmap loadCoverByType(AbstractMusic music, String type) {
-        Bitmap bitmap;
+        Bitmap bitmap = null;
         if(music.getType() == AudioBean.TYPE_LOCAL ){
             AudioBean audioBean = (AudioBean) music;
             bitmap = loadCoverFromMediaStore(audioBean.getAlbumIdLocal());
-        }else{
-//            bitmap = loadCoverFromFile(music.getCoverPath());
-            bitmap = null;
         }
+//        else if(music.getType() == AudioBean.TYPE_ONLINE) {
+//            bitmap = null;
+//        }else{
+////            bitmap = loadCoverFromFile(music.getCoverPath());
+//                bitmap = null;
+//        }
+
+
+//        if(bitmap==null){
+//            bitmap = loadCoverFromNet(music);
+//        }
         switch (type){
             case TYPE_BLUR:
                 return ImageUtils.blur(bitmap);
             default:
                 return bitmap;
         }
+    }
+
+    private Bitmap loadCoverFromNet(AbstractMusic music) {
+        Bitmap bitmap = null;
+        String albumPicUrl = music.getAlbumPicPremium();
+        Log.e("loadCoverFromNet", "loadCoverFromNet: "+albumPicUrl);
+        try {
+            URL url = new URL(albumPicUrl);
+            bitmap = BitmapFactory.decodeStream(url.openStream());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     /**
@@ -148,13 +181,20 @@ public class CoverLoader {
         if (music == null) {
             return null;
         }
+        Log.e("loadCover", "getKey: "+music.getType());
         if (music.getType() == AbstractMusic.TYPE_LOCAL) {
             AudioBean audioBean = (AudioBean) music;
             if (audioBean.getAlbumIdLocal() > 0) {
-                return String.valueOf(audioBean.getAlbumIdLocal()).concat(AbstractMusic.TYPE_LOCAL);
+                String string =  String.valueOf(audioBean.getAlbumIdLocal()).concat(type);
+                Log.e("loadCover", "getKey: "+string);
+                return string;
+            }else{
+                String string = audioBean.getAlbumTitle();
+                Log.e("loadCover", "getKey: "+string);
+                return string;
             }
-        } else {
-            return null;
+        } else if(music.getType()==AudioBean.TYPE_ONLINE){
+            return music.getAlbumPicPremium().concat(type);
         }
         return null;
     }

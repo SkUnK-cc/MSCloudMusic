@@ -20,7 +20,6 @@ import com.example.hp.mycloudmusic.custom.popupwindow.PopupWindowManager;
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
-import com.example.hp.mycloudmusic.util.DisplayUtil;
 import com.example.hp.mycloudmusic.util.LocalMusicManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -184,7 +183,7 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void clickMore(int position) {
         AbstractMusic music = localMusicList.get(position);
-        PopupWindowManager manager = new PopupWindowManager.Builder(getActivity(),R.layout.song_more_popup, ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtil.dip2px(getContext(),300))
+        PopupWindowManager manager = new PopupWindowManager.Builder(getActivity(),R.layout.song_more_popup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT/**DisplayUtil.dip2px(getContext(),300)*/)
                 .hasMv(false)
                 .hasDelete(true)
                 .setMusic(music)

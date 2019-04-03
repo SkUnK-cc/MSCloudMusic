@@ -3,7 +3,7 @@ package com.example.hp.mycloudmusic.util;
 import android.graphics.Bitmap;
 
 public class ImageUtils {
-    private static final int BLUR_RADIUS = 50;
+    private static final int BLUR_RADIUS = 70;
 
     public static Bitmap blur(Bitmap bitmap) {
         if(bitmap == null){

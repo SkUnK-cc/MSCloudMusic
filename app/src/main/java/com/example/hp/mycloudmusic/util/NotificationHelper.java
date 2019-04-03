@@ -9,11 +9,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.NotificationTarget;
 import com.example.hp.mycloudmusic.R;
+import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
+import com.example.hp.mycloudmusic.musicInfo.merge.Song;
 import com.example.hp.mycloudmusic.service.broadcast.NotificationBroadcast;
 
 import static android.app.Notification.VISIBILITY_SECRET;
@@ -56,7 +59,7 @@ public class NotificationHelper {
         return this.builder;
     }
 
-    public Notification getPlayMusicNotification(String song ,String singer,int progress,boolean isPlaying){
+    public Notification getPlayMusicNotification(AbstractMusic mPlayingMusic, String song, String singer, int progress, boolean isPlaying){
         NotificationCompat.Builder builder = getNotificationBuilder();
 
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_play_music);
@@ -65,14 +68,12 @@ public class NotificationHelper {
         remoteViews.setProgressBar(R.id.notify_progress_bar,100,progress,false);
 
         if(isPlaying) {
-            Log.e("Notification", "isPlaying");
             remoteViews.setViewVisibility(R.id.notify_pause,View.VISIBLE);
             remoteViews.setViewVisibility(R.id.notify_start,View.GONE);
             Intent intent_pause = new Intent(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
             PendingIntent pending_pause = PendingIntent.getBroadcast(context, 0, intent_pause, 0);
             remoteViews.setOnClickPendingIntent(R.id.notify_pause, pending_pause);
         }else {
-            Log.e("Notification", "no playing");
             remoteViews.setViewVisibility(R.id.notify_start, View.VISIBLE);
             remoteViews.setViewVisibility(R.id.notify_pause,View.GONE);
             Intent intent_play = new Intent(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
@@ -91,11 +92,23 @@ public class NotificationHelper {
         builder.setCustomContentView(remoteViews);
         builder.setCustomBigContentView(remoteViews);
 
-        return builder.build();
+        Notification notification = builder.build();
+        if(mPlayingMusic instanceof Song){
+            Song music = (Song) mPlayingMusic;
+            NotificationTarget notificationTarget = new NotificationTarget(
+                    context,remoteViews,R.id.notify_cover,notification,1);
+            Glide.with(context)
+                    .load(music.pic_small)
+                    .asBitmap()
+                    .placeholder(R.drawable.default_cover)
+                    .error(R.drawable.default_cover)
+                    .into(notificationTarget);
+        }
+        return notification;
     }
 
-    public void updateNotification(String song,String singer,int progress,boolean isPlaying){
-        Notification newNotification = getPlayMusicNotification(song,singer,progress,isPlaying);
+    public void updateNotification(AbstractMusic mPlayingMusic, String song, String singer, int progress, boolean isPlaying){
+        Notification newNotification = getPlayMusicNotification(mPlayingMusic, song,singer,progress,isPlaying);
         manager.notify(1,newNotification);
     }
 

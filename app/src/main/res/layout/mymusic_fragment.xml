@@ -22,6 +22,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/mymusictitle"
                 android:textSize="@dimen/textSize"
+                android:textColor="@color/colorWhite"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"/>
             <ImageView
@@ -59,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/local_title"
                 android:textSize="@dimen/textSize"
+                android:textColor="@color/frag_music_text_color"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/localimg"
                 android:paddingLeft="15dp"/>

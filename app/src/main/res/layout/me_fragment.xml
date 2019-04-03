@@ -20,6 +20,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/myaccount"
                 android:textSize="@dimen/textSize"
+                android:textColor="@color/colorWhite"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"/>
         </RelativeLayout>

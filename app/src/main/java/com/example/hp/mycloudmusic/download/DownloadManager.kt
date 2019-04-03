@@ -173,7 +173,6 @@ class DownloadManager {
             }
         }
         return downloadInfo
-
     }
 
     fun addListener(urlString: String,listener: DownloadListener?){

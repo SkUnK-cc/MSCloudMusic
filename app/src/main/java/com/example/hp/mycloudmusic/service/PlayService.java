@@ -208,7 +208,7 @@ public class PlayService extends Service {
             singer = mPlayingMusic.getAlbumPic();
             progress = (int)(((float)mPlayer.getCurrentPosition() / (float)mPlayer.getDuration())*100);
         }
-        notification = notificationHelper.getPlayMusicNotification(song,singer,progress,isPlaying());
+        notification = notificationHelper.getPlayMusicNotification(mPlayingMusic,song,singer,progress,isPlaying());
         startForeground(1,notification);
     }
 
@@ -587,7 +587,7 @@ public class PlayService extends Service {
 //                Log.e(TAG, mPlayer.getCurrentPosition()+"/"+mPlayer.getDuration());
 //                Log.e(TAG, progress+"");
             }
-            notificationHelper.updateNotification(song, singer, progress,isPlaying());
+            notificationHelper.updateNotification(mPlayingMusic,song, singer, progress,isPlaying());
         }
     }
 

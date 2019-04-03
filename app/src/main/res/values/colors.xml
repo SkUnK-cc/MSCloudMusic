@@ -30,4 +30,6 @@
     <color name="bg_register">#C6CFD8</color>
     <color name="regist_edit_full">#eeeeee</color>
 
+    <color name="frag_music_text_color">#000000</color>
+
 </resources>

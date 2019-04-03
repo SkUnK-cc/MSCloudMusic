@@ -26,7 +26,7 @@ public class MSongRecyclerAdapter extends RecyclerView.Adapter<MSongRecyclerAdap
     private Context mContext;
     private List<Song> list;        //该list应该提前初始化
 
-    private IClickMSPopupMenuItem popListener;
+    private OnMergeSongClickListener listener;
 
     public MSongRecyclerAdapter(Context context){
         this.mContext = context;
@@ -49,7 +49,7 @@ public class MSongRecyclerAdapter extends RecyclerView.Adapter<MSongRecyclerAdap
         holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                listener.onClickItem(position);
             }
         });
         holder.more.setOnClickListener(new View.OnClickListener() {
@@ -85,8 +85,8 @@ public class MSongRecyclerAdapter extends RecyclerView.Adapter<MSongRecyclerAdap
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if(popListener != null){
-                    popListener.onClickMenuItem(item.getItemId(),song);
+                if(listener != null){
+                    listener.onClickMenuItem(item.getItemId(),song);
                 }
                 return false;
             }
@@ -111,12 +111,17 @@ public class MSongRecyclerAdapter extends RecyclerView.Adapter<MSongRecyclerAdap
 
     }
 
-    public interface IClickMSPopupMenuItem{
+    public interface OnMergeSongClickListener{
         void onClickMenuItem(int itemId,Song song);
+        void onClickItem(int position);
     }
 
-    public void setOnClickListener(IClickMSPopupMenuItem listener){
-        this.popListener = listener;
+    public void setOnClickListener(OnMergeSongClickListener listener){
+        this.listener = listener;
+    }
+
+    public List<Song> getData(){
+        return list;
     }
 
     public void updateData(List<Song> newList){
