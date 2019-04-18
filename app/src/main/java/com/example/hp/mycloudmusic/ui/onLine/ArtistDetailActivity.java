@@ -51,6 +51,8 @@ public class ArtistDetailActivity extends BaseActivity<ArtistDetailPresenter> im
     ImageView ivBack;
     @Bind(R.id.artist_detail_bar_title)
     TextView tvTitle;
+    @Bind(R.id.artist_detail_bar_playing)
+    ImageView ivPlaying;
 
     private TabFragmentPagerAdapter mAdapter;
     private Artist artist;
@@ -103,6 +105,7 @@ public class ArtistDetailActivity extends BaseActivity<ArtistDetailPresenter> im
     protected void initView() {
 
         ivBack.setOnClickListener(this);
+        ivPlaying.setOnClickListener(this);
 
         mIndicator.setIndicatorClickListener(this);
         mIndicator.setTitles(titles);
@@ -172,6 +175,9 @@ public class ArtistDetailActivity extends BaseActivity<ArtistDetailPresenter> im
             case R.id.artist_detail_bar_back:
                 finish();
                 break;
+            case R.id.artist_detail_bar_playing:
+                showPlayMusicFragment();
+                break;
             default:
                 break;
         }
@@ -209,6 +215,23 @@ public class ArtistDetailActivity extends BaseActivity<ArtistDetailPresenter> im
                .into(iv_avatar);
     }
 
+    private void showPlayMusicFragment() {
+        PlayMusicFragment playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment();
+        addOrShowFragmentOnActivity(android.R.id.content,playMusicFragment,R.anim.fragment_slide_from_right);
+    }
+    protected void addOrShowFragmentOnActivity(int layoutId, Fragment fragment, int enterAnim){
+        if(fragment == null){
+            return;
+        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(enterAnim,0);
+        if(!fragment.isAdded()){
+            transaction.add(layoutId,fragment);
+        }else if(fragment.isHidden()){
+            transaction.show(fragment);
+        }
+        transaction.commit();
+    }
     @Override
     public void obtainInfoFailed() {
 

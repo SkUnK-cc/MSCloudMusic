@@ -25,6 +25,7 @@ public interface BaiduMusicApi {
     String DownloadUrl = "http://ting.baidu.com/data/music/links?songIds=";
     /**
      * 关键词建议
+     * v1/restserver/ting?method=baidu.ting.search.catalogSug&query=zhoujielun
      * @param query
      * @return
      */

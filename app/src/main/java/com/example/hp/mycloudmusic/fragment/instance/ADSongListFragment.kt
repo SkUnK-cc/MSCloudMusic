@@ -43,6 +43,10 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
         artist?.let { getListFromNet(it) }
     }
 
+    override fun getItemLayout(): Int {
+        return R.layout.merge_song_item
+    }
+
     override fun onInvisible() {
 
     }
@@ -85,10 +89,6 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
                     override fun onError(e: Throwable) {
                     }
                 })
-    }
-
-    override fun getItemLayout(): Int {
-        return R.layout.merge_song_item
     }
 
     override fun mConvert(holder: CommonViewHolder, data: Song) {

@@ -68,6 +68,7 @@ public class PlayMusicPresenter extends BasePresenter<IPlayMusicView> {
                     public void onNext(MusicSearchSugResp musicSearchSugResp) {
                         Log.e(TAG, "onNext: 得到sug：");
                         if(musicSearchSugResp != null && musicSearchSugResp.isValid()){
+                            Log.e(TAG, "onNext: errorcode= "+musicSearchSugResp.getError_code());
                             List<SongSug> songList = musicSearchSugResp.song;
                             findLrc(songList,0);
                         }else{

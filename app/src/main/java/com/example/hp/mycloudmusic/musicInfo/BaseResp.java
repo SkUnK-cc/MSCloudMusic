@@ -7,4 +7,8 @@ public class BaseResp {
     public boolean isValid(){
         return error_code==0 || error_code==ERROR_CODE_OK;
     }
+
+    public int getError_code(){
+        return error_code;
+    }
 }
