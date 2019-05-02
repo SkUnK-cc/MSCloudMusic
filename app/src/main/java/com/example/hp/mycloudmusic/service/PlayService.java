@@ -138,12 +138,14 @@ public class PlayService extends Service {
     public void setOnPlayerEventListener(String className,OnPlayerEventListener listener) {
 //        mPlayerEventListener = playerEventListener;
         if(listener!=null) {
+            Log.e(TAG, "setOnPlayerEventListener: "+className);
             listenerMap.put(className, listener);
             listener.onChange(mPlayingMusic);
         }
     }
 
     public void detachOnPlayerEventListener(String className){
+        Log.e(TAG, "detachOnPlayerEventListener: "+className);
         listenerMap.remove(className);
     }
 
@@ -355,6 +357,7 @@ public class PlayService extends Service {
         Log.e(TAG, "play: "+music.getTitle()+"/"+music.getDuration()+"/");
         createMediaPlayer();
         initPlayer(music);
+        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
         if(listenerMap!=null){
             List<OnPlayerEventListener> list = getListeners();
             for(int i=0;i<list.size();i++){
@@ -373,7 +376,7 @@ public class PlayService extends Service {
     }
 
     public void prev(){
-        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+//        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
         if(mPlayingPosition == 0){
             play(audioMusics.size()-1);
         }else{
@@ -628,7 +631,8 @@ public class PlayService extends Service {
     @Override
     public void onDestroy() {
         Log.e(TAG, "onDestroy: service");
-        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+//        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+        handler.removeCallbacksAndMessages(null);
         releaseResource();
         releaseBroadcast();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -655,7 +659,8 @@ public class PlayService extends Service {
      */
     @Override
     public boolean onUnbind(Intent intent) {
-        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+//        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+        handler.removeCallbacksAndMessages(null);
         releaseResource();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(true);

@@ -114,6 +114,7 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
 
     @Override
     protected void initListener() {
+        Log.e(TAG, "initListener: addListener");
         getPlayService().setOnPlayerEventListener(getActivity().getClass().getName(), new OnPlayerEventListener(){
 
             @Override
