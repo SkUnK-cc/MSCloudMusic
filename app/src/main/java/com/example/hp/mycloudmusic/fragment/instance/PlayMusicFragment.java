@@ -264,14 +264,14 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
             lyricManager.setCurrentTimeMillis(currentPosition);
         }
 
-        sbProgress.setProgress(getPlayService().getCurrentPosition());
-        sbProgress.setSecondaryProgress(getPlayService().getCurrentPosition());
-        sbProgress.setMax((int) getPlayService().getmPlayer().getDuration());         //最大值不显示,仍以毫秒为单位
+        sbProgress.setProgress(currentPosition);
+        sbProgress.setSecondaryProgress(currentPosition);
+        sbProgress.setMax(duration);         //最大值不显示,仍以毫秒为单位
 //        Log.e(TAG, "onchange: sbProgress.max = "+sbProgress.getMax());
         mLastProgress = 0;
-        tvCurrentTime.setText(PlayerFormatUtils.formatTime(getPlayService().getCurrentPosition()));
+        tvCurrentTime.setText(PlayerFormatUtils.formatTime(currentPosition));
 //        Log.e(TAG, "onchange: 音乐时长: "+getPlayService().getmPlayer().getDuration());
-        tvTotalTime.setText(PlayerFormatUtils.formatTime(getPlayService().getmPlayer().getDuration()));
+        tvTotalTime.setText(PlayerFormatUtils.formatTime(duration));
 
     }
 

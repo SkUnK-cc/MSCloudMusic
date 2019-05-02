@@ -4,6 +4,11 @@ buildscript {
     ext.kotlin_version = '1.2.30'
     ext.rootVersion = '1.0.0'
     repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven {
+            url 'https://maven.aliyun.com/repository/jcenter'
+        }
         google()
         jcenter()
     }
@@ -18,12 +23,15 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
-        jcenter()
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
         maven{
             url "https://raw.github.com/bmob/bmob-android-sdk/master"
         }
-        maven { url 'https://jitpack.io' }
+        google()
+        jcenter()
     }
 }
 

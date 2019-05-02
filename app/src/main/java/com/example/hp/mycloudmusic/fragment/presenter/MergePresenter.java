@@ -36,11 +36,12 @@ public class MergePresenter extends BasePresenter<IMergeView> {
                     @Override
                     public void onNext(QueryMergeResp queryMergeResp) {
                         if(queryMergeResp!=null && queryMergeResp.isValid()){
+//                            Log.e(TAG, "onNext: queryMergeResp is valid" );
 //                            Song song = queryMergeResp.result.getSong_info().getSong_list().get(0);
 //                            Log.e(TAG, "onNext: "+song.getTitle()+"\n"+song.getArtist());
                             mView.showMergeData(queryMergeResp);
                         }else{
-
+                            Log.e(TAG, "onNext: queryMergeResp is invalid" );
                         }
                     }
 

@@ -87,8 +87,8 @@ public class PlayService extends Service {
 
     //将MyServiceHandler声明为静态类(不持有对外部类的隐式引用)，防止内存泄漏
     private static class MyServiceHandler extends Handler{
-        private final WeakReference<PlayService> mPlayService;
 
+        private final WeakReference<PlayService> mPlayService;
         public MyServiceHandler(PlayService playService){
             mPlayService = new WeakReference<PlayService>(playService);
         }
@@ -104,8 +104,8 @@ public class PlayService extends Service {
                     break;
             }
         }
-    }
 
+    }
 
     /**
      * 正在播放的歌曲列表
@@ -116,6 +116,8 @@ public class PlayService extends Service {
      * 正在播放的歌曲序号
      */
     private int mPlayingPosition = -1;
+
+
     /**
      * 正在播放的歌曲
      */
@@ -206,7 +208,8 @@ public class PlayService extends Service {
         if(mPlayingMusic!=null){
             song = mPlayingMusic.getTitle();
             singer = mPlayingMusic.getAlbumPic();
-            progress = (int)(((float)mPlayer.getCurrentPosition() / (float)mPlayer.getDuration())*100);
+//            progress = (int)(((float)mPlayer.getCurrentPosition() / (float)mPlayer.getDuration())*100);
+            progress = 0;
         }
         notification = notificationHelper.getPlayMusicNotification(mPlayingMusic,song,singer,progress,isPlaying());
         startForeground(1,notification);
@@ -393,6 +396,8 @@ public class PlayService extends Service {
     private void initPlayer(AbstractMusic music){
         try {
             mPlayer.reset();
+            String dataSource = music.getDataSource().toString();
+            Log.e(TAG, "initPlayer: dataSource= "+dataSource);
             mPlayer.setDataSource(getBaseContext(), music.getDataSource());
             mPlayer.prepareAsync();
             mPlayState = STATE_PREPARING;
@@ -537,7 +542,7 @@ public class PlayService extends Service {
                 mReceiverTag = false;
                 unregisterReceiver(mNoisyReceiver);
             }
-            updateNotification();
+            updateNotification(mPlayer.getCurrentPosition(),mPlayer.getDuration());
         }
     }
 
@@ -558,9 +563,12 @@ public class PlayService extends Service {
      * 更新进度条和时间
      */
     private void updatePlayProgressShow() {
+        int currentPosition = 0;
+        int duration = 0;
         if(isPlaying() && listenerMap!=null){
-            int currentPosition= mPlayer.getCurrentPosition();
-            int duration = mPlayer.getDuration();
+            Log.e(TAG, "updatePlayProgressShow: getDuration()");
+            currentPosition= mPlayer.getCurrentPosition();
+            duration = mPlayer.getDuration();
             Log.d(TAG, "PlayService 调用activity onUpdateProgress方法 ");
             if(listenerMap!=null){
                 List<OnPlayerEventListener> list = getListeners();
@@ -570,11 +578,11 @@ public class PlayService extends Service {
             }
         }
         Log.d(TAG, "updatePlayProgressShow" );
-        updateNotification();
+        updateNotification(currentPosition,duration);
         handler.sendEmptyMessageDelayed(UPDATE_PLAY_PROGRESS_SHOW,300);
     }
 
-    private void updateNotification() {
+    private void updateNotification(int current,int duration) {
         if(notificationHelper==null){
             setNotification();
         } else {
@@ -583,7 +591,7 @@ public class PlayService extends Service {
             if (mPlayingMusic != null) {
                 song = mPlayingMusic.getTitle();
                 singer = mPlayingMusic.getArtist();
-                progress = (int)(((float)mPlayer.getCurrentPosition() / (float)mPlayer.getDuration())*100);
+                progress = (int)(((float)current / (float)duration)*100);
 //                Log.e(TAG, mPlayer.getCurrentPosition()+"/"+mPlayer.getDuration());
 //                Log.e(TAG, progress+"");
             }
