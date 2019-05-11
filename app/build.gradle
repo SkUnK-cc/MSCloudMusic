@@ -4,11 +4,11 @@ apply plugin: 'kotlin-android-extensions'
 //apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.hp.mycloudmusic"
-        minSdkVersion 15
-        targetSdkVersion 27
+        minSdkVersion 21
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         flavorDimensions "versionCode"
@@ -35,9 +35,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:support-v4:28.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -46,7 +46,7 @@ dependencies {
     //依赖library
     implementation project(":commonlib")
     //recyclerview
-    implementation "com.android.support:recyclerview-v7:27.1.1"
+    implementation "com.android.support:recyclerview-v7:28.0.0"
     implementation "com.github.wuxiaogui593:recyclerLib:v1.3"
     //glide
     implementation "com.github.bumptech.glide:glide:$glide"
@@ -71,6 +71,22 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
     implementation files('libs/open_sdk_r6019_lite.jar')
+
+    implementation 'com.github.wuxiaogui593:MyWidgetLib:v1.1'
+
+    // ijkPlayer
+    // required, enough for most devices.
+    implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.8'
+
+    // Other ABIs: optional
+    implementation 'tv.danmaku.ijk.media:ijkplayer-armv5:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.8'
+
+    //ExoPlayer as IMediaPlayer: optional, experimental
+    implementation 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'
 }
 repositories {
     mavenCentral()

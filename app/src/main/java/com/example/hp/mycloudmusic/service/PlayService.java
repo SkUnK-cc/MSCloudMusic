@@ -569,10 +569,10 @@ public class PlayService extends Service {
         int currentPosition = 0;
         int duration = 0;
         if(isPlaying() && listenerMap!=null){
-            Log.e(TAG, "updatePlayProgressShow: getDuration()");
+            //Log.e(TAG, "updatePlayProgressShow: getDuration()");
             currentPosition= mPlayer.getCurrentPosition();
             duration = mPlayer.getDuration();
-            Log.d(TAG, "PlayService 调用activity onUpdateProgress方法 ");
+            //Log.d(TAG, "PlayService 调用activity onUpdateProgress方法 ");
             if(listenerMap!=null){
                 List<OnPlayerEventListener> list = getListeners();
                 for(int i=0;i<list.size();i++){
@@ -580,9 +580,9 @@ public class PlayService extends Service {
                 }
             }
         }
-        Log.d(TAG, "updatePlayProgressShow" );
+        //Log.d(TAG, "updatePlayProgressShow" );
         updateNotification(currentPosition,duration);
-        handler.sendEmptyMessageDelayed(UPDATE_PLAY_PROGRESS_SHOW,300);
+        handler.sendEmptyMessageDelayed(UPDATE_PLAY_PROGRESS_SHOW,1000);
     }
 
     private void updateNotification(int current,int duration) {

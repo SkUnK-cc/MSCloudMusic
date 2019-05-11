@@ -6,11 +6,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -26,15 +27,16 @@ import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.adapter.recyclerview.search_fragment.NoScrollGridLayoutManager;
 import com.example.hp.mycloudmusic.adapter.recyclerview.search_fragment.SearchAdapter;
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
-import com.example.hp.mycloudmusic.musicInfo.AudioBean;
+import com.example.hp.mycloudmusic.fragment.presenter.SearchPresenter;
+import com.example.hp.mycloudmusic.fragment.view.ISearchView;
+import com.example.hp.mycloudmusic.musicInfo.mv.FirstMvList;
 import com.example.hp.mycloudmusic.util.InputMethodUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 import butterknife.Bind;
 
-public class SearchFragment extends BaseFragment implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener{
+public class SearchFragment extends BaseFragment<SearchPresenter> implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener,ISearchView{
 
     public static final String TAG = "SearchFragment";
     private int etOriginalWidth = 0;
@@ -68,25 +70,34 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
         return R.layout.search_fragment;
     }
 
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mPresenter = new SearchPresenter();
+        super.onViewCreated(view, savedInstanceState);
+    }
+
     @Override
     protected void initData() {
-        List<AudioBean> list = new ArrayList<>();
-        for(int i=0;i<10;i++){
-            AudioBean audioBean;
-            if(i<=5) {
-                audioBean = new AudioBean();
-                audioBean.setTitle("three->"+i);
-                audioBean.setArtist("artist "+i);
-                audioBean.setViewId(R.layout.item_search_three);
-            }else{
-                audioBean = new AudioBean();
-                audioBean.setTitle("two->"+i);
-                audioBean.setArtist("artist "+i);
-                audioBean.setViewId(R.layout.item_search_two);
-            }
-            list.add(audioBean);
-        }
-        mSearchAdapter.setmDatas(list);
+//        List<AudioBean> list = new ArrayList<>();
+//        for(int i=0;i<10;i++){
+//            AudioBean audioBean;
+//            if(i<=5) {
+//                audioBean = new AudioBean();
+//                audioBean.setTitle("three->"+i);
+//                audioBean.setArtist("artist "+i);
+//                audioBean.setViewId(R.layout.item_search_three);
+//            }else{
+//                audioBean = new AudioBean();
+//                audioBean.setTitle("two->"+i);
+//                audioBean.setArtist("artist "+i);
+//                audioBean.setViewId(R.layout.item_search_two);
+//            }
+//            list.add(audioBean);
+//        }
+//        mSearchAdapter.setmDatas(list);
+        mPresenter.getFirstMvs();
     }
 
     @Override
@@ -328,5 +339,16 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
         set.play(widthAnimator).with(padAnimator);
         set.setDuration(300);
         set.start();
+    }
+
+    @Override
+    public void showMvs(@NotNull FirstMvList data) {
+        mSearchAdapter.setmDatas(data.getData());
+        mSearchAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void loadMvsFail(int code) {
+        Log.e(TAG, "loadMvsFail: faild");
     }
 }

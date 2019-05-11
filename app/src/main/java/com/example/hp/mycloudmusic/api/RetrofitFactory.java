@@ -2,6 +2,8 @@ package com.example.hp.mycloudmusic.api;
 
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi;
 import com.example.hp.mycloudmusic.api.cloudmusic.CloudMusicApi;
+import com.example.hp.mycloudmusic.api.netease.MessApi;
+import com.example.hp.mycloudmusic.api.netease.NeteaseApi;
 
 import java.io.IOException;
 import java.util.Map;
@@ -35,6 +37,22 @@ public class RetrofitFactory {
         }
         return (BaiduMusicApi) value;
     }
+    public static NeteaseApi provideNeteaseApi(){
+        Object value;
+        if(serviceMap.containsKey(NeteaseApi.Companion.getBaseUrl())){
+            Object obj = serviceMap.get(NeteaseApi.Companion.getBaseUrl());
+            if(obj==null){
+                value = createNeteaseApi();
+                serviceMap.put(NeteaseApi.Companion.getBaseUrl(),value);
+            }else{
+                value = obj;
+            }
+        }else{
+            value = createNeteaseApi();
+            serviceMap.put(NeteaseApi.Companion.getBaseUrl(),value);
+        }
+        return (NeteaseApi) value;
+    }
     public static CloudMusicApi provideCloudMusicApi(){
         Object value;
         if(serviceMap.containsKey(CloudMusicApi.host)){
@@ -50,6 +68,45 @@ public class RetrofitFactory {
             serviceMap.put(CloudMusicApi.host,value);
         }
         return (CloudMusicApi) value;
+    }
+
+    public static MessApi provideMessApi(){
+        Object value;
+        if(serviceMap.containsKey(MessApi.Companion.getMessApiHost())){
+            Object obj = serviceMap.get(MessApi.Companion.getMessApiHost());
+            if(obj==null){
+                value = createMessApi();
+                serviceMap.put(MessApi.Companion.getMessApiHost(),value);
+            }else{
+                value = obj;
+            }
+        }else{
+            value = createMessApi();
+            serviceMap.put(MessApi.Companion.getMessApiHost(),value);
+        }
+        return (MessApi) value;
+    }
+
+    private static Object createMessApi() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder()
+                        .removeHeader("User-Agent")
+                        .addHeader("User-Agent","Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:0.9.4)")
+                        .build();
+                return chain.proceed(newRequest);
+            }
+        });
+        OkHttpClient client = builder.build();
+        return new Retrofit.Builder()
+                .baseUrl(MessApi.Companion.getMessApiHost())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build()
+                .create(MessApi.class);
     }
 
     private static CloudMusicApi createCloudMusicApi() {
@@ -72,6 +129,27 @@ public class RetrofitFactory {
                 .client(client)
                 .build()
                 .create(CloudMusicApi.class);
+    }
+    private static NeteaseApi createNeteaseApi() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder()
+                        .removeHeader("User-Agent")
+                        .addHeader("User-Agent","Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1")
+                        .build();
+                return chain.proceed(newRequest);
+            }
+        });
+        OkHttpClient client = builder.build();
+        return new Retrofit.Builder()
+                .baseUrl(NeteaseApi.Companion.getBaseUrl())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build()
+                .create(NeteaseApi.class);
     }
 
     public static BaiduMusicApi createBaiduApi(){
