@@ -62,7 +62,7 @@ class PlayMvActivity : BaseActivity<PlayMvPresenter>(),IPlayMvView {
         mIMediaPlayer?.stop()
         mIMediaPlayer?.setDisplay(null)
         mIMediaPlayer?.release()
-        IjkMediaPlayer.native_setLogLevel(IjkMediaPlayer.IJK_LOG_DEBUG)
+//        IjkMediaPlayer.native_setLogLevel(IjkMediaPlayer.IJK_LOG_DEBUG)
         var ijkMediaPlayer: IjkMediaPlayer = IjkMediaPlayer()
         mIMediaPlayer = ijkMediaPlayer
         (mIMediaPlayer as IjkMediaPlayer).dataSource = "https://v1.itooi.cn/netease/mvUrl?id=$mvid&quality=1080"
@@ -70,5 +70,19 @@ class PlayMvActivity : BaseActivity<PlayMvPresenter>(),IPlayMvView {
 
         }
 
+    }
+
+    override fun onDestroy() {
+        release()
+        super.onDestroy()
+    }
+
+    fun release(){
+        if(mIMediaPlayer!=null){
+            mIMediaPlayer?.stop()
+            mIMediaPlayer?.setDisplay(null)
+            mIMediaPlayer?.release()
+        }
+        IjkMediaPlayer.native_profileEnd()
     }
 }
