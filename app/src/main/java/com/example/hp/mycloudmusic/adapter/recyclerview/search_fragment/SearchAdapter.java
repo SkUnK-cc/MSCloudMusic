@@ -114,6 +114,7 @@ public class SearchAdapter extends CommonAdapter<FirstMv> {
                 public int getSpanSize(int position) {
                     int size ;
                     switch (getItemViewType(position)){
+                        // size代表每个item占用的比例
                         case 0:
                             size = 3;
                             break;

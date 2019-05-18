@@ -86,7 +86,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
             bundle = savedInstanceState;
         }
         permissionCheck();
+        android.os.Debug.startMethodTracing("methodTracingFile");
         checkPlayService();
+        android.os.Debug.stopMethodTracing();
     }
 
     @Override

@@ -13,6 +13,7 @@
     <color name="alpha_55_black">#8C000000</color>
     <color name="colorWhite">#ffffff</color>
     <color name="white_96p">#F5FFFFFF</color>
+    <color name="alpha_80_white">#cccccccc</color>
     <color name="alpha_15_white">#26FFFFFF</color>
     <color name="alpha_35_black">#59000000</color>
     <color name="alpha_20_black">#33000000</color>
