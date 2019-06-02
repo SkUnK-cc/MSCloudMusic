@@ -200,6 +200,9 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
         localMusicList.remove(index);
         adapter.notifyItemRemoved(index);
 
+        if(BaseAppHelper.get().getPlayService().checkPlayingChange(music)){
+            BaseAppHelper.get().getPlayService().next();
+        }
     }
 
     @Override

@@ -73,7 +73,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
     private static final String POSITION = "position";
     private String TAG = "MainActivity";
     private boolean isShowPlayFragment = false;
-    private static final int WAIT_PLAYFRAGMENT_ADD = 11;
     private boolean isBind = false;
 
     @Override
@@ -86,9 +85,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
             bundle = savedInstanceState;
         }
         permissionCheck();
-        android.os.Debug.startMethodTracing("methodTracingFile");
+//        android.os.Debug.startMethodTracing("methodTracingFile");
         checkPlayService();
-        android.os.Debug.stopMethodTracing();
+//        android.os.Debug.stopMethodTracing();
     }
 
     @Override

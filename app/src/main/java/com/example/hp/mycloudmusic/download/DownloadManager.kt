@@ -26,7 +26,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.RandomAccessFile
 import java.util.concurrent.atomic.AtomicReference
-//多文件下载
+//多文件下载https://www.jianshu.com/p/fe3607dddacc
 class DownloadManager {
 
     companion object {
@@ -212,7 +212,7 @@ class DownloadManager {
             var link = info.url
             var downloadedLength = info.progress
             var request: Request = Request.Builder()
-                    .addHeader("RANGE","bytes=" + downloadedLength + "-")
+                    .addHeader("RANGE","bytes=" + downloadedLength + "-"+info.total)
                     .url(link)
                     .build()
             var call = client!!.newCall(request)
@@ -228,11 +228,13 @@ class DownloadManager {
                 if (response == null || !response.isSuccessful) return
                 input = response.body()!!.byteStream()
                 var buffer: ByteArray = ByteArray(2048)
+                var len = 0
                 //kotlin 中等式(赋值)不是一个表达式
-                while ((input.read(buffer)) != -1) {
+                //当没有更多数据的时候，read方法会返回-1
+                while ( input.read(buffer).let { len=it;it!=-1 }) {
                     Log.e("DownloadSubscribe","while循环")
-                    info.progress += buffer.size
-                    saveFile.write(buffer, 0, buffer.size)
+                    info.progress += len
+                    saveFile.write(buffer, 0, len)
                     //这里传入整个downloadInfo链
                     if(e==null) Log.e("DownloadSubscribe","e 为空")
 
@@ -249,6 +251,7 @@ class DownloadManager {
                 response.body()?.close()
             }
             if(info.internal!=null)download(info.internal,e)
+            Log.e("下载完成","total="+info.total+"\nprogress="+info.progress)
             e.onComplete()
         }
     }

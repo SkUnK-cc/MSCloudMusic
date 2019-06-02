@@ -94,7 +94,7 @@ public class LocalMusicManager {
             music.setDuration(duration);
 
             musicList.add(music);
-
+            Log.e("扫描音乐：",music.getTitle()+":"+music.getFileSize());
             mLiteOrm.insert(music);
         }
         cursor.close();
@@ -118,6 +118,7 @@ public class LocalMusicManager {
 
     private void deleteFromLocal(AudioBean audioBean,Context context){
         String path = audioBean.getPath();
+        Log.e(TAG, "deleteFromLocal: path"+path);
         if(path!=null && !path.equals("")) {
             File file = new File(path);
             if (file.exists()) {

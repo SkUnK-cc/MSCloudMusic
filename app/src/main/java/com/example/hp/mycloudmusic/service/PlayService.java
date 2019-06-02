@@ -336,6 +336,7 @@ public class PlayService extends Service {
     }
 
     public void play(int position) {
+        if(audioMusics.size()==0)return;
         if(position < 0){
             //第一首音乐的上一首
             position = audioMusics.size() - 1;
