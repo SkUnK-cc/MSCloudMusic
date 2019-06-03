@@ -8,6 +8,7 @@ import com.example.hp.mycloudmusic.musicInfo.songPlay.SongPlayResp;
 import com.example.hp.mycloudmusic.musicInfo.sug.MusicSearchSugResp;
 
 import io.reactivex.Observable;
+import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -45,6 +46,15 @@ public interface BaiduMusicApi {
                                                      @Query("artistid") String artistid,
                                                      @Query("offset") int offset,
                                                      @Query("limits") int limits);
+
+    /**
+     * 该方法用于kotlin协程
+     */
+    @GET(V1_TING + "?method=" + GET_ARTISTSONGLIST)
+    Call<ArtistSongListResp> getArtistSongListKt(@Query("tinguid") String tinguid,
+                                                 @Query("artistid") String artistid,
+                                                 @Query("offset") int offset,
+                                                 @Query("limits") int limits);
 
     @GET(V1_TING + "?method=" + SONG_LRC)
     Observable<Lrc> queryLrc(@Query("songid") String songid);

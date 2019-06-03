@@ -152,7 +152,7 @@ public class RetrofitFactory {
                 .create(NeteaseApi.class);
     }
 
-    public static BaiduMusicApi createBaiduApi(){
+    private static BaiduMusicApi createBaiduApi(){
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(new Interceptor() {
             @Override

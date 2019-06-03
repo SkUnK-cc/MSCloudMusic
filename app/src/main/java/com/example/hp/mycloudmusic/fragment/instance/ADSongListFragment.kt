@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.example.hp.mycloudmusic.R
 import com.example.hp.mycloudmusic.adapter.recyclerview.CommonViewHolder
 import com.example.hp.mycloudmusic.adapter.recyclerview.OnlineSong.OnlineSongRecyclerAdapter
+import com.example.hp.mycloudmusic.api.RetrofitFactory
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi
 import com.example.hp.mycloudmusic.custom.popupwindow.PopupWindowManager
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory
@@ -17,10 +18,11 @@ import com.example.hp.mycloudmusic.musicInfo.merge.Song
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter
 import com.example.hp.mycloudmusic.service.PlayService
 import com.example.hp.mycloudmusic.util.DisplayUtil
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),PlayMusicFragment.PlayMusicBackListener{
 
@@ -69,6 +71,7 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
         })
     }
 
+    /**
     override fun getListFromNet(artist: ArtistInfoResp) {
         getBaiduApi().getArtistSongList(artist.ting_uid,artist.artist_id,mPagenum*BaiduMusicApi.pagenSize,BaiduMusicApi.pagenSize)
                 .subscribeOn(Schedulers.io())
@@ -89,8 +92,31 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
                     override fun onError(e: Throwable) {
                     }
                 })
+    }*/
+
+    override fun getListFromNet(artist: ArtistInfoResp) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = async(Dispatchers.Default) { sendRequest(artist) }.await()
+            if(result?.songlist != null && result.isValid){
+                mPagenum++
+                mData.addAll(result.songlist)
+                adapter!!.notifyDataSetChanged()
+                Log.e("ADSongListFragment:","获取数据成功!!")
+            }
+        }
+
     }
 
+    suspend fun sendRequest(artist: ArtistInfoResp): ArtistSongListResp?{
+        var api = RetrofitFactory.provideBaiduApi()
+        var call = api.getArtistSongListKt(artist.ting_uid,
+                artist.artist_id,
+                mPagenum* BaiduMusicApi.pagenSize,
+                BaiduMusicApi.pagenSize)
+        var resp: Response<ArtistSongListResp> = call.execute()
+        var body = resp.body()
+        return body
+    }
     override fun mConvert(holder: CommonViewHolder, data: Song) {
         holder.setText(R.id.merge_song_title, data.getTitle())
         holder.setText(R.id.merge_song_artist, data.getArtist())

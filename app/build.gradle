@@ -93,10 +93,11 @@ dependencies {
 
     //ExoPlayer as IMediaPlayer: optional, experimental
     implementation 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1'
 }
 repositories {
     mavenCentral()
 }
-kapt {
-    generateStubs = true
-}
+
