@@ -216,4 +216,7 @@ public abstract class ArtistInfoActivity extends BaseActivity implements RadioGr
     public ArtistDetailScrollView getScrollView(){
         return scrollView;
     }
+    public static void get(){
+
+    }
 }

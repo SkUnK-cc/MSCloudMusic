@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.hp.mycloudmusic.api.RetrofitFactory;
+import com.example.hp.mycloudmusic.api.RxSchedulers;
 import com.example.hp.mycloudmusic.fragment.view.IPlayMusicView;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
@@ -57,8 +58,7 @@ public class PlayMusicPresenter extends BasePresenter<IPlayMusicView> {
     private void getLrcFromNet(AbstractMusic music){
         RetrofitFactory.provideBaiduApi()
                 .querySug(music.getTitle()+" "+music.getArtist())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxSchedulers.Companion.compose())
                 .subscribe(new Observer<MusicSearchSugResp>() {
                     @Override
                     public void onSubscribe(Disposable d) {

@@ -17,6 +17,7 @@ import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistSongListResp
 import com.example.hp.mycloudmusic.musicInfo.merge.Song
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter
 import com.example.hp.mycloudmusic.service.PlayService
+import com.example.hp.mycloudmusic.ui.onLine.ArtistInfoActivity
 import com.example.hp.mycloudmusic.util.DisplayUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -95,6 +96,7 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
     }*/
 
     override fun getListFromNet(artist: ArtistInfoResp) {
+        //这里需要创建一个协程，因为async只能在协程中调用
         CoroutineScope(Dispatchers.Main).launch {
             val result = async(Dispatchers.Default) { sendRequest(artist) }.await()
             if(result?.songlist != null && result.isValid){
@@ -107,7 +109,7 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
 
     }
 
-    suspend fun sendRequest(artist: ArtistInfoResp): ArtistSongListResp?{
+    fun sendRequest(artist: ArtistInfoResp): ArtistSongListResp?{
         var api = RetrofitFactory.provideBaiduApi()
         var call = api.getArtistSongListKt(artist.ting_uid,
                 artist.artist_id,

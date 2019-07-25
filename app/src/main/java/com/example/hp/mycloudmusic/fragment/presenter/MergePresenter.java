@@ -3,15 +3,14 @@ package com.example.hp.mycloudmusic.fragment.presenter;
 import android.util.Log;
 
 import com.example.hp.mycloudmusic.api.RetrofitFactory;
+import com.example.hp.mycloudmusic.api.RxSchedulers;
 import com.example.hp.mycloudmusic.fragment.view.IMergeView;
 import com.example.hp.mycloudmusic.musicInfo.merge.QueryMergeResp;
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter;
 import com.litesuits.orm.LiteOrm;
 
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class MergePresenter extends BasePresenter<IMergeView> {
     public static final String TAG = "MergePresenter";
@@ -26,8 +25,7 @@ public class MergePresenter extends BasePresenter<IMergeView> {
         //http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.search.merge&query=taylor&page_no=1&page_size=50
         RetrofitFactory.provideBaiduApi()
                 .queryMerge(search_word,1,50)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxSchedulers.Companion.compose())
                 .subscribe(new Observer<QueryMergeResp>() {
                     @Override
                     public void onSubscribe(Disposable d) {

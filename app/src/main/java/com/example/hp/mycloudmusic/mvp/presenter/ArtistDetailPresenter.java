@@ -1,15 +1,16 @@
 package com.example.hp.mycloudmusic.mvp.presenter;
 
+import android.util.Log;
+
 import com.example.hp.mycloudmusic.api.RetrofitFactory;
+import com.example.hp.mycloudmusic.api.RxSchedulers;
 import com.example.hp.mycloudmusic.fragment.view.IActivityDetailView;
 import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistInfoResp;
 import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
 import com.example.hp.mycloudmusic.musicInfo.merge.QueryMergeResp;
 
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class ArtistDetailPresenter extends BasePresenter<IActivityDetailView> {
 
@@ -26,10 +27,10 @@ public class ArtistDetailPresenter extends BasePresenter<IActivityDetailView> {
     }
 
     private void getArtistListByName(Artist artist) {
+        Log.e("getArtistListByName","hehe");
         RetrofitFactory.provideBaiduApi()
                 .queryMerge(artist.author,1,20)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxSchedulers.Companion.compose())
                 .subscribe(new Observer<QueryMergeResp>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -51,10 +52,10 @@ public class ArtistDetailPresenter extends BasePresenter<IActivityDetailView> {
     }
 
     private void getArtistById(Artist artist) {
+        Log.e("getArtistListById","hehe");
         RetrofitFactory.provideBaiduApi()
                 .getArtistInfo(artist.artist_id,artist.ting_uid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxSchedulers.Companion.compose())
                 .subscribe(new Observer<ArtistInfoResp>() {
                     @Override
                     public void onSubscribe(Disposable d) {
