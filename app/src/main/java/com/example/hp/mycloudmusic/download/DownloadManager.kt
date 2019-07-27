@@ -5,11 +5,13 @@ import android.util.Log
 import android.widget.Toast
 import com.example.hp.mycloudmusic.CMApplication
 import com.example.hp.mycloudmusic.api.RetrofitFactory
+import com.example.hp.mycloudmusic.api.RxSchedulers
 import com.example.hp.mycloudmusic.base.BaseAppHelper
 import com.example.hp.mycloudmusic.musicInfo.AudioBean
 import com.example.hp.mycloudmusic.musicInfo.merge.Song
 import com.example.hp.mycloudmusic.musicInfo.songPlay.SongPlayResp
 import com.example.hp.mycloudmusic.util.FileMusicUtils
+import com.example.hp.mycloudmusic.util.LogUtils
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.ObservableOnSubscribe
@@ -60,7 +62,7 @@ class DownloadManager {
         getSongNetInfo(song)
     }
 
-    fun getSongNetInfo(song: Song){
+    private fun getSongNetInfo(song: Song){
         Log.e("DownloadManager","getSongNetInfo")
         RetrofitFactory.provideBaiduApi()
                 .querySong(song.getSong_id())
@@ -72,6 +74,7 @@ class DownloadManager {
                         if (resp != null && resp.isValid) {
                             song.bitrate = resp.bitrate
                             song.songInfo = resp.songinfo
+                            //封装mp3和歌词的downloadInfo
                             var downloadInfo = createSongDownloadInfo(song)
                             download(song,downloadInfo)
                         }
@@ -82,30 +85,25 @@ class DownloadManager {
     }
 
     private fun download(song: Song, downloadInfo: DownloadInfo?) {
-        if(downloadInfo == null || downloadInfo.url.equals(""))return
+        if(downloadInfo == null || downloadInfo.url == "")return
         Log.e("DownloadManager","download")
         Observable.just(downloadInfo)
                 .filter { !downCalls.containsKey(it.url) }
-                .flatMap { it -> Observable.create(DownloadSubscribe(it)) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                //flatmap将一个Observable变换为一个或多个Observable
+                //此处主要的作用是将一个downloadInfo用DownloadSubscribe包装起来
+                //DownloadSubscribe主要起下载作用
+                .flatMap { Observable.create(DownloadSubscribe(it)) }
+                .compose(RxSchedulers.compose())
                 .subscribe(object: DownloadObserver(downloadInfo){
-                    override fun onSubscribe(d: Disposable) {
-                        super.onSubscribe(d)
-                    }
 
                     override fun onNext(t: DownloadInfo) {
                         super.onNext(t)
                         Log.e("DownloadManager","正在下载..."+t.getDown())
-                        var specListeners = listeners.get(t.url)
+                        var specListeners = listeners[t.url]
                         if(specListeners == null)return
                         for(l in specListeners){
                             l.onNext(t)
                         }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        super.onError(e)
                     }
 
                     override fun onComplete() {
@@ -118,9 +116,9 @@ class DownloadManager {
                         Log.e("DownloadManager",audioBean.title+audioBean.artist+" 下载完成！")
                         Toast.makeText(CMApplication.getAppContext(),audioBean.title+audioBean.artist+" 下载完成！",Toast.LENGTH_SHORT)
                         if(mInfo == null)return
-                        var specListeners = listeners.get(mInfo!!.url)
-                        if(specListeners == null)return
-                        for(l in specListeners){
+                        var specListeners: java.util.ArrayList<DownloadListener>? = listeners[mInfo!!.url]
+                                ?: return
+                        for(l in specListeners!!){
                             l.onComplete(mInfo)
                         }
                     }
@@ -182,16 +180,17 @@ class DownloadManager {
         }else{
             var array = ArrayList<DownloadListener>()
             array.add(listener!!)
-            listeners.put(urlString,array)
+            listeners[urlString] = array
         }
     }
 
     fun removeListener(urlString: String,listener: DownloadListener?){
         if(listener==null)return
         if(listeners.containsKey(urlString)){
-            listeners.get(urlString)?.remove(listener)
+            listeners[urlString]?.remove(listener)
         }
     }
+
 
     private inner class DownloadSubscribe : ObservableOnSubscribe<DownloadInfo> {
         private var downloadInfo: DownloadInfo? = null
@@ -207,7 +206,7 @@ class DownloadManager {
         }
 
         private fun download(info: DownloadInfo?,e: ObservableEmitter<DownloadInfo>) {
-            Log.e("DownloadSubscribe","DownloadSubscribe")
+            LogUtils.e("DownloadSubscribe")
             if(info == null)return
             var link = info.url
             var downloadedLength = info.progress
@@ -216,7 +215,7 @@ class DownloadManager {
                     .url(link)
                     .build()
             var call = client!!.newCall(request)
-            downCalls.put(link,call)
+            downCalls[link] = call  //在hashmap中添加一个键值对
             var response = call.execute()
 
             var file = File(info.dir,info.fileName)
@@ -227,27 +226,24 @@ class DownloadManager {
                 saveFile.seek(info.progress)
                 if (response == null || !response.isSuccessful) return
                 input = response.body()!!.byteStream()
-                var buffer: ByteArray = ByteArray(2048)
+                var buffer = ByteArray(2048)
                 var len = 0
                 //kotlin 中等式(赋值)不是一个表达式
-                //当没有更多数据的时候，read方法会返回-1
+                //当没有更多数据的时候，read方法会返回-1,
+                // let 操作符返回值为函数块的最后一行或指定return表达式
                 while ( input.read(buffer).let { len=it;it!=-1 }) {
-                    Log.e("DownloadSubscribe","while循环")
+                    LogUtils.e("while循环")
                     info.progress += len
                     saveFile.write(buffer, 0, len)
                     //这里传入整个downloadInfo链
                     if(e==null) Log.e("DownloadSubscribe","e 为空")
 
-                    e.onNext(downloadInfo!!)
+                    e.onNext(downloadInfo!!)    //反馈进度
                 }
                 downCalls.remove(link)
             }finally{
-                if(input!=null) {
-                    input.close()
-                }
-                if(saveFile!=null){
-                    saveFile.close()
-                }
+                input?.close()
+                saveFile?.close()
                 response.body()?.close()
             }
             if(info.internal!=null)download(info.internal,e)
