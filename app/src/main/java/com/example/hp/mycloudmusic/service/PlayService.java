@@ -26,6 +26,7 @@ import com.example.hp.mycloudmusic.service.broadcast.NotificationBroadcast;
 import com.example.hp.mycloudmusic.service.listener.OnPlayerEventListener;
 import com.example.hp.mycloudmusic.service.receiver.NoisyAudioStreamReceiver;
 import com.example.hp.mycloudmusic.util.AudioFocusManager;
+import com.example.hp.mycloudmusic.util.LogUtils;
 import com.example.hp.mycloudmusic.util.NotificationHelper;
 
 import java.lang.ref.WeakReference;
@@ -631,7 +632,7 @@ public class PlayService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.e(TAG, "onDestroy: service");
+        LogUtils.INSTANCE.e("onDestroy: service");
 //        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
         handler.removeCallbacksAndMessages(null);
         releaseResource();

@@ -3,7 +3,6 @@ package com.example.hp.mycloudmusic.custom;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
@@ -21,6 +20,8 @@ import android.widget.OverScroller;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.util.DisplayUtil;
+
+import io.reactivex.annotations.Nullable;
 
 public class StickNavLayout extends LinearLayout implements NestedScrollingParent {
     public static final String TAG = "StickNavLayout";
@@ -67,6 +68,11 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
 
     }
 
+    /**
+     * 自定义View重要！！！
+     * 当布局加载完成后会回调此方法，在这里可以获取子View
+     * 但是无法获取子View的尺寸，需要在measure之后获取
+     */
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();

@@ -124,29 +124,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         }
     }
 
-//    Handler handler  = new Handler(){
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            switch (msg.what){
-//                case WAIT_PLAYFRAGMENT_ADD:
-//                    if(playMusicFragment.isAdded()){
-//                        Log.e(TAG, "调用framgnet方法onchange");
-//                        if(msg.obj!=null && msg.obj instanceof AudioBean){
-//                            AudioBean music = (AudioBean) msg.obj;
-//                            playMusicFragment.onchange(music);
-//                        }
-//                    }else{
-//                        Message message = Message.obtain();
-//                        message.obj = msg.obj;
-//                        message.what = WAIT_PLAYFRAGMENT_ADD;
-//                        handler.sendMessageDelayed(message,300);
-//                    }
-//                    break;
-//            }
-//        }
-//    };
-
     private void permissionCheck() {
         if(ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){

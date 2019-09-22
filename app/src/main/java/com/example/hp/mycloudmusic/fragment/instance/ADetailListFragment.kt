@@ -26,7 +26,7 @@ abstract class ADetailListFragment<T : BasePresenter<*>?,D>: BaseFragment<T>() {
 
     override fun initListener() {
     }
-
+    
     override fun initView() {
         rv_detail_song.layoutManager = FullyLinearLayoutManager(context)
         initAdapter()

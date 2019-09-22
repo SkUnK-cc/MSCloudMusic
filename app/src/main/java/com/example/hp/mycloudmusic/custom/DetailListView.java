@@ -30,6 +30,7 @@ public class DetailListView extends ListView {
 
     }
 
+
     public DetailListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
