@@ -27,7 +27,6 @@ public class ArtistDetailPresenter extends BasePresenter<IActivityDetailView> {
     }
 
     private void getArtistListByName(Artist artist) {
-        Log.e("getArtistListByName","hehe");
         RetrofitFactory.provideBaiduApi()
                 .queryMerge(artist.author,1,20)
                 .compose(RxSchedulers.Companion.compose())
@@ -52,7 +51,6 @@ public class ArtistDetailPresenter extends BasePresenter<IActivityDetailView> {
     }
 
     private void getArtistById(Artist artist) {
-        Log.e("getArtistListById","hehe");
         RetrofitFactory.provideBaiduApi()
                 .getArtistInfo(artist.artist_id,artist.ting_uid)
                 .compose(RxSchedulers.Companion.compose())

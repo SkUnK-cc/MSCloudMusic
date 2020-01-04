@@ -30,7 +30,7 @@ public interface BaiduMusicApi {
      * @param query
      * @return
      */
-    @GET(V1_TING+"?method="+SEARCH_CATALOGSUG)
+    @GET(V1_TING + "?method="+SEARCH_CATALOGSUG)
     Observable<MusicSearchSugResp> querySug(@Query("query")String query);
 
     @GET(V1_TING + "?method=" + QUERY_MERGE)

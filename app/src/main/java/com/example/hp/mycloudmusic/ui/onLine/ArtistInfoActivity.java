@@ -118,20 +118,9 @@ public abstract class ArtistInfoActivity extends BaseActivity implements RadioGr
         switch (checkedId){
             case R.id.radio_single:
                 vpWorksList.setCurrentItem(0);
-//                LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) vpWorksList.getLayoutParams();
-//                int height = aDetailSongFragment1.getHeight();
-//                layoutParams.height = height;
-//                vpWorksList.setLayoutParams(layoutParams);
-//                Log.e(TAG, "onCheckedChanged: height = "+height);
-
                 break;
             case R.id.radio_album:
                 vpWorksList.setCurrentItem(1);
-//                LinearLayout.LayoutParams layoutParams2= (LinearLayout.LayoutParams) vpWorksList.getLayoutParams();
-//                int height2 = aDetailSongFragment2.getHeight();
-//                layoutParams2.height = height2;
-//                vpWorksList.setLayoutParams(layoutParams2);
-//                Log.e(TAG, "onCheckedChanged: height = "+height2);
                 break;
             case R.id.radio_mv:
                 break;
@@ -154,9 +143,7 @@ public abstract class ArtistInfoActivity extends BaseActivity implements RadioGr
     @Override
     public void llMoveTo(float margin) {
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) llDetail.getLayoutParams();
-//        Log.e(TAG, "overDown: old margin = "+layoutParams.topMargin);
         layoutParams.topMargin = (int) margin;
-//        Log.e(TAG, "overDown: new margin = "+layoutParams.topMargin);
         llDetail.setLayoutParams(layoutParams);
     }
 
@@ -171,22 +158,11 @@ public abstract class ArtistInfoActivity extends BaseActivity implements RadioGr
     }
 
     private void changeImageSize(float margin) {
-//        Log.e(TAG, "left="+iv_avatar.getLeft()+"\ntop="+iv_avatar.getTop()+"\nright="+iv_avatar.getRight()+"\nbottom="+iv_avatar.getBottom());
-//        float finalY = margin + DisplayUtil.dip2px(this,65);
         float height = DisplayUtil.dip2px(ArtistInfoActivity.this,220);
-        //Log.e(TAG, "changeImageSize: finalY="+finalY+"\nheight="+height);
         float mScale = margin/height;
         float width = getMobileWidth()*mScale;
         float dx = (width-getMobileWidth())/2;
-//        Log.e(TAG, "-dx="+(-dx)+"\ntop="+0+"\nright="+(getMobileWidth()+dx)+"\nbottom="+finalY);
         iv_avatar.layout((int)(0-dx),0,(int)(getMobileWidth()+dx),(int)margin);
-//        iv_avatar.requestLayout();
-//        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) iv_avatar.getLayoutParams();
-//        layoutParams.width = (int) width;
-//        layoutParams.height = (int) finalY;
-//        iv_avatar.setLayoutParams(layoutParams);
-//        Log.e(TAG, "left="+iv_avatar.getLeft()+"\ntop="+iv_avatar.getTop()+"\nright="+iv_avatar.getRight()+"\nbottom="+iv_avatar.getBottom());
-
     }
 
     private float getMobileWidth() {

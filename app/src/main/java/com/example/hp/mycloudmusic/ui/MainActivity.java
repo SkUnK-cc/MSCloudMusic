@@ -115,7 +115,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         }
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.e(TAG, "onServiceDisconnected");
         }
     };
     private void initPlayServiceListener() {
@@ -167,7 +166,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
 
     private void showFragment(int index) {
         FragmentTransaction transaction= getSupportFragmentManager().beginTransaction();
-        Log.e(TAG, "showFragment: index = "+index );
         fragmentPosition = index;
         switch(index){
             case FRAGMENT_SEARCH:
@@ -207,18 +205,14 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
 
     private void addOrShowFragment(FragmentTransaction transaction, Fragment fragment) {
         if(currentFragment == fragment){
-            Log.d(TAG, "currentFragment == frament");
             return ;
         }
         if (currentFragment != null){
             transaction.hide(currentFragment);
         }
-        Log.e(TAG, "addOrShowFragment: test");
         if(!fragment.isAdded()){
-            Log.e(TAG, "!fragment.isAdded()");
             transaction.add(R.id.framelayout,fragment).commit();
         }else{
-            Log.e(TAG, "fragment.isAdded()");
             transaction.show(fragment).commit();
         }
         currentFragment = fragment;
@@ -275,11 +269,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.fragment_slide_from_right,0);
         if(playMusicFragment == null){
-            Log.e(TAG, "showPlayingFragment: add");
             playMusicFragment = FragmentFactory.getInstance(this).getmPlayMusicFragment();
             transaction.add(android.R.id.content,playMusicFragment);
         }else if(playMusicFragment.isAdded()){
-            Log.e(TAG, "showPlayingFragment: show");
             transaction.show(playMusicFragment);
         }
         isShowPlayFragment = true;
@@ -288,14 +280,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
 
     @Override
     public void onBackPressed() {
-        Log.e(TAG, "onBackPressed: activity");
         playMusicFragment = FragmentFactory.getInstance(this).mPlayMusicFragment;
-//        boolean bool = playMusicFragment == null;
-//        Log.e(TAG, "onBackPressed: playmusic is null?"+bool);
-//        Log.e(TAG, "onBackPressed: is added?"+playMusicFragment.isAdded());
-//        Log.e(TAG, "onBackPressed: is hidden?"+playMusicFragment.isHidden());
         if(playMusicFragment != null && playMusicFragment.isAdded() && !playMusicFragment.isHidden()){
-            Log.e(TAG, "onBackPressed: hide playmusic fragment!!!");
             isShowPlayFragment = false;
             hidePlayingFragment();
             return;
@@ -350,7 +336,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
 
     @Override
     protected void onStop() {
-//        Log.e(TAG, "--------------------------------------------onStop: -----");
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         PlayMusicFragment fragment = FragmentFactory.getInstance(this).getmPlayMusicFragment();
         if(fragment != null && fragment.isAdded()){
@@ -366,12 +351,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment();
         ArtistDetailFragment detailFragment = FragmentFactory.getInstance(null).getArtistDetailFragment(null);
         if (playMusicFragment != null && !playMusicFragment.isAdded()) {
-            Log.e("click: ","add");
             transaction.add(android.R.id.content, playMusicFragment);
-//            transaction.replace(android.R.id.content,playMusicFragment)
         } else if (playMusicFragment.isAdded()) {
-            Log.e("click: ","show");
-//            transaction.show(playMusicFragment)
             transaction.show(playMusicFragment).hide(detailFragment);
         }
         transaction.commitAllowingStateLoss();

@@ -67,24 +67,20 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
     @Override
     protected void onStart() {
         super.onStart();
-    //        Log.e(TAG, "--------------------------------------------onStart-----" );
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "--------------------------------------------onResume-------");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        Log.e(TAG, "--------------------------------------------onPause----");
     }
 
     @Override
     protected void onStop() {
-        Log.e(TAG, "onStop: "+getClass().getName());
         super.onStop();
     }
 
@@ -93,7 +89,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
         if(mPresenter!=null){
             mPresenter.detach();
         }
-        Log.e(TAG, "onDestroy: "+getClass().getName());
         super.onDestroy();
     }
 }

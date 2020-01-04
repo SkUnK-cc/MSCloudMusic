@@ -26,6 +26,7 @@ import com.example.hp.mycloudmusic.service.broadcast.NotificationBroadcast;
 import com.example.hp.mycloudmusic.service.listener.OnPlayerEventListener;
 import com.example.hp.mycloudmusic.service.receiver.NoisyAudioStreamReceiver;
 import com.example.hp.mycloudmusic.util.AudioFocusManager;
+import com.example.hp.mycloudmusic.util.DevUtil;
 import com.example.hp.mycloudmusic.util.LogUtils;
 import com.example.hp.mycloudmusic.util.NotificationHelper;
 
@@ -123,6 +124,7 @@ public class PlayService extends Service {
      * 正在播放的歌曲
      */
     private AbstractMusic mPlayingMusic;
+    private int curPercent = 0;
     /**
      * 播放器
      */
@@ -182,7 +184,7 @@ public class PlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e(TAG, "onCreate: service is on create!");
+        Log.d(TAG, "onCreate: service is on create!");
         audioMusics = new ArrayList<>();
         acquireWifi();
         registerReceiver();
@@ -444,6 +446,8 @@ public class PlayService extends Service {
     private MediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = new MediaPlayer.OnBufferingUpdateListener() {
         @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
+            curPercent = percent;
+            DevUtil.e(TAG,"buffer percent: "+percent);
             if(listenerMap!=null){
                 List<OnPlayerEventListener> list = getListeners();
                 for(int i=0;i<list.size();i++){
@@ -597,8 +601,6 @@ public class PlayService extends Service {
                 song = mPlayingMusic.getTitle();
                 singer = mPlayingMusic.getArtist();
                 progress = (int)(((float)current / (float)duration)*100);
-//                Log.e(TAG, mPlayer.getCurrentPosition()+"/"+mPlayer.getDuration());
-//                Log.e(TAG, progress+"");
             }
             notificationHelper.updateNotification(mPlayingMusic,song, singer, progress,isPlaying());
         }

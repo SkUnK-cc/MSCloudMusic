@@ -55,7 +55,6 @@ public class DensityUtil {
         float nativeWidth = 0;//真实屏幕的宽,不需要手动改
 
         nativeWidth = activity.getWindowManager().getDefaultDisplay().getWidth();
-        Log.e(TAG, "autoFit: nativeWidth = "+nativeWidth );
         DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
         displayMetrics.density = nativeWidth / 375;
         displayMetrics.densityDpi = (int) (displayMetrics.density*160);

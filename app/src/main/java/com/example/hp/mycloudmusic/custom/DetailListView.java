@@ -2,7 +2,6 @@ package com.example.hp.mycloudmusic.custom;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -53,19 +52,14 @@ public class DetailListView extends ListView {
                 mLastY = newY;
                 if((newY-y) > 0){
                     if(getScrollY() == 0){
-                        Log.e(TAG, "dispatchTouchEvent: allow");
                         activity.getScrollView().requestDisallowInterceptTouchEvent(false);
                     }else{
-                        Log.e(TAG, "dispatchTouchEvent: disallow");
                         activity.getScrollView().requestDisallowInterceptTouchEvent(true);
                     }
                 }else if((newY-y)<0){
-                    Log.e(TAG, "dispatchTouchEvent: isTop = "+activity.getScrollView().getIsTop());
                     if(activity.getScrollView().getIsTop()){
-                        Log.e(TAG, "dispatchTouchEvent: disallow");
                         activity.getScrollView().requestDisallowInterceptTouchEvent(true);
                     }else{
-                        Log.e(TAG, "dispatchTouchEvent: allow");
                         activity.getScrollView().requestDisallowInterceptTouchEvent(false);
                     }
                 }
@@ -82,7 +76,6 @@ public class DetailListView extends ListView {
         switch(ev.getAction()){
             case MotionEvent.ACTION_DOWN:
                 preY = ev.getY();
-                Log.e(TAG, "onTouchEvent: down");
                 break;
             case MotionEvent.ACTION_MOVE:
                 nowY = ev.getY();
@@ -92,19 +85,16 @@ public class DetailListView extends ListView {
                     scrollTo(0, (int) (getScrollY() - delta));
                 }else if(delta<0){
                     if(activity.getScrollView().getIsTop()) {
-                        Log.e(TAG, "onTouchEvent: is Scroll delta=" + delta);
                         scrollTo(0, (int) (getScrollY() - delta));
                     }else{
                         return false;
                     }
                 }
-                Log.e(TAG, "onTouchEvent: move");
                 break;
             case MotionEvent.ACTION_UP:
                 if(getScrollY()<0){
                     scrollTo(0,0);
                 }
-                Log.e(TAG, "onTouchEvent: up");
                 break;
         }
         //activity.getScrollView().requestDisallowInterceptTouchEvent(true);

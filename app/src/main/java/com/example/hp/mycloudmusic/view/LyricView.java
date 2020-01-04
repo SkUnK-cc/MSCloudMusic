@@ -34,17 +34,14 @@ public class LyricView extends RelativeLayout implements View.OnTouchListener {
 
     public LyricView(Context context) {
         this(context,null);
-        Log.e(TAG, "LyricView: 构造函数1");
     }
 
     public LyricView(Context context, AttributeSet attrs) {
         this(context, attrs,0);
-        Log.e(TAG, "LyricView: 构造函数2");
     }
 
     public LyricView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        Log.e(TAG, "LyricView: 构造函数3");
         initWithContext(context);
     }
 
@@ -259,9 +256,7 @@ public class LyricView extends RelativeLayout implements View.OnTouchListener {
         int start = scrollView.getScrollY();
         //scrollView.getHeight()获取的是可见的高度，textView获取的是内容的高度
         int end = textView.getPaddingTop()+textView.getLineHeight()*position-scrollView.getHeight()/2-textView.getLineHeight()/2;
-//        Log.e(TAG, "textView.getHeight="+textView.getHeight());
-//        Log.e(TAG, "scrollView.getHeight="+scrollView.getHeight());
-//        Log.e(TAG, "this.getHeight="+this.getHeight());
+
         ValueAnimator valueAnimator = ValueAnimator.ofInt(start,end);
         valueAnimator.setDuration(600);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

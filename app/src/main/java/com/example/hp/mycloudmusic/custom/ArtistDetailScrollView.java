@@ -59,7 +59,6 @@ public class ArtistDetailScrollView extends ScrollView {
         if(t == worksInfo.getTop()-DisplayUtil.dip2px(getContext(),65)){
             isTop = true;
         }
-//        Log.e(TAG, "onScrollChanged: scroll to"+t);
     }
 
     @Override
@@ -96,40 +95,25 @@ public class ArtistDetailScrollView extends ScrollView {
                 float moveY = (float) Math.sqrt(Math.abs(deltaY)*2);
                 if(newY > y) {
                     if(getScrollY()<=0) {
-//                          Log.e(TAG, "y="+y+"\nnewY="+newY+"\ndeltaY="+deltaY+"\nmoveY="+moveY);
-//                        listener.llMoveTo(layoutParams.topMargin + moveY);
-//                        listener.imageScale(layoutParams.topMargin+moveY);
                         worksInfo.layout(worksInfo.getLeft(),(int)(worksInfo.getTop()+moveY),worksInfo.getRight(),(int)(worksInfo.getBottom()+moveY));
                         /**此处无需加65dp，getTop相对于父布局已经包含该65dp*/
                         listener.imageScale(worksInfo.getTop());
-//                        Log.e(TAG, "onTouchEvent: moveY"+moveY);
                     }
                 }else if(newY < y){
                     if(isTop){
-                        Log.e(TAG, "onTouchEvent: move return false");
                         return false;
                     }
-//                    if(layoutParams.topMargin > tmWorksInfo) {
-//                        listener.llMoveTo(layoutParams.topMargin - moveY*2);
-//                        listener.imageScale(layoutParams.topMargin+moveY);
-//                        Log.e(TAG, "onTouchEvent: back moveY="+moveY);
-//                        Log.e(TAG, "onTouchEvent: topMargin+deltaY="+(layoutParams.topMargin+deltaY));
-//                    }
                     if(getScrollY()>=worksInfo.getTop()- DisplayUtil.dip2px(getContext(),65)){
                         return false;
                     }
                     if(topWorksInfo<worksInfo.getTop()) {
                         worksInfo.layout(worksInfo.getLeft(), (int) (worksInfo.getTop() - moveY), worksInfo.getRight(), (int) (worksInfo.getBottom() - moveY));
-//                        worksInfo.layout(worksInfo.getLeft(), (int) (worksInfo.getTop()), worksInfo.getRight(), (int) (worksInfo.getBottom()));
                         listener.imageScale(worksInfo.getTop());
                     }
                 }
 
                 break;
             case MotionEvent.ACTION_UP:
-                Log.e(TAG, "down!");
-//                listener.llMoveTo(tmWorksInfo);
-//                listener.imageScale(tmWorksInfo);
                 if(worksInfo.getTop()>DisplayUtil.dip2px(getContext(),220)) {
                     worksInfo.layout(worksInfo.getLeft(), topWorksInfo, worksInfo.getRight(), topWorksInfo + worksInfo.getHeight());
                     listener.imageScale(topWorksInfo);
