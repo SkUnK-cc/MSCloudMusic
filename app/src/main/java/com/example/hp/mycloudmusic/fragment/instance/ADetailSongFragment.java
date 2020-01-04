@@ -14,21 +14,19 @@ import com.example.hp.mycloudmusic.adapter.recyclerview.CommonOnItemClickListene
 import com.example.hp.mycloudmusic.adapter.recyclerview.CommonViewHolder;
 import com.example.hp.mycloudmusic.api.RetrofitFactory;
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi;
-import com.example.hp.mycloudmusic.custom.ArtistDetailScrollView;
 import com.example.hp.mycloudmusic.custom.FullyLinearLayoutManager;
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
 import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistSongListResp;
 import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
 import com.example.hp.mycloudmusic.musicInfo.merge.Song;
-import com.example.hp.mycloudmusic.ui.onLine.ArtistInfoActivity;
+import com.example.hp.mycloudmusic.rx.BaseObserver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.Bind;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 @SuppressLint("ValidFragment")
@@ -43,9 +41,6 @@ public class ADetailSongFragment extends BaseFragment {
     private CommonAdapter<Song> adapter;
     private Artist artist;
     private int mPageNum;
-
-    private ArtistInfoActivity activity;
-    private ArtistDetailScrollView parentScrollView;
 
     @Override
     protected int getContentView() {
@@ -67,14 +62,12 @@ public class ADetailSongFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
 
     @Override
     protected void initData() {
-        artist = getArguments().getParcelable(ArtistDetailFragment.ARTIST);
+        artist = getArguments() != null ? getArguments().getParcelable(ArtistDetailFragment.ARTIST) : null;
         getSongListFromNet();
     }
 
@@ -83,11 +76,7 @@ public class ADetailSongFragment extends BaseFragment {
                 .getArtistSongList(artist.ting_uid,artist.artist_id,mPageNum * BaiduMusicApi.pagenSize,BaiduMusicApi.pagenSize)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ArtistSongListResp>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
+                .subscribe(new BaseObserver<ArtistSongListResp>() {
                     @Override
                     public void onNext(ArtistSongListResp resp) {
                         if(resp!= null && resp.isValid()){
@@ -98,26 +87,16 @@ public class ADetailSongFragment extends BaseFragment {
                             Log.e("songfragment", "onNext: resp is null!!!");
                         }
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-                    @Override
-                    public void onComplete() {
-                    }
                 });
     }
 
     @Override
     protected void initListener() {
-
     }
 
     @Override
     protected void initView() {
         mRecyclerView.setLayoutManager(new FullyLinearLayoutManager(getContext()));
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        mRecyclerView.setLayoutManager(new FullyLinearLayoutManager0(getContext()));
         adapter = new CommonAdapter<Song>(getActivity(), R.layout.merge_song_item,mDatas)
         {
             @Override
@@ -138,21 +117,14 @@ public class ADetailSongFragment extends BaseFragment {
             }
         });
         mRecyclerView.setAdapter(adapter);
-//        mRecyclerView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.e("recyclerview", "50dp = "+ DisplayUtil.dip2px(getContext(),50));
-//                Log.e("recyclerview", "recyclerview height = "+mRecyclerView.getHeight());
-//            }
-//        },2000);
     }
 
     private void showPlayMusicFragment(Song song) {
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
         PlayMusicFragment playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment();
         if(playMusicFragment != null && !playMusicFragment.isAdded()){
             transaction.add(android.R.id.content,playMusicFragment);
-        }else if(playMusicFragment.isAdded()){
+        }else if (playMusicFragment != null && playMusicFragment.isAdded()) {
             transaction.show(playMusicFragment);
         }
         transaction.commit();

@@ -1,25 +1,11 @@
 package com.example.hp.mycloudmusic.download
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
+import com.example.hp.mycloudmusic.rx.BaseObserver
 
-abstract class DownloadObserver : Observer<DownloadInfo> {
+abstract class DownloadObserver(info: DownloadInfo) : BaseObserver<DownloadInfo>() {
 
-    protected var mInfo: DownloadInfo? = null
+    protected var mInfo: DownloadInfo? = info
 
-    constructor(info : DownloadInfo){
-        this.mInfo = info
-    }
-    override fun onComplete() {
-
-    }
-
-    override fun onSubscribe(d: Disposable) {
-    }
-
-    override fun onNext(t: DownloadInfo) {
-        if(mInfo == null)this.mInfo = t
-    }
-
-    override fun onError(e: Throwable) {
+    override fun onNext(resp: DownloadInfo) {
+        if(mInfo == null)this.mInfo = resp
     }
 }

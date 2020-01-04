@@ -40,9 +40,6 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
     @Bind(R.id.the_music_playing)
     ImageView iv_playing;
 
-
-    private boolean prepare = true;
-
     private LocalMusicAdapter adapter;
     private List<AudioBean> localMusicList;
 

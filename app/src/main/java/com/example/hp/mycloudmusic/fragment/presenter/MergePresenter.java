@@ -41,7 +41,9 @@ public class MergePresenter extends BasePresenter<IMergeView> {
             apiService.doGet(V1_TING + "?method=" + QUERY_MERGE,map,QueryMergeResp.class)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(queryMergeRespApiResponse -> {
-                        observableEmitter.onNext(queryMergeRespApiResponse.data);
+                        if(queryMergeRespApiResponse!=null && queryMergeRespApiResponse.data!=null){
+                            observableEmitter.onNext(queryMergeRespApiResponse.data);
+                        }
                     });
         });
     }

@@ -1,16 +1,12 @@
 package com.example.hp.mycloudmusic.mvp.presenter;
 
-import android.util.Log;
-
 import com.example.hp.mycloudmusic.api.RetrofitFactory;
 import com.example.hp.mycloudmusic.api.RxSchedulers;
 import com.example.hp.mycloudmusic.fragment.view.IActivityDetailView;
 import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistInfoResp;
 import com.example.hp.mycloudmusic.musicInfo.merge.Artist;
 import com.example.hp.mycloudmusic.musicInfo.merge.QueryMergeResp;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import com.example.hp.mycloudmusic.rx.BaseObserver;
 
 public class ArtistDetailPresenter extends BasePresenter<IActivityDetailView> {
 
@@ -30,22 +26,13 @@ public class ArtistDetailPresenter extends BasePresenter<IActivityDetailView> {
         RetrofitFactory.provideBaiduApi()
                 .queryMerge(artist.author,1,20)
                 .compose(RxSchedulers.Companion.compose())
-                .subscribe(new Observer<QueryMergeResp>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+                .subscribe(new BaseObserver<QueryMergeResp>() {
                     @Override
                     public void onNext(QueryMergeResp queryMergeResp) {
                         if(queryMergeResp!=null && queryMergeResp.isValid()){
                             Artist artist2 = queryMergeResp.result.artist_info.artist_list.get(0);
                             getArtistById(artist2);
                         }
-                    }
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-                    @Override
-                    public void onComplete() {
                     }
                 });
     }
@@ -54,27 +41,12 @@ public class ArtistDetailPresenter extends BasePresenter<IActivityDetailView> {
         RetrofitFactory.provideBaiduApi()
                 .getArtistInfo(artist.artist_id,artist.ting_uid)
                 .compose(RxSchedulers.Companion.compose())
-                .subscribe(new Observer<ArtistInfoResp>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
+                .subscribe(new BaseObserver<ArtistInfoResp>() {
                     @Override
                     public void onNext(ArtistInfoResp artistInfoResp) {
                         if(artistInfoResp!=null && artistInfoResp.isValid()){
                             mView.obtainInfoSuccess(artistInfoResp);
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }

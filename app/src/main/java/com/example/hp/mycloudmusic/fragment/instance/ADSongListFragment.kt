@@ -17,7 +17,6 @@ import com.example.hp.mycloudmusic.musicInfo.artistDetail.ArtistSongListResp
 import com.example.hp.mycloudmusic.musicInfo.merge.Song
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter
 import com.example.hp.mycloudmusic.service.PlayService
-import com.example.hp.mycloudmusic.ui.onLine.ArtistInfoActivity
 import com.example.hp.mycloudmusic.util.DisplayUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,13 +26,12 @@ import retrofit2.Response
 
 class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),PlayMusicFragment.PlayMusicBackListener{
 
-
     var popupWindow: PopupWindowManager? = null
 
     companion object{
         fun newInstance(artist: ArtistInfoResp) : ADSongListFragment<*>{
-            var fragment = ADSongListFragment<BasePresenter<*>>()
-            var bundle = Bundle()
+            val fragment = ADSongListFragment<BasePresenter<*>>()
+            val bundle = Bundle()
             bundle.putParcelable(ARTIST,artist)
             fragment.arguments = bundle
             return fragment
@@ -110,15 +108,15 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
     }
 
     fun sendRequest(artist: ArtistInfoResp): ArtistSongListResp?{
-        var api = RetrofitFactory.provideBaiduApi()
-        var call = api.getArtistSongListKt(artist.ting_uid,
+        val api = RetrofitFactory.provideBaiduApi()
+        val call = api.getArtistSongListKt(artist.ting_uid,
                 artist.artist_id,
                 mPagenum* BaiduMusicApi.pagenSize,
                 BaiduMusicApi.pagenSize)
-        var resp: Response<ArtistSongListResp> = call.execute()
-        var body = resp.body()
-        return body
+        val resp: Response<ArtistSongListResp> = call.execute()
+        return resp.body()
     }
+
     override fun mConvert(holder: CommonViewHolder, data: Song) {
         holder.setText(R.id.merge_song_title, data.getTitle())
         holder.setText(R.id.merge_song_artist, data.getArtist())
@@ -139,7 +137,6 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
         val transaction = activity!!.supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(R.anim.fragment_slide_from_left,R.anim.fragment_slide_out_right)
         val playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment()
-//        var detailFragment = FragmentFactory.getInstance(null).getArtistDetailFragment(null)
         if(playMusicFragment!!.isVisible){
             transaction.hide(playMusicFragment)
         }

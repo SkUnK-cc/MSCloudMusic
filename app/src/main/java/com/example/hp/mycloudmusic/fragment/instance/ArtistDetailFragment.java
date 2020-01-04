@@ -18,6 +18,7 @@ import com.example.hp.mycloudmusic.util.DisplayUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.Bind;
 
@@ -83,17 +84,14 @@ public class ArtistDetailFragment extends BaseFragment implements StickNavLayout
             public void onPageScrollStateChanged(int state) {
             }
         });
-        for(int i=0;i<titles.length;i++){
-//            mFragments.add(ADetailSongFragment.newInstance(artist));
-//            mFragments.add(ADSongListFragment.Companion.newInstance(artist));
-        }
+
         mAdapter = new TabFragmentPagerAdapter(getActivity().getSupportFragmentManager(),mFragments);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(0);
 
         mStickNavLayout.setScrollListener(this);
 
-        int height = DisplayUtil.getScreenHeight(getContext())-DisplayUtil.dip2px(getContext(),65)-DisplayUtil.dip2px(getContext(),40);
+        int height = DisplayUtil.getScreenHeight(Objects.requireNonNull(getContext()))-DisplayUtil.dip2px(getContext(),65)-DisplayUtil.dip2px(getContext(),40);
         LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) mViewPager.getLayoutParams();
         layoutParams.height = height;
         mViewPager.setLayoutParams(layoutParams);
@@ -102,9 +100,8 @@ public class ArtistDetailFragment extends BaseFragment implements StickNavLayout
 
     private float getMobileWidth() {
         DisplayMetrics dm = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int width = dm.widthPixels;
-        return width;
+        Objects.requireNonNull(getActivity()).getWindowManager().getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
     }
 
     @Override

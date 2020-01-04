@@ -27,13 +27,6 @@ import butterknife.Bind;
 
 public class MeFragment extends BaseFragment implements View.OnClickListener {
 
-//    @Override
-//    protected void setupActivityComponent(AppComponent appComponent) {
-//        DaggerActivityComponent.builder()
-//                .appComponent(appComponent)
-//                .build()
-//                .inject(this);
-//    }
     @Bind(R.id.img_myself_head)
     RoundImageView ivHead;
     @Bind(R.id.tv_nickname)
@@ -111,33 +104,27 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                     msg.obj = res;
                     msg.what = 0;
                     mHandler.sendMessage(msg);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            JSONObject json = (JSONObject) res;
-                            if(json.has("figureurl")){
-                                Bitmap bitmap = null;
-                                try {
-                                    bitmap = Util.getbitmap(json.getString("figureurl_qq_2"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                Message msg = new Message();
-                                msg.obj = bitmap;
-                                msg.what = 1;
-                                mHandler.sendMessage(msg);
+                    new Thread(() -> {
+                        JSONObject json = (JSONObject) res;
+                        if(json.has("figureurl")){
+                            Bitmap bitmap = null;
+                            try {
+                                bitmap = Util.getbitmap(json.getString("figureurl_qq_2"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+                            Message msg1 = new Message();
+                            msg1.obj = bitmap;
+                            msg1.what = 1;
+                            mHandler.sendMessage(msg1);
                         }
                     }).start();
                 }
-
                 @Override
                 public void onError(UiError uiError) {
                 }
-
                 @Override
                 public void onCancel() {
-
                 }
             };
 //            mTencent.requestAsync();
@@ -174,7 +161,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                 return;
             }
             JSONObject jsonResp = (JSONObject) response;
-            if(jsonResp != null && jsonResp.length() == 0){
+            if(jsonResp.length() == 0){
                 Util.showResultDialog(getContext(),"返回为空","登录失败");
                 return;
             }
@@ -230,8 +217,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         float scale = (newWidth * 1.0f)/Math.min(width,height);
         Matrix matrix = new Matrix();
         matrix.postScale(scale,scale);
-        Bitmap bitmap = Bitmap.createBitmap(bm,0,0,width,height,matrix,true);
-        return bitmap;
+        return Bitmap.createBitmap(bm,0,0,width,height,matrix,true);
     }
 
     @Override

@@ -96,7 +96,7 @@ public class ArtistDetailScrollView extends ScrollView {
                 if(newY > y) {
                     if(getScrollY()<=0) {
                         worksInfo.layout(worksInfo.getLeft(),(int)(worksInfo.getTop()+moveY),worksInfo.getRight(),(int)(worksInfo.getBottom()+moveY));
-                        /**此处无需加65dp，getTop相对于父布局已经包含该65dp*/
+                        //此处无需加65dp，getTop相对于父布局已经包含该65dp
                         listener.imageScale(worksInfo.getTop());
                     }
                 }else if(newY < y){

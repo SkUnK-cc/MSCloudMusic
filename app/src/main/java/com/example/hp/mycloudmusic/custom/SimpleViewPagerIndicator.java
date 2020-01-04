@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -96,13 +95,10 @@ public class SimpleViewPagerIndicator extends LinearLayout {
             tv.setText(mTitles[i]);
             tv.setLayoutParams(lp);
             tv.setTag(i);
-            tv.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int k = (int) v.getTag();
-                    listener.onClickItem(k);
-                    refreshTextColor(k);
-                }
+            tv.setOnClickListener(v -> {
+                int k = (int) v.getTag();
+                listener.onClickItem(k);
+                refreshTextColor(k);
             });
             addView(tv);
             tvList.put(i,tv);

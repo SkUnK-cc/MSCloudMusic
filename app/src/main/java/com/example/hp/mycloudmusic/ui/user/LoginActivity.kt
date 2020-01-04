@@ -8,12 +8,11 @@ import com.example.hp.mycloudmusic.R
 import com.example.hp.mycloudmusic.api.RetrofitFactory
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter
 import com.example.hp.mycloudmusic.mvp.view.IBaseView
+import com.example.hp.mycloudmusic.rx.BaseObserver
 import com.example.hp.mycloudmusic.ui.BaseActivity
 import com.example.hp.mycloudmusic.userinfo.LoginInfo
 import com.example.hp.mycloudmusic.userinfo.User
-import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.register_bar.*
@@ -63,14 +62,7 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
                 .login(phonenum,password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object: Observer<LoginInfo>{
-                    override fun onComplete() {
-
-                    }
-
-                    override fun onSubscribe(d: Disposable) {
-                    }
-
+                .subscribe(object: BaseObserver<LoginInfo>() {
                     override fun onNext(t: LoginInfo) {
                         if(t==null)return
                         if( t.code==0){
@@ -80,8 +72,8 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
                             Toast.makeText(this@LoginActivity,t.msg,Toast.LENGTH_SHORT).show()
                         }
                     }
-
                     override fun onError(e: Throwable) {
+                        super.onError(e)
                         Toast.makeText(this@LoginActivity,"网络出错，请重试",Toast.LENGTH_SHORT).show()
                     }
                 })

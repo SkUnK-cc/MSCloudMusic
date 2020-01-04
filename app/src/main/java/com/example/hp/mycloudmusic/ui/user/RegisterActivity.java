@@ -17,15 +17,14 @@ import android.widget.Toast;
 
 import com.example.hp.mycloudmusic.R;
 import com.example.hp.mycloudmusic.api.RetrofitFactory;
+import com.example.hp.mycloudmusic.rx.BaseObserver;
 import com.example.hp.mycloudmusic.ui.BaseActivity;
 import com.example.hp.mycloudmusic.userinfo.LoginInfo;
 import com.example.hp.mycloudmusic.util.DensityUtil;
 import com.example.hp.mycloudmusic.util.Util;
 
 import butterknife.Bind;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
@@ -115,10 +114,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 .register(username,phonenum,password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<LoginInfo>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+                .subscribe(new BaseObserver<LoginInfo>() {
                     @Override
                     public void onNext(LoginInfo loginInfo) {
                         if(loginInfo==null)return;
@@ -138,10 +134,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     }
                     @Override
                     public void onError(Throwable e) {
+                        super.onError(e);
                         Toast.makeText(RegisterActivity.this,"网络出错，请重试",Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public void onComplete() {
                     }
                 });
     }

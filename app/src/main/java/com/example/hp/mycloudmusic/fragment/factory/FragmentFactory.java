@@ -17,7 +17,7 @@ public class FragmentFactory {
     private MeFragment mMeFragment;
     private LocalFragment mLocalFragment;
     public PlayMusicFragment mPlayMusicFragment;
-    public MergeFragment mMergeFragment;
+    private MergeFragment mMergeFragment;
     private ArtistDetailFragment artistDetailFragment;
 
     private ClickListener listener;
@@ -26,7 +26,6 @@ public class FragmentFactory {
      * 静态方法是属于类的，而普通方法是属于对象的。
      * 属于类的静态方法在对象不存在时就可以访问到，而普通方法需要先new一个对象后才能访问
      * 当我们访问静态方法时，这个时候没有对象创建，只能访问类的静态变量
-     * @return
      */
     public static FragmentFactory getInstance(ClickListener listener){
         if(mFragmentFactory==null){

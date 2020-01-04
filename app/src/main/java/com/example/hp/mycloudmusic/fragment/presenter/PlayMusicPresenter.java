@@ -13,6 +13,7 @@ import com.example.hp.mycloudmusic.musicInfo.lyric.Lrc;
 import com.example.hp.mycloudmusic.musicInfo.sug.MusicSearchSugResp;
 import com.example.hp.mycloudmusic.musicInfo.sug.SongSug;
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter;
+import com.example.hp.mycloudmusic.rx.BaseObserver;
 import com.example.hp.mycloudmusic.util.FileMusicUtils;
 import com.example.hp.mycloudmusic.util.LrcUtil;
 
@@ -101,11 +102,7 @@ public class PlayMusicPresenter extends BasePresenter<IPlayMusicView> {
                 .queryLrc(songid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Lrc>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
+                .subscribe(new BaseObserver<Lrc>() {
                     @Override
                     public void onNext(final Lrc lrc) {
                         if(lrc != null && lrc.isValid()){
@@ -140,16 +137,6 @@ public class PlayMusicPresenter extends BasePresenter<IPlayMusicView> {
                                 }
                             }).start();
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }

@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import com.example.hp.mycloudmusic.fragment.callback.ClickListener;
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter;
 import com.example.hp.mycloudmusic.mvp.view.IBaseView;
 import com.example.hp.mycloudmusic.service.PlayService;
+import com.example.hp.mycloudmusic.util.DevUtil;
 import com.litesuits.orm.LiteOrm;
 
 import butterknife.ButterKnife;
@@ -42,7 +42,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         View view = inflater.inflate(getContentView(),container,false);
         ButterKnife.bind(this,view);
         liteOrm = CMApplication.provideLiteOrm();
-        Log.e(TAG, getClass().getName()+" : onCreateView");
+        DevUtil.d(TAG, getClass().getName()+" : onCreateView");
         return view;
     }
 
@@ -62,7 +62,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.e(TAG, getClass().getName()+" : onViewCreated");
+        DevUtil.d(TAG, getClass().getName()+" : onViewCreated");
 //        setupActivityComponent(CMApplication.getAppComponent());
         if(mPresenter != null){
             mPresenter.attach(this);
@@ -77,7 +77,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.e(TAG, getClass().getName()+" : onActivityCreate");
+        DevUtil.d(TAG, getClass().getName()+" : onActivityCreate");
     }
 
     public PlayService getPlayService(){
@@ -135,43 +135,43 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.e(TAG, getClass().getName()+" : onAttach");
+        DevUtil.d(TAG, getClass().getName()+" : onAttach");
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(TAG, getClass().getName() + ": onCreate");
+        DevUtil.d(TAG, getClass().getName() + ": onCreate");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG, getClass().getName()+" : onResume");
+        DevUtil.d(TAG, getClass().getName()+" : onResume");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.e(TAG, getClass().getName()+" : onStart");
+        DevUtil.d(TAG, getClass().getName()+" : onStart");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.e(TAG, getClass().getName()+":onPause");
+        DevUtil.d(TAG, getClass().getName()+":onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.e(TAG, getClass().getName()+" : onStop");
+        DevUtil.d(TAG, getClass().getName()+" : onStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.e(TAG, getClass().getName()+" : onDestroyView");
+        DevUtil.d(TAG, getClass().getName()+" : onDestroyView");
     }
 
     @Override
@@ -181,13 +181,13 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
             mPresenter.detach();
         }
         ButterKnife.unbind(this);
-        Log.e(TAG, getClass().getName()+" : onDestroy");
+        DevUtil.d(TAG, getClass().getName()+" : onDestroy");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.e(TAG, getClass().getName()+" : onDetach");
+        DevUtil.d(TAG, getClass().getName()+" : onDetach");
     }
 
     public void startActivity(Class<?> cls){

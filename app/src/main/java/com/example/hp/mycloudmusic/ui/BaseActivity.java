@@ -4,13 +4,13 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.example.hp.mycloudmusic.base.BaseAppHelper;
 import com.example.hp.mycloudmusic.mvp.presenter.BasePresenter;
 import com.example.hp.mycloudmusic.mvp.view.IBaseView;
 import com.example.hp.mycloudmusic.service.PlayService;
+import com.example.hp.mycloudmusic.util.DevUtil;
 
 import butterknife.ButterKnife;
 
@@ -21,7 +21,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(TAG, "onCreate: "+getClass().getName());
+        DevUtil.d(TAG, "onCreate: "+getClass().getName());
         doBeforeContentView();
         setContentView(getContentView());
         ButterKnife.bind(this);

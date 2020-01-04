@@ -117,6 +117,11 @@ public class FileMusicUtils {
         return mkdir(dir);
     }
 
+    public static String getMusicDiskCacheDir(){
+        String dir = getAppDir()+"/CacheMusic/";
+        return mkdir(dir);
+    }
+
     public static String getLocalMusicDir(){
         String dir = getAppDir()+"/LocalMusic/";
         return mkdir(dir);

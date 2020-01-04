@@ -3,7 +3,7 @@ package com.example.hp.mycloudmusic.custom.popupwindow
 import android.app.Activity
 import com.example.hp.mycloudmusic.R
 import com.example.hp.mycloudmusic.base.BaseAppHelper
-import com.example.hp.mycloudmusic.download.DownloadManager
+import com.example.hp.mycloudmusic.download.MusicDownloadManager
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic
 import com.example.hp.mycloudmusic.musicInfo.merge.Artist
 import com.example.hp.mycloudmusic.musicInfo.merge.Song
@@ -25,7 +25,7 @@ open class DefPopupWindowListener(activity: Activity): PopupWindowManager.PopupW
                 val create : Artist = music?.obtainArtist() ?: return
                 ArtistDetailActivity.toArtistDetailActivity(mActivity, create)
             }
-            R.drawable.ic_icon_download -> DownloadManager.getInstance().downloadSong(music as Song)
+            R.drawable.ic_icon_download -> MusicDownloadManager.getInstance().downloadSong(music as Song,MusicDownloadManager.TYPE_DOWNLOAD)
             else -> {
             }
         }

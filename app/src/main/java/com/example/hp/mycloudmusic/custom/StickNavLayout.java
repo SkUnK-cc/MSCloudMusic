@@ -3,6 +3,7 @@ package com.example.hp.mycloudmusic.custom;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
@@ -76,7 +77,6 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-//        mTop = findViewById(R.id.id_stickynavlayout_avatar);
         mNav = findViewById(R.id.id_stickynavlayout_indicator);
         View view = findViewById(R.id.id_stickynavlayout_viewpager);
         if(!(view instanceof ViewPager)){
@@ -112,16 +112,14 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
      * 不是直接的父子关系一样可以正常进行
      */
     @Override
-    public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-        Log.e(TAG, "onStartNestedScroll");
+    public boolean onStartNestedScroll(@NonNull View child, @NonNull View target, int nestedScrollAxes) {
         return true;
     }
     /**
      * 字面意思可以理解出来父View接受了子View的邀请，可以在此方法中做一些初始化的操作。
      */
     @Override
-    public void onNestedScrollAccepted(View child, View target, int axes) {
-        Log.e(TAG, "onNestedScrollAccepted");
+    public void onNestedScrollAccepted(@NonNull View child, @NonNull View target, int axes) {
     }
     /**
      * 每次子View在滑动前都需要将滑动细节传递给父View，
@@ -134,8 +132,7 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
     private int mViewPagerTop = -1;
     private int avatar_height = -1;
     @Override
-    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
-        Log.e(TAG, "onNestedPreScroll is call");
+    public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed) {
         //dy:鼠标往上走是正，往下走是负
         //方法一
         if(mNavTop == -1){
@@ -195,7 +192,7 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
      * 使父View在子View滑动结束后还可以根据子View剩余的值再次执行某些操作。
      */
     @Override
-    public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
+    public void onNestedScroll(@NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
 
     }
     /**
@@ -204,10 +201,8 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
      * 父View对应的会被回调public void onStopNestedScroll(View target)，
      */
     @Override
-    public void onStopNestedScroll(View child) {
-        Log.e(TAG, "onStopNestedScroll");
+    public void onStopNestedScroll(@NonNull View child) {
         if(mNav.getTop() != mNavTop) {
-            Log.e(TAG, "onStopNestedScroll: in");
             mNav.layout(mNav.getLeft(),mNavTop,mNav.getRight(),mNavTop+mNav.getHeight());
             mViewPager.layout(mViewPager.getLeft(),mViewPagerTop,mViewPager.getRight(),mViewPagerTop+mViewPager.getHeight());
             listener.imageScale(mNavTop);
@@ -215,12 +210,11 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
     }
 
     @Override
-    public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
+    public boolean onNestedPreFling(@NonNull View target, float velocityX, float velocityY) {
         return false;
     }
-
     @Override
-    public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
+    public boolean onNestedFling(@NonNull View target, float velocityX, float velocityY, boolean consumed) {
         //鼠标向下拉，velocityY为负
         if(target instanceof RecyclerView && velocityY < 0){
             final RecyclerView recyclerView = (RecyclerView) target;
@@ -264,12 +258,9 @@ public class StickNavLayout extends LinearLayout implements NestedScrollingParen
         if(mOffsetAnimator == null){
             mOffsetAnimator = new ValueAnimator();
             mOffsetAnimator.setInterpolator(mInterpolator);
-            mOffsetAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    if(animation.getAnimatedValue() instanceof Integer){
-                        scrollTo(0, (Integer) animation.getAnimatedValue());
-                    }
+            mOffsetAnimator.addUpdateListener(animation -> {
+                if(animation.getAnimatedValue() instanceof Integer){
+                    scrollTo(0, (Integer) animation.getAnimatedValue());
                 }
             });
         }else{

@@ -1,16 +1,16 @@
 package com.example.hp.mycloudmusic.executor;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.hp.mycloudmusic.api.kugou.KuGouLyricApi;
+import com.example.hp.mycloudmusic.rx.BaseObserver;
 import com.example.hp.mycloudmusic.util.FileMusicUtils;
 
 import java.io.IOException;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
@@ -49,11 +49,7 @@ public abstract class SearchLyric implements IExecutor {
         lyricApi.getKuGouLyric(title+"-"+artist)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         try {
@@ -66,12 +62,14 @@ public abstract class SearchLyric implements IExecutor {
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@NonNull Throwable e) {
+                        super.onError(e);
                         Log.e(TAG, "onError: search Lyric failed!\n",e);
                     }
 
                     @Override
                     public void onComplete() {
+                        super.onComplete();
                         Log.e(TAG, "onComplete: search Lyric complete!" );
                     }
                 });
@@ -80,7 +78,7 @@ public abstract class SearchLyric implements IExecutor {
         Log.e(TAG, "downloadLyric: 搜索结果:"+result);
         Log.e(TAG, "downloadLyric: 开始下载到文件");
         if(result == null || TextUtils.isEmpty(result)){
-            Log.e(TAG, "downloadLyric:"+result==null?"result=null":"result is empty");
+            Log.e(TAG, "result is empty");
             return;
         }
         String filePath = FileMusicUtils.getLrcDir()+FileMusicUtils.getLrcFileName(title,artist);

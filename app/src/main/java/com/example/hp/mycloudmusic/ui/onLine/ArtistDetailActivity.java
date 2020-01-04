@@ -78,15 +78,6 @@ public class ArtistDetailActivity extends BaseActivity<ArtistDetailPresenter> im
 
     @Override
     protected void initData() {
-        //不可行
-//        mViewPager.layout(mViewPager.getLeft(),mViewPager.getTop()+300,mViewPager.getRight(),mViewPager.getBottom()+300);
-        //可行
-//        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mViewPager.getLayoutParams();
-//        lp.topMargin = 300;
-//        mViewPager.setLayoutParams(lp);
-//        ViewGroup.LayoutParams layoutParams = iv_avatar.getLayoutParams();
-//        layoutParams.height = layoutParams.height+500;
-//        iv_avatar.setLayoutParams(layoutParams);
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra(BUNDLE);
         artist = bundle.getParcelable(ARTIST);

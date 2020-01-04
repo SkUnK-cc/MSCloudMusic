@@ -119,7 +119,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
     };
     private void initPlayServiceListener() {
         if(getPlayService() == null){
-            return;
         }
     }
 

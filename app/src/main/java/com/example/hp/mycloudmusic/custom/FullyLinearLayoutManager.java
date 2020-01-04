@@ -2,6 +2,7 @@ package com.example.hp.mycloudmusic.custom;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,7 +64,7 @@ public class FullyLinearLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
+    public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
         final int widthMode = View.MeasureSpec.getMode(widthSpec);
         final int heightMode = View.MeasureSpec.getMode(heightSpec);
 
@@ -265,9 +266,7 @@ public class FullyLinearLayoutManager extends LinearLayoutManager {
                 insetsDirtyField.setAccessible(true);
             }
             insetsDirtyField.set(p, true);
-        } catch (NoSuchFieldException e) {
-            onMakeInsertDirtyFailed();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             onMakeInsertDirtyFailed();
         }
     }

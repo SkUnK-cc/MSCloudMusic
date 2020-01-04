@@ -18,17 +18,22 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.hp.mycloudmusic.api.RetrofitFactory;
+import com.example.hp.mycloudmusic.download.MusicDownloadManager;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.musicInfo.merge.Song;
 import com.example.hp.mycloudmusic.musicInfo.songPlay.SongPlayResp;
+import com.example.hp.mycloudmusic.provider.BufferMusicProvider;
+import com.example.hp.mycloudmusic.rx.BaseObserver;
 import com.example.hp.mycloudmusic.service.broadcast.NotificationBroadcast;
 import com.example.hp.mycloudmusic.service.listener.OnPlayerEventListener;
 import com.example.hp.mycloudmusic.service.receiver.NoisyAudioStreamReceiver;
 import com.example.hp.mycloudmusic.util.AudioFocusManager;
 import com.example.hp.mycloudmusic.util.DevUtil;
+import com.example.hp.mycloudmusic.util.FileMusicUtils;
 import com.example.hp.mycloudmusic.util.LogUtils;
 import com.example.hp.mycloudmusic.util.NotificationHelper;
+import com.example.hp.mycloudmusic.util.SpUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -37,9 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.Observer;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class PlayService extends Service {
@@ -51,14 +55,6 @@ public class PlayService extends Service {
 
     private NoisyAudioStreamReceiver mNoisyReceiver = new NoisyAudioStreamReceiver();
     private IntentFilter filter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-    /**
-     * 方法名
-     */
-    public static final String ON_UPDATE_PROGRESS = "onUpdateProgress";
-    public static final String ON_PLAYER_START = "onPlayerStart";
-    public static final String ON_BUFFERING_UPDATE = "onBufferingUpdate";
-    public static final String ON_CHANGE = "onChange";
-    public static final String ON_PLAYER_PAUSE = "onPlayerPause";
     /**
      * 播放状态
      */
@@ -92,7 +88,7 @@ public class PlayService extends Service {
 
         private final WeakReference<PlayService> mPlayService;
         public MyServiceHandler(PlayService playService){
-            mPlayService = new WeakReference<PlayService>(playService);
+            mPlayService = new WeakReference<>(playService);
         }
 
         @Override
@@ -100,7 +96,7 @@ public class PlayService extends Service {
             super.handleMessage(msg);
             switch (msg.what) {
                 case UPDATE_PLAY_PROGRESS_SHOW:
-                    mPlayService.get().updatePlayProgressShow();    //先调用get()得到引用
+                    mPlayService.get().progressChange();    //先调用get()得到引用
                     break;
                 default:
                     break;
@@ -125,10 +121,10 @@ public class PlayService extends Service {
      */
     private AbstractMusic mPlayingMusic;
     private int curPercent = 0;
+    private boolean isBufferedNextSong = false;
     /**
      * 播放器
      */
-    private OnPlayerEventListener mPlayerEventListener;
     private MediaPlayer mPlayer;
     private AudioFocusManager mAudioFocusManager;
     private HashMap<String,OnPlayerEventListener> listenerMap = new HashMap<>();
@@ -139,16 +135,15 @@ public class PlayService extends Service {
      */
     private NotificationBroadcast broadcast;
     public void setOnPlayerEventListener(String className,OnPlayerEventListener listener) {
-//        mPlayerEventListener = playerEventListener;
         if(listener!=null) {
-            Log.e(TAG, "setOnPlayerEventListener: "+className);
+            DevUtil.d(TAG, "setOnPlayerEventListener: "+className);
             listenerMap.put(className, listener);
             listener.onChange(mPlayingMusic);
         }
     }
 
     public void detachOnPlayerEventListener(String className){
-        Log.e(TAG, "detachOnPlayerEventListener: "+className);
+        DevUtil.d(TAG, "detachOnPlayerEventListener: "+className);
         listenerMap.remove(className);
     }
 
@@ -184,17 +179,19 @@ public class PlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate: service is on create!");
+        DevUtil.d(TAG, "onCreate: service is on create!");
         audioMusics = new ArrayList<>();
         acquireWifi();
         registerReceiver();
         setNotification();
         createMediaPlayer();
         initAudioFocusManager();
+        BufferMusicProvider.INSTANCE.scanBufferMusic();
     }
 
     private void acquireWifi() {
-        wifiLock= ((WifiManager)getApplicationContext().getSystemService(this.WIFI_SERVICE)).createWifiLock(WifiManager.WIFI_MODE_FULL,"mylock");
+        wifiLock= ((WifiManager)getApplicationContext().getSystemService(WIFI_SERVICE))
+                .createWifiLock(WifiManager.WIFI_MODE_FULL,"mylock");
         wifiLock.acquire();
     }
 
@@ -203,7 +200,7 @@ public class PlayService extends Service {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(NotificationBroadcast.Companion.getSTART_OR_PAUSE());
         registerReceiver(broadcast,intentFilter);
-        Log.e(TAG, "registerReceiver: true");
+        DevUtil.d(TAG, "registerReceiver: true");
     }
 
     private void setNotification(){
@@ -213,7 +210,6 @@ public class PlayService extends Service {
         if(mPlayingMusic!=null){
             song = mPlayingMusic.getTitle();
             singer = mPlayingMusic.getAlbumPic();
-//            progress = (int)(((float)mPlayer.getCurrentPosition() / (float)mPlayer.getDuration())*100);
             progress = 0;
         }
         notification = notificationHelper.getPlayMusicNotification(mPlayingMusic,song,singer,progress,isPlaying());
@@ -254,15 +250,10 @@ public class PlayService extends Service {
             return true;
         }
         if(mPlayingMusic.getType().equals(AbstractMusic.TYPE_LOCAL)){
-            if(((AudioBean)music).getId() != ((AudioBean)mPlayingMusic).getId()){
-                return true;
-            }
+            return ((AudioBean) music).getId() != ((AudioBean) mPlayingMusic).getId();
         }else{
-            if(((Song)music).getSong_id() != ((Song)mPlayingMusic).getSong_id()){
-                return true;
-            }
+            return !((Song) music).getSong_id().equals(((Song) mPlayingMusic).getSong_id());
         }
-        return false;
     }
 
     public void playPause() {
@@ -284,7 +275,7 @@ public class PlayService extends Service {
 
 
     public void play(List<AbstractMusic> musicList, int position) {
-        Log.e(TAG, "play: 开始设置mediaplayer");
+        DevUtil.e(TAG, "play: 开始设置mediaplayer");
         if(musicList==null || musicList.size()==0 || position<0){
             return;
         }
@@ -303,7 +294,7 @@ public class PlayService extends Service {
         if((music.getType()).equals(AbstractMusic.TYPE_LOCAL)){
             play(music);
         }else if((music.getType()).equals(AbstractMusic.TYPE_ONLINE)){
-            getSongInfoFromNet((Song) music);
+            getSongInfoAndPlay((Song) music);
         }
     }
 
@@ -312,28 +303,25 @@ public class PlayService extends Service {
         return true;
     }
 
-    private void getSongInfoFromNet(final Song song) {
-        RetrofitFactory.provideBaiduApi()
-                .querySong(song.getSong_id())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<SongPlayResp>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+    private void getSongInfoAndPlay(final Song song) {
+        DevUtil.e(TAG,"getSongInfoAndPlay");
+        String fileName = FileMusicUtils.getLocalMusicName(song.title,song.author);
+        if(BufferMusicProvider.INSTANCE.isContainsFile(fileName)){
+            DevUtil.e(TAG,"containskey");
+            play(song);
+            return;
+        }
+        querySongInfoFromNet(song)
+                .subscribe(new BaseObserver<SongPlayResp>() {
                     @Override
                     public void onNext(SongPlayResp resp) {
+                        super.onNext(resp);
                         if(resp != null && resp.isValid()){
+                            DevUtil.e(TAG,"querySongInfoFromNet success");
                             song.bitrate = resp.getBitrate();
                             song.songInfo = resp.getSonginfo();
                             play(song);
                         }
-                    }
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-                    @Override
-                    public void onComplete() {
                     }
                 });
     }
@@ -352,13 +340,17 @@ public class PlayService extends Service {
         if((music.getType()).equals(AbstractMusic.TYPE_LOCAL)){
             play(music);
         }else if((music.getType()).equals(AbstractMusic.TYPE_ONLINE)){
-            getSongInfoFromNet((Song) music);
+            getSongInfoAndPlay((Song) music);
         }
     }
 
+    /**
+     * 初始化播放器
+     */
     private void play(AbstractMusic music) {
+        isBufferedNextSong = false;
         mPlayingMusic = music;
-        Log.e(TAG, "play: "+music.getTitle()+"/"+music.getDuration()+"/");
+        DevUtil.e(TAG, "play: "+music.getTitle()+"/"+music.getDuration()+"/");
         createMediaPlayer();
         initPlayer(music);
         handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
@@ -380,7 +372,6 @@ public class PlayService extends Service {
     }
 
     public void prev(){
-//        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
         if(mPlayingPosition == 0){
             play(audioMusics.size()-1);
         }else{
@@ -404,7 +395,7 @@ public class PlayService extends Service {
         try {
             mPlayer.reset();
             String dataSource = music.getDataSource().toString();
-            Log.e(TAG, "initPlayer: dataSource= "+dataSource);
+            DevUtil.d(TAG, "initPlayer: dataSource= "+dataSource);
             mPlayer.setDataSource(getBaseContext(), music.getDataSource());
             mPlayer.prepareAsync();
             mPlayState = STATE_PREPARING;
@@ -424,81 +415,57 @@ public class PlayService extends Service {
         audioMusics.add(mPlayingPosition+1,music);
     }
 
-    public MediaPlayer getmPlayer() {
-        return mPlayer;
-    }
-
     /**-------------------------------mediaPlayer监听方法------------------------------------------*/
     /**
      * 流载入完成后调用start方法
      */
-    private MediaPlayer.OnPreparedListener mOnPreparedListener = new MediaPlayer.OnPreparedListener() {
-        @Override
-        public void onPrepared(MediaPlayer mp) {
-            if(isPreparing()){
-                start();
-            }
+    private MediaPlayer.OnPreparedListener mOnPreparedListener = mp -> {
+        if(isPreparing()){
+            start();
         }
     };
     /**
      * 网络流缓冲更新
      */
-    private MediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = new MediaPlayer.OnBufferingUpdateListener() {
-        @Override
-        public void onBufferingUpdate(MediaPlayer mp, int percent) {
-            curPercent = percent;
-            DevUtil.e(TAG,"buffer percent: "+percent);
-            if(listenerMap!=null){
-                List<OnPlayerEventListener> list = getListeners();
-                for(int i=0;i<list.size();i++){
-                    list.get(i).onBufferingUpdate(percent);
-                }
+    private MediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = (mp, percent) -> {
+        curPercent = percent;
+        DevUtil.e(TAG,"buffer percent: "+percent);
+        if(listenerMap!=null){
+            List<OnPlayerEventListener> list = getListeners();
+            for(int i=0;i<list.size();i++){
+                list.get(i).onBufferingUpdate(percent);
             }
         }
     };
     /**
      * 媒体资源播放完成后调用
      */
-    private MediaPlayer.OnCompletionListener mOnCompletionListener = new MediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-            Log.e(TAG, "onCompletion: 被调用");
-            next();
-        }
+    private MediaPlayer.OnCompletionListener mOnCompletionListener = mp -> {
+        DevUtil.d(TAG, "onCompletion: 被调用");
+        next();
     };
     /**
      * seek操作完成后调用
      */
-    private MediaPlayer.OnSeekCompleteListener mOnSeekCompleteListener = new MediaPlayer.OnSeekCompleteListener() {
-        @Override
-        public void onSeekComplete(MediaPlayer mp) {
+    private MediaPlayer.OnSeekCompleteListener mOnSeekCompleteListener = mp -> {
 
-        }
     };
     /**
      * 当异步操作期间发生错误时调用
      */
-    private MediaPlayer.OnErrorListener mOnErrorListener = new MediaPlayer.OnErrorListener() {
-        @Override
-        public boolean onError(MediaPlayer mp, int what, int extra) {
-            Log.e(TAG, "onError: media player occured error : "+extra);
-            return false;
-        }
+    private MediaPlayer.OnErrorListener mOnErrorListener = (mp, what, extra) -> {
+        DevUtil.e(TAG, "onError: media player occured error : "+extra);
+        return false;
     };
     /**
      * 传递媒体或其播放的信息或警告
      */
-    private MediaPlayer.OnInfoListener mOnInfoListener = new MediaPlayer.OnInfoListener() {
-        @Override
-        public boolean onInfo(MediaPlayer mp, int what, int extra) {
-            return false;
-        }
-    };
+    private MediaPlayer.OnInfoListener mOnInfoListener = (mp, what, extra) -> false;
 
 
     /**-----------------------------------开始播放，暂停，停止--------------------------------**/
     private void start() {
-        Log.e(TAG, "start: 开始播放");
+        DevUtil.d(TAG, "start: 开始播放");
         if(!isPreparing() && !isPausing()){
             return;
         }
@@ -511,10 +478,7 @@ public class PlayService extends Service {
                 mPlayer.start();
                 mPlayState = STATE_PLAYING;
                 //开始循环发送消息，更新进度条
-                handler.sendEmptyMessage(UPDATE_PLAY_PROGRESS_SHOW);
-//                if(mPlayerEventListener != null){
-//                    mPlayerEventListener.onPlayerStart();
-//                }
+                handler.sendEmptyMessageDelayed(UPDATE_PLAY_PROGRESS_SHOW,2000);
                 if(listenerMap!=null){
                     List<OnPlayerEventListener> list = getListeners();
                     for(int i=0;i<list.size();i++){
@@ -538,9 +502,6 @@ public class PlayService extends Service {
             mPlayer.pause();
             mPlayState = STATE_PAUSE;
             handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
-//            if(mPlayerEventListener != null){
-//                mPlayerEventListener.onPlayerPause();
-//            }
             if(listenerMap!=null){
                 List<OnPlayerEventListener> list = getListeners();
                 for(int i=0;i<list.size();i++){
@@ -568,6 +529,39 @@ public class PlayService extends Service {
 
 
     /**-------------------------------------------------------------------------------------------*/
+
+    private void progressChange() {
+        bufferNextSongIfNeed();
+        updatePlayProgressShow();
+    }
+
+    private void bufferNextSongIfNeed() {
+        if(mPlayingPosition==audioMusics.size()-1)return;
+        int currentPosition;
+        int duration;
+        if(!isPlaying())return;
+        currentPosition= mPlayer.getCurrentPosition();
+        duration = mPlayer.getDuration();
+        boolean needBuffer = (currentPosition >= (duration/4*3));
+        // 如果进度条还没到3/4，则不进行预加载
+        if(!needBuffer || curPercent<65 || isBufferedNextSong)return;
+        long remaindFlow = SpUtils.getTodayBufferRemaindFlow();
+        if(remaindFlow==0)return;
+        DevUtil.d(TAG,"remaindFlow="+remaindFlow);
+        AbstractMusic music = getMusicList().get(mPlayingPosition+1);
+        if(remaindFlow>=3*1024*1024){
+            isBufferedNextSong = true;
+            MusicDownloadManager.Companion.getInstance().downloadSong((Song) music,MusicDownloadManager.TYPE_CACHE);
+        }
+    }
+
+    private Observable<SongPlayResp> querySongInfoFromNet(Song song){
+        return RetrofitFactory.provideBaiduApi()
+                .querySong(song.getSong_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     /**
      * 更新进度条和时间
      */
@@ -575,10 +569,8 @@ public class PlayService extends Service {
         int currentPosition = 0;
         int duration = 0;
         if(isPlaying() && listenerMap!=null){
-            //Log.e(TAG, "updatePlayProgressShow: getDuration()");
             currentPosition= mPlayer.getCurrentPosition();
             duration = mPlayer.getDuration();
-            //Log.d(TAG, "PlayService 调用activity onUpdateProgress方法 ");
             if(listenerMap!=null){
                 List<OnPlayerEventListener> list = getListeners();
                 for(int i=0;i<list.size();i++){
@@ -586,7 +578,6 @@ public class PlayService extends Service {
                 }
             }
         }
-        //Log.d(TAG, "updatePlayProgressShow" );
         updateNotification(currentPosition,duration);
         handler.sendEmptyMessageDelayed(UPDATE_PLAY_PROGRESS_SHOW,1000);
     }
@@ -623,11 +614,6 @@ public class PlayService extends Service {
         return mPlayState == STATE_PREPARING;
     }
 
-    public void setMusicList(List<AudioBean> list) {
-        audioMusics.clear();
-        audioMusics.addAll(list);
-    }
-
     public List<AbstractMusic> getMusicList(){
         return audioMusics;
     }
@@ -635,7 +621,6 @@ public class PlayService extends Service {
     @Override
     public void onDestroy() {
         LogUtils.INSTANCE.e("onDestroy: service");
-//        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
         handler.removeCallbacksAndMessages(null);
         releaseResource();
         releaseBroadcast();
@@ -663,7 +648,6 @@ public class PlayService extends Service {
      */
     @Override
     public boolean onUnbind(Intent intent) {
-//        handler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
         handler.removeCallbacksAndMessages(null);
         releaseResource();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
