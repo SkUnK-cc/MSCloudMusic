@@ -7,9 +7,9 @@ import com.example.hp.mycloudmusic.CMApplication;
 
 public class SpUtils {
 
-    public static final String FILTER_SIZE = "filter_size";
-    public static final String FILTER_TIME = "filter_time";
-    public static final String REMAIND_BUFFER_FLOW = "remaind_buffer_flow";
+    private static final String FILTER_SIZE = "filter_size";
+    private static final String FILTER_TIME = "filter_time";
+    private static final String REMAIND_BUFFER_FLOW = "remaind_buffer_flow";
 
     // 扫描音乐时，过滤文件小于 FILTER_SIZE 的文件
     public static String getLocalFilterSize() {

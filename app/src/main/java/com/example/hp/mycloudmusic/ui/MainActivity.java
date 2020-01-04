@@ -85,9 +85,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
             bundle = savedInstanceState;
         }
         permissionCheck();
-//        android.os.Debug.startMethodTracing("methodTracingFile");
         checkPlayService();
-//        android.os.Debug.stopMethodTracing();
     }
 
     @Override
@@ -118,8 +116,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         }
     };
     private void initPlayServiceListener() {
-        if(getPlayService() == null){
-        }
+        getPlayService();
     }
 
     private void permissionCheck() {
@@ -351,7 +348,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         ArtistDetailFragment detailFragment = FragmentFactory.getInstance(null).getArtistDetailFragment(null);
         if (playMusicFragment != null && !playMusicFragment.isAdded()) {
             transaction.add(android.R.id.content, playMusicFragment);
-        } else if (playMusicFragment.isAdded()) {
+        } else if (playMusicFragment != null && playMusicFragment.isAdded()) {
             transaction.show(playMusicFragment).hide(detailFragment);
         }
         transaction.commitAllowingStateLoss();

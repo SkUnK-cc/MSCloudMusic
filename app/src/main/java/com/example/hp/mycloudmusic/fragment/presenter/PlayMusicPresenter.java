@@ -37,7 +37,7 @@ public class PlayMusicPresenter extends BasePresenter<IPlayMusicView> {
 
     public void setLrc(AbstractMusic music) {
         Log.e(TAG, "setLrc: 调用setLrc方法");
-        Log.e(TAG, "setLrc: "+music==null?"music= null":"music!=null" );
+        Log.e(TAG, "music!=null");
         Log.e(TAG, "setLrc: "+music.getType());
         if(music.getType() == AbstractMusic.TYPE_LOCAL){       //此处字符串应该用equals，而不是==
             Log.e(TAG, "歌曲的类型是本地Local类型" );
@@ -75,7 +75,9 @@ public class PlayMusicPresenter extends BasePresenter<IPlayMusicView> {
                         }else{
                             mView.showNotLrc();
                         }
-                        Log.e(TAG, "onNext: "+(musicSearchSugResp.isValid()?"有效":"无效"));
+                        if (musicSearchSugResp != null) {
+                            Log.e(TAG, "onNext: "+(musicSearchSugResp.isValid()?"有效":"无效"));
+                        }
                         Log.e(TAG, "onNext: " + musicSearchSugResp.error_code);
                     }
 
@@ -106,35 +108,27 @@ public class PlayMusicPresenter extends BasePresenter<IPlayMusicView> {
                     @Override
                     public void onNext(final Lrc lrc) {
                         if(lrc != null && lrc.isValid()){
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    List<String> lrcList = LrcUtil.parseLrcStr(lrc.getLrcContent());
-                                    final File file = FileMusicUtils.createLrcFile(songSug);
-                                    FileWriter writer = null;
+                            new Thread(() -> {
+                                List<String> lrcList = LrcUtil.parseLrcStr(lrc.getLrcContent());
+                                final File file = FileMusicUtils.createLrcFile(songSug);
+                                FileWriter writer = null;
+                                try {
+                                    writer = new FileWriter(file);
+                                    for(int i=0;i<lrcList.size();i++){
+                                        writer.write(lrcList.get(i)+"\n");
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }finally {
                                     try {
-                                        writer = new FileWriter(file);
-                                        for(int i=0;i<lrcList.size();i++){
-                                            writer.write(lrcList.get(i)+"\n");
+                                        if(writer != null) {
+                                            writer.close();
                                         }
                                     } catch (IOException e) {
                                         e.printStackTrace();
-                                    }finally {
-                                        try {
-                                            if(writer != null) {
-                                                writer.close();
-                                            }
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
                                     }
-                                    activity.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mView.loadLrc(file.getPath());
-                                        }
-                                    });
                                 }
+                                activity.runOnUiThread(() -> mView.loadLrc(file.getPath()));
                             }).start();
                         }
                     }

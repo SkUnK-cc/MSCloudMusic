@@ -12,8 +12,8 @@ object BufferMusicProvider {
 
     fun scanBufferMusic(){
         Observable.create<Unit>{
-            var path = FileMusicUtils.getMusicDiskCacheDir()
-            var dir = File(path)
+            val path = FileMusicUtils.getMusicDiskCacheDir()
+            val dir = File(path)
             if(dir.exists() && dir.isDirectory){
                 val fileList = dir.listFiles()
                 for(item in fileList){

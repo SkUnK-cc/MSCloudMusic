@@ -142,8 +142,7 @@ public class ArtistDetailActivity extends BaseActivity<ArtistDetailPresenter> im
     private float getMobileWidth() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int width = dm.widthPixels;
-        return width;
+        return dm.widthPixels;
     }
 
     @Override
@@ -192,13 +191,12 @@ public class ArtistDetailActivity extends BaseActivity<ArtistDetailPresenter> im
 
     /**
      * 成功获取artist信息
-     * @param resp
      */
     @Override
     public void obtainInfoSuccess(ArtistInfoResp resp) {
-       for(int i=0;i<titles.length;i++){
+        for (String ignored : titles) {
             mFragments.add(ADSongListFragment.Companion.newInstance(resp));
-       }
+        }
        mAdapter.notifyDataSetChanged();
        tvTitle.setText(resp.name);
        Glide.with(this)

@@ -87,7 +87,7 @@ public class PlayService extends Service {
     private static class MyServiceHandler extends Handler{
 
         private final WeakReference<PlayService> mPlayService;
-        public MyServiceHandler(PlayService playService){
+        MyServiceHandler(PlayService playService){
             mPlayService = new WeakReference<>(playService);
         }
 
@@ -150,8 +150,6 @@ public class PlayService extends Service {
     /**
      * 显示意图
      * 耳机，蓝牙断开
-     * @param context
-     * @param type
      */
     public static void startCommand(Context context, String type) {
         Intent intent = new Intent(context,PlayService.class);

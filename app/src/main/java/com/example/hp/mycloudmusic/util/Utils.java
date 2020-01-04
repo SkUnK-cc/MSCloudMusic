@@ -5,7 +5,7 @@ import android.app.Application;
 public class Utils {
     public static Application sApplication;
 
-    public static void Utils(final Application app){
+    public Utils(final Application app){
         Utils.sApplication = app;
     }
 

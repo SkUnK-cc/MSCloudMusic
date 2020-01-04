@@ -14,7 +14,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -80,23 +79,6 @@ public class SearchFragment extends BaseFragment<SearchPresenter> implements Vie
 
     @Override
     protected void initData() {
-//        List<AudioBean> list = new ArrayList<>();
-//        for(int i=0;i<10;i++){
-//            AudioBean audioBean;
-//            if(i<=5) {
-//                audioBean = new AudioBean();
-//                audioBean.setTitle("three->"+i);
-//                audioBean.setArtist("artist "+i);
-//                audioBean.setViewId(R.layout.item_search_three);
-//            }else{
-//                audioBean = new AudioBean();
-//                audioBean.setTitle("two->"+i);
-//                audioBean.setArtist("artist "+i);
-//                audioBean.setViewId(R.layout.item_search_two);
-//            }
-//            list.add(audioBean);
-//        }
-//        mSearchAdapter.setmDatas(list);
         mPresenter.getFirstMvs();
     }
 
@@ -118,31 +100,25 @@ public class SearchFragment extends BaseFragment<SearchPresenter> implements Vie
 
         fragmentManager = getActivity().getSupportFragmentManager();
 //        etSearch.clearFocus();
-        etSearch.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.e(TAG, "edittext is touch");
-                if(!isEditChanged) {
-                    performEditAnimate(v);
-                    showCancel();
-                }
-                return false;
+        etSearch.setOnTouchListener((v, event) -> {
+            Log.e(TAG, "edittext is touch");
+            if(!isEditChanged) {
+                performEditAnimate(v);
+                showCancel();
             }
+            return false;
         });
-        etSearch.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER){
-                    String text = etSearch.getText().toString().trim();
-                    if(!text.equals("")) {
-                        search(text);
-                    }else{
-                        Toast.makeText(getContext(), "please input the words!", Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
+        etSearch.setOnKeyListener((v, keyCode, event) -> {
+            if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER){
+                String text = etSearch.getText().toString().trim();
+                if(!text.equals("")) {
+                    search(text);
+                }else{
+                    Toast.makeText(getContext(), "please input the words!", Toast.LENGTH_SHORT).show();
                 }
-                return false;
+                return true;
             }
+            return false;
         });
         tvCancel.setOnClickListener(this);
         ivPlaying.setOnClickListener(this);
@@ -189,12 +165,7 @@ public class SearchFragment extends BaseFragment<SearchPresenter> implements Vie
     }
 
     public void onRefresh(){
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeLayout.setRefreshing(false);
-            }
-        },3000);
+        new Handler().postDelayed(() -> mSwipeLayout.setRefreshing(false),3000);
     }
 
     private void showCancel() {
@@ -216,26 +187,18 @@ public class SearchFragment extends BaseFragment<SearchPresenter> implements Vie
             int iv = ivPlaying.getLayoutParams().width;
             int barPad = rlSearchBar.getPaddingLeft();
             changeWidth = screenWidth - iv - barPad;
-            //Log.e(TAG, "all=" + screenWidth + "\niv=" + iv + "barPad=" + barPad + "\noriginal=" + etOriginalWidth + "\nchange=" + changeWidth);
         }
         isEditChanged = true;
         ValueAnimator widthAnimator = ValueAnimator.ofInt(etOriginalWidth,changeWidth);
-        widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int width = (int) animation.getAnimatedValue();
-                editText.getLayoutParams().width = width;
-                editText.requestLayout();
-            }
+        widthAnimator.addUpdateListener(animation -> {
+            editText.getLayoutParams().width = (int) animation.getAnimatedValue();
+            editText.requestLayout();
         });
         ValueAnimator padAnimator = ValueAnimator.ofInt(etOriginalPadding,50);
-        padAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int padLeft = (int) animation.getAnimatedValue();
-                editText.setPadding(padLeft,editText.getPaddingTop(),editText.getPaddingRight(),editText.getPaddingBottom());
-                editText.requestLayout();
-            }
+        padAnimator.addUpdateListener(animation -> {
+            int padLeft = (int) animation.getAnimatedValue();
+            editText.setPadding(padLeft,editText.getPaddingTop(),editText.getPaddingRight(),editText.getPaddingBottom());
+            editText.requestLayout();
         });
         AnimatorSet set = new AnimatorSet();
         set.play(widthAnimator).with(padAnimator);
@@ -245,27 +208,21 @@ public class SearchFragment extends BaseFragment<SearchPresenter> implements Vie
 
     /**
      * 按下enter键，到搜索页面
-     * @param text
      */
     private void search(String text) {
-//        Intent intent  = new Intent(getContext(), ArtistInfoActivity.class);
-//        intent.putExtra(ConstantValue.SEARCH_WORD,text);
-//        startActivity(intent);
         if(merge_fragment == null){
-//            Log.e(TAG, "search: add mergeframgent");
             merge_fragment = FragmentFactory.getInstance(null).getmMergeFragment(text);
         }else{
-//            Log.e(TAG, "search: show mergefragment");
             Bundle bundle = merge_fragment.getArguments();
-            bundle.putString(MergeFragment.SEARCH_WORD,text);
+            if (bundle != null) {
+                bundle.putString(MergeFragment.SEARCH_WORD,text);
+            }
             merge_fragment.setArguments(bundle);
         }
         if(merge_fragment.isAdded()){
-//            Log.e(TAG, "search: second show mergefragment");
             addOrShowFragmentOnFragment(R.id.searchfragment_framelayout,merge_fragment,0);
             merge_fragment.updateData();
         }else{
-//            Log.e(TAG, "search: second add mergefragment");
             addOrShowFragmentOnFragment(R.id.searchfragment_framelayout,merge_fragment,0);
         }
         closeKeyboard(etSearch);
@@ -318,22 +275,15 @@ public class SearchFragment extends BaseFragment<SearchPresenter> implements Vie
     private void restoreEditAnimate(final EditText editText) {
         isEditChanged = false;
         ValueAnimator widthAnimator = ValueAnimator.ofInt(changeWidth,etOriginalWidth);
-        widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int width = (int) animation.getAnimatedValue();
-                editText.getLayoutParams().width = width;
-                editText.requestLayout();
-            }
+        widthAnimator.addUpdateListener(animation -> {
+            editText.getLayoutParams().width = (int) animation.getAnimatedValue();
+            editText.requestLayout();
         });
         ValueAnimator padAnimator = ValueAnimator.ofInt(changePad,etOriginalPadding);
-        padAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int padLeft = (int) animation.getAnimatedValue();
-                editText.setPadding(padLeft,editText.getPaddingTop(),editText.getPaddingRight(),editText.getPaddingBottom());
-                editText.requestLayout();
-            }
+        padAnimator.addUpdateListener(animation -> {
+            int padLeft = (int) animation.getAnimatedValue();
+            editText.setPadding(padLeft,editText.getPaddingTop(),editText.getPaddingRight(),editText.getPaddingBottom());
+            editText.requestLayout();
         });
         AnimatorSet set = new AnimatorSet();
         set.play(widthAnimator).with(padAnimator);

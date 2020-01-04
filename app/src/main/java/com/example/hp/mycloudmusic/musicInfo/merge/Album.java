@@ -26,7 +26,7 @@ public class Album implements IQueryResult{
     public String album_desc;
     public String title;
     public String album_id;
-    public String pic_small;
+    private String pic_small;
     public int hot;
     public String author;
     public String artist_id;

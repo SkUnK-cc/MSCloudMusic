@@ -21,7 +21,7 @@ class NotificationBroadcast : BroadcastReceiver() {
      */
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.e("Broadcast: ","receive broadcast!")
-        var service: PlayService = BaseAppHelper.get().playService ?: return
+        val service: PlayService = BaseAppHelper.get().playService ?: return
         when(intent?.action){
             START_OR_PAUSE -> {
                 service.playPause()

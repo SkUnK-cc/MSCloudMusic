@@ -37,12 +37,7 @@ public class LyricManager {
 
     public void setFileStream(final InputStream is) {
         if( is != null){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    decode(is);
-                }
-            }).start();
+            new Thread(() -> decode(is)).start();
         }else{
             lyricInfo = null;
         }
@@ -50,7 +45,6 @@ public class LyricManager {
 
     /**
      * 文件解析，然后设置当前位置
-     * @param is
      */
     private void decode(InputStream is) {
         Log.e(TAG, "decode ： 开始解析文件");

@@ -153,25 +153,19 @@ public class LyricView extends RelativeLayout implements View.OnTouchListener {
             valueAnimator = ValueAnimator.ofFloat(textView.getPaddingTop(), textPaddingValue);
             valueAnimator.setDuration(400);
             valueAnimator.setInterpolator(new OvershootInterpolator(0.7f));
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float value = (float) animation.getAnimatedValue();
-                    textView.setPadding(textView.getPaddingLeft(), (int) value,textView.getPaddingRight(),textView.getPaddingBottom());
+            valueAnimator.addUpdateListener(animation -> {
+                float value = (float) animation.getAnimatedValue();
+                textView.setPadding(textView.getPaddingLeft(), (int) value,textView.getPaddingRight(),textView.getPaddingBottom());
 //                    scrollView.fullScroll(ScrollView.FOCUS_UP);
-                }
             });
         }else{
             valueAnimator = ValueAnimator.ofFloat(textView.getPaddingBottom(), textPaddingValue);
             valueAnimator.setInterpolator(new OvershootInterpolator(0.7f));
             valueAnimator.setDuration(400);
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float value = (float) animation.getAnimatedValue();
-                    textView.setPadding(textView.getPaddingLeft(),textView.getPaddingTop(),textView.getPaddingRight(), (int) value);
+            valueAnimator.addUpdateListener(animation -> {
+                float value = (float) animation.getAnimatedValue();
+                textView.setPadding(textView.getPaddingLeft(),textView.getPaddingTop(),textView.getPaddingRight(), (int) value);
 //                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                }
             });
         }
         valueAnimator.addListener(new AnimatorListenerAdapter() {
@@ -217,7 +211,6 @@ public class LyricView extends RelativeLayout implements View.OnTouchListener {
 
     /**
      * 先判断textView是否为空
-     * @param charSequence
      */
     public void setText(CharSequence charSequence) {
         if(textView != null){
@@ -237,7 +230,7 @@ public class LyricView extends RelativeLayout implements View.OnTouchListener {
     public void setCurrentPosition(int position) {
         if(mPosition != position){
             mPosition = position;
-            if(userTouch!=true){
+            if(!userTouch){
                 doScroll(position);
             }
         }
@@ -259,12 +252,9 @@ public class LyricView extends RelativeLayout implements View.OnTouchListener {
 
         ValueAnimator valueAnimator = ValueAnimator.ofInt(start,end);
         valueAnimator.setDuration(600);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int value = (int) animation.getAnimatedValue();
-                scrollView.smoothScrollTo(0,value);
-            }
+        valueAnimator.addUpdateListener(animation -> {
+            int value = (int) animation.getAnimatedValue();
+            scrollView.smoothScrollTo(0,value);
         });
         return valueAnimator;
     }

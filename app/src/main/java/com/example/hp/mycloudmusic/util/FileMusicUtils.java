@@ -63,8 +63,6 @@ public class FileMusicUtils {
 
     /**
      * 判断文件是否存在
-     * @param lrcFilePath
-     * @return
      */
     private static boolean exists(String lrcFilePath) {
         File file = new File(lrcFilePath);
@@ -73,9 +71,6 @@ public class FileMusicUtils {
 
     /**
      * 通过名称和人名组成文件名+后缀
-     * @param artist
-     * @param title
-     * @return
      */
     public static String getLrcFileName(String title, String artist) {
         return getFileName(title,artist)+".lrc";
@@ -100,8 +95,6 @@ public class FileMusicUtils {
 
     /**
      * 过滤特殊字符
-     * @param fileName
-     * @return
      */
     private static String stringFilter(String fileName) {
         if(fileName == null){

@@ -10,6 +10,7 @@ import com.example.hp.mycloudmusic.service.PlayService;
 public class NoisyAudioStreamReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        if(intent.getAction()==null)return;
         switch (intent.getAction()){
             case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
                 PlayService.startCommand(context,PlayService.TYPE_START_PAUSE);

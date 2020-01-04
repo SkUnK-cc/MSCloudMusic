@@ -3,8 +3,8 @@ package com.example.hp.mycloudmusic.musicInfo.lyric;
 import com.example.hp.mycloudmusic.musicInfo.BaseResp;
 
 public class Lrc extends BaseResp {
-    String title;
-    String lrcContent;
+    private String title;
+    private String lrcContent;
 
     public String getTitle() {
         return title;

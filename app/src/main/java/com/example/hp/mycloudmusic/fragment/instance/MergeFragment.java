@@ -1,5 +1,6 @@
 package com.example.hp.mycloudmusic.fragment.instance;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -107,14 +108,13 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
     /**
      * 首次创建或点击搜索时更新关键字，获取数据
      */
+    @SuppressLint("CheckResult")
     public void updateData() {
         search_word = getArguments().getString(SEARCH_WORD);
         Log.e(TAG, "initData: search_word:"+search_word);
-//        mPresenter.getMergeData(search_word);
+
         mPresenter.getMergeData2(search_word)
-        .subscribe(queryMergeResp1 -> {
-            showMergeData(queryMergeResp1);
-        });
+        .subscribe(this::showMergeData);
     }
 
     /**

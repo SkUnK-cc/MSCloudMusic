@@ -13,7 +13,7 @@ object LogUtils {
     }
 
     private fun createLog(log:String):String{
-        var buffer = StringBuffer()
+        val buffer = StringBuffer()
         return buffer.append("==========$methodName($className:$lineNumber)==========:$log").toString()
     }
 

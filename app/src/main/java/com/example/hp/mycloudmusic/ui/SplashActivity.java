@@ -50,13 +50,10 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                llTexts.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(SplashActivity.this,MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                llTexts.postDelayed(() -> {
+                    Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 },800);
             }
         });

@@ -17,7 +17,6 @@ import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -27,9 +26,9 @@ import java.net.URL;
  * 静态初始化器，有JVM来保证线程安全
  */
 public class CoverLoader {
-    public static final String KEY_NULL = "null";
+    private static final String KEY_NULL = "null";
 
-    public static final String TYPE_BLUR = "blur";
+    private static final String TYPE_BLUR = "blur";
 
     private LruCache<String,Bitmap> mCoverCache;
 
@@ -59,8 +58,6 @@ public class CoverLoader {
 
     /**
      * 获取蒙层透明背景bitmap
-     * @param music
-     * @return
      */
     public Bitmap loadBlur(AbstractMusic music) {
         return loadCover(music,TYPE_BLUR);
@@ -100,21 +97,11 @@ public class CoverLoader {
 
     private Bitmap loadCoverByType(AbstractMusic music, String type) {
         Bitmap bitmap = null;
-        if(music.getType() == AudioBean.TYPE_LOCAL ){
+        if(music.getType().equals(AudioBean.TYPE_LOCAL)){
             AudioBean audioBean = (AudioBean) music;
             bitmap = loadCoverFromMediaStore(audioBean.getAlbumIdLocal());
         }
-//        else if(music.getType() == AudioBean.TYPE_ONLINE) {
-//            bitmap = null;
-//        }else{
-////            bitmap = loadCoverFromFile(music.getCoverPath());
-//                bitmap = null;
-//        }
 
-
-//        if(bitmap==null){
-//            bitmap = loadCoverFromNet(music);
-//        }
         switch (type){
             case TYPE_BLUR:
                 return ImageUtils.blur(bitmap);
@@ -130,8 +117,6 @@ public class CoverLoader {
         try {
             URL url = new URL(albumPicUrl);
             bitmap = BitmapFactory.decodeStream(url.openStream());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -140,8 +125,6 @@ public class CoverLoader {
 
     /**
      * 从文件获取封面
-     * @param coverPath
-     * @return
      */
     private Bitmap loadCoverFromFile(String coverPath) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -151,8 +134,6 @@ public class CoverLoader {
 
     /**
      * 从媒体库获取封面（ContentResolver）
-     * @param albumId
-     * @return
      */
     private Bitmap loadCoverFromMediaStore(long albumId) {
         ContentResolver resolver = CMApplication.getApplication().getContentResolver();
@@ -182,7 +163,7 @@ public class CoverLoader {
             return null;
         }
         Log.e("loadCover", "getKey: "+music.getType());
-        if (music.getType() == AbstractMusic.TYPE_LOCAL) {
+        if (music.getType().equals(AbstractMusic.TYPE_LOCAL)) {
             AudioBean audioBean = (AudioBean) music;
             if (audioBean.getAlbumIdLocal() > 0) {
                 String string =  String.valueOf(audioBean.getAlbumIdLocal()).concat(type);
@@ -193,16 +174,9 @@ public class CoverLoader {
                 Log.e("loadCover", "getKey: "+string);
                 return string;
             }
-        } else if(music.getType()==AudioBean.TYPE_ONLINE){
+        } else if(music.getType().equals(AudioBean.TYPE_ONLINE)){
             return music.getAlbumPicPremium().concat(type);
         }
         return null;
     }
-//        else if(music.getType()==AbstractMusic.TYPE_ONLINE && !TextUtils.isEmpty(music.getCoverPath())){
-//            return music.getCoverPath().concat(AudioBean.TYPE_ONLINE);
-//            return null;
-//        }
-//        else{
-//            return null;
-//        }
 }

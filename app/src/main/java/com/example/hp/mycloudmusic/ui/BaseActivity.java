@@ -33,7 +33,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends FragmentActi
             getWindow().setStatusBarColor(Color.TRANSPARENT);//设置状态栏的背景色
         }
         initPresenter();
-        if(mPresenter!=null){
+        if(mPresenter!=null) {
             mPresenter.attach(this);
         }
         initView();

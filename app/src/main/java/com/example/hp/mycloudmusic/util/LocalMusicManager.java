@@ -104,7 +104,7 @@ public class LocalMusicManager {
     }
 
     public List<AudioBean> getAudioFromDb() {
-        List<AudioBean> musicList = new ArrayList<>();
+        List<AudioBean> musicList;
         QueryBuilder<AudioBean> qb = new QueryBuilder<>(AudioBean.class);
         musicList = mLiteOrm.query(qb);
         Log.e(TAG, "getAudioFromDb------------------------------------------------->");
@@ -122,12 +122,9 @@ public class LocalMusicManager {
         if(path!=null && !path.equals("")) {
             File file = new File(path);
             if (file.exists()) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        file.delete();
-                        Log.e(TAG, "run: delete file successful!");
-                    }
+                new Thread(() -> {
+                    file.delete();
+                    Log.e(TAG, "run: delete file successful!");
                 }).start();
             }
         }

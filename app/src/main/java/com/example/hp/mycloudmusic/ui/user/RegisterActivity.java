@@ -146,8 +146,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private boolean checkPassword(String password1,String password2){
-        if(password1.equals(password2))return true;
-        else return false;
+        return password1.equals(password2);
     }
 
     @Override

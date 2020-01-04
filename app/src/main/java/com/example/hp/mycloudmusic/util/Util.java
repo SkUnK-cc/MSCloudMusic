@@ -50,14 +50,14 @@ public class Util {
         if (src == null || src.length <= 0) {
             return null;
         }
-        for (int i = 0; i < src.length; i++) {
-            int v = src[i] & 0xFF;
-            String hv = Integer.toHexString(v);
-            if (hv.length() < 2) {
-                stringBuilder.append(0);
-            }
-            stringBuilder.append(hv);
-        }
+		for (byte aSrc : src) {
+			int v = aSrc & 0xFF;
+			String hv = Integer.toHexString(v);
+			if (hv.length() < 2) {
+				stringBuilder.append(0);
+			}
+			stringBuilder.append(hv);
+		}
         return stringBuilder.toString();
     }
     /**
@@ -107,11 +107,10 @@ public class Util {
 		if (bytes == null) return null;
         StringBuilder sb=new StringBuilder(bytes.length*2);
 //将字节数组中每个字节拆解成2位16进制整数
-        for(int i=0;i<bytes.length;i++)
-        {
-            sb.append(hexString.charAt((bytes[i]&0xf0)>>4));
-            sb.append(hexString.charAt((bytes[i]&0x0f)>>0));
-        }
+		for (byte aByte : bytes) {
+			sb.append(hexString.charAt((aByte & 0xf0) >> 4));
+			sb.append(hexString.charAt((aByte & 0x0f)));
+		}
         return sb.toString();
     }
 
@@ -173,15 +172,12 @@ public class Util {
 			 int responseCode = httpConnection.getResponseCode();         
 			 if(responseCode == HttpURLConnection.HTTP_OK){
 				 inStream = httpConnection.getInputStream();         
-			  }     
-			 } catch (MalformedURLException e) {
-				 e.printStackTrace();     
-			 } catch (IOException e) {
-				e.printStackTrace();    
-		  } 
-		byte[] data = inputStreamToByte(inStream);
+			  }
+		 } catch (IOException e) {
+				e.printStackTrace();
+		 }
 
-		return data;
+		return inputStreamToByte(inStream);
 	}
 	
 	public static byte[] inputStreamToByte(InputStream is) {
@@ -330,12 +326,10 @@ public class Util {
             opts.inInputShareable=true;
             Bitmap bitmap = BitmapFactory.decodeStream(stream , null, opts);
             return bitmap;
-        } catch (OutOfMemoryError e) {
-            return null;
-        } catch (Exception e) {
+        } catch (OutOfMemoryError | Exception e) {
             return null;
         }
-    }
+	}
 
     private static final int MAX_DECODE_PICTURE_SIZE = 1920 * 1440;
 	public static Bitmap extractThumbNail(final String path, final int height, final int width, final boolean crop) {

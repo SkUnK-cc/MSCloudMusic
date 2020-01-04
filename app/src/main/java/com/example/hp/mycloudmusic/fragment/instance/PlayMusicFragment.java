@@ -279,12 +279,9 @@ public class PlayMusicFragment extends BaseFragment<PlayMusicPresenter> implemen
     private void onBackPressed() {
         getActivity().onBackPressed();
         iv_back.setEnabled(false);      //避免频繁点击
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(iv_back != null) {
-                    iv_back.setEnabled(true);
-                }
+        new Handler().postDelayed(() -> {
+            if(iv_back != null) {
+                iv_back.setEnabled(true);
             }
         },300);
     }

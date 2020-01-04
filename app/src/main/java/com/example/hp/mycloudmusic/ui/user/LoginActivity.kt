@@ -47,14 +47,14 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
     }
 
     private fun toRegister() {
-        var intent = Intent(this,RegisterActivity::class.java)
+        val intent = Intent(this,RegisterActivity::class.java)
         startActivityForResult(intent,6)
     }
 
-    fun loginPost(){
-        var phonenum:String = et_login_phone_num.text.toString()
-        var password:String = et_login_password.text.toString()
-        if(phonenum==null||phonenum.equals("") || password==null||password.equals("")){
+    private fun loginPost(){
+        val phonenum:String = et_login_phone_num.text.toString()
+        val password:String = et_login_password.text.toString()
+        if(phonenum == "" || password == ""){
             Toast.makeText(this,"手机号或密码不能为空！",Toast.LENGTH_SHORT).show()
             return
         }
@@ -63,17 +63,16 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object: BaseObserver<LoginInfo>() {
-                    override fun onNext(t: LoginInfo) {
-                        if(t==null)return
-                        if( t.code==0){
-                            Toast.makeText(this@LoginActivity,t.msg,Toast.LENGTH_SHORT).show()
-                            Log.e("resp",t.toString())
-                        }else if(t.code==1){
-                            Toast.makeText(this@LoginActivity,t.msg,Toast.LENGTH_SHORT).show()
+                    override fun onNext(resp: LoginInfo) {
+                        if( resp.code==0){
+                            Toast.makeText(this@LoginActivity,resp.msg,Toast.LENGTH_SHORT).show()
+                            Log.e("resp",resp.toString())
+                        }else if(resp.code==1){
+                            Toast.makeText(this@LoginActivity,resp.msg,Toast.LENGTH_SHORT).show()
                         }
                     }
-                    override fun onError(e: Throwable) {
-                        super.onError(e)
+                    override fun onError(throwable: Throwable) {
+                        super.onError(throwable)
                         Toast.makeText(this@LoginActivity,"网络出错，请重试",Toast.LENGTH_SHORT).show()
                     }
                 })
@@ -82,7 +81,7 @@ class LoginActivity : BaseActivity<BasePresenter<IBaseView>>(), View.OnClickList
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(resultCode){
             RegisterActivity.REGISTER_SUCCESS -> {
-                var user: User = data?.getParcelableExtra<User>("user") ?: return
+                val user: User = data?.getParcelableExtra<User>("user") ?: return
                 et_login_phone_num.setText(user.phonenum)
                 et_login_password.setText(user.password)
             }
