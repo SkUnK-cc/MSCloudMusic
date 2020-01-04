@@ -110,7 +110,11 @@ public class MergeFragment extends BaseFragment<MergePresenter> implements IMerg
     public void updateData() {
         search_word = getArguments().getString(SEARCH_WORD);
         Log.e(TAG, "initData: search_word:"+search_word);
-        mPresenter.getMergeData(search_word);
+//        mPresenter.getMergeData(search_word);
+        mPresenter.getMergeData2(search_word)
+        .subscribe(queryMergeResp1 -> {
+            showMergeData(queryMergeResp1);
+        });
     }
 
     /**
