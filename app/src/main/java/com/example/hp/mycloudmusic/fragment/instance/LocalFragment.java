@@ -17,11 +17,15 @@ import com.example.hp.mycloudmusic.adapter.LocalMusicAdapter;
 import com.example.hp.mycloudmusic.base.BaseAppHelper;
 import com.example.hp.mycloudmusic.custom.popupwindow.DefPopupWindowListener;
 import com.example.hp.mycloudmusic.custom.popupwindow.PopupWindowManager;
+import com.example.hp.mycloudmusic.event.LocalMusicChangeEvent;
 import com.example.hp.mycloudmusic.fragment.factory.FragmentFactory;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.util.LocalMusicManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -87,6 +91,12 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         Log.e(TAG, "onHiddenChanged: "+hidden);
@@ -100,10 +110,10 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
             @Override
             protected List<AudioBean> doInBackground(Void... voids) {
                 //先同步到localMusicList,再更新到adapter
-                Log.e(TAG, "doInBackground: 从数据库获取音乐");
+                Log.d(TAG, "doInBackground: 从数据库获取音乐");
                 localMusicList = LocalMusicManager.getInstance(liteOrm).getAudioFromDb();
                 if(localMusicList == null || localMusicList.size()==0){
-                    Log.e(TAG, "doInBackground: 从本地扫描获取音乐");
+                    Log.d(TAG, "doInBackground: 从本地扫描获取音乐");
                     localMusicList = LocalMusicManager.getInstance(liteOrm).scanMusic(getContext());
                 }
                 return localMusicList;
@@ -125,11 +135,6 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
 
         };
         mTask.execute();
-        if(liteOrm == null) {
-            Log.e(TAG, "liteOrm is null");
-        }else{
-            Log.e(TAG, "liteOrm is not null");
-        }
     }
 
     @Override
@@ -169,7 +174,7 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
     public void onLocalItemClick(int pos) {
         Fragment playMusicFragment = FragmentFactory.getInstance(null).getmPlayMusicFragment();
         addOrShowFragmentOnActivity(android.R.id.content,playMusicFragment,R.anim.fragment_slide_from_right);
-        if(BaseAppHelper.get().getPlayService().checkPlayingChange(localMusicList.get(pos))){
+        if(!BaseAppHelper.get().getPlayService().isSameSongToCurrent(localMusicList.get(pos))){
             Log.e(TAG, "onLocalItemClick: change");
             List<AbstractMusic> musicList = new ArrayList<>();
             musicList.addAll(localMusicList);
@@ -197,14 +202,20 @@ public class LocalFragment extends BaseFragment implements View.OnClickListener,
         localMusicList.remove(index);
         adapter.notifyItemRemoved(index);
 
-        if(BaseAppHelper.get().getPlayService().checkPlayingChange(music)){
+        if(BaseAppHelper.get().getPlayService().isSameSongToCurrent(music)){
             BaseAppHelper.get().getPlayService().next();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLocalMusicChange(LocalMusicChangeEvent event){
+        startScan();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

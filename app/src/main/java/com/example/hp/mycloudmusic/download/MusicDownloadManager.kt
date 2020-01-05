@@ -152,16 +152,17 @@ class MusicDownloadManager() {
                 .url(url)
                 .build()
         try {
-            Log.e("getContentLength","执行")
+            DevUtil.d("getContentLength","执行")
             if(client == null)Log.e("getContentLength","client is null!")
 
             val response: Response = client!!.newCall(request).execute()
-            Log.e("getContentLength","执行完成")
+            DevUtil.d("getContentLength","执行完成")
             if (response.isSuccessful) {
                 val contentLength: Long = response.body()!!.contentLength()
                 response.close()
                 if (contentLength == 0L) return DownloadInfo.TOTAL_ERROR
-                return contentLength
+                DevUtil.d("getContentLength","lenth = $contentLength")
+                return contentLength/2
             }
         }catch (e:IOException){
             e.printStackTrace()

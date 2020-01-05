@@ -61,7 +61,7 @@ class ADSongListFragment<T : BasePresenter<*>?>: ADetailListFragment<T?,Song>(),
 
             override fun onInfoClick(position: Int) {
                 val service: PlayService = playService
-                if(service.checkPlayingChange(mData.get(position))){
+                if(!service.isSameSongToCurrent(mData.get(position))){
                     service.play(mData as List<AbstractMusic>?,position)
                     showPlayMusicFragment()
                 }

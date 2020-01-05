@@ -87,7 +87,7 @@ public class MergeSongFragment extends BaseFragment {
             @Override
             public void onClickItem(int position) {
                 PlayService playService = BaseAppHelper.get().getPlayService();
-                if(playService.checkPlayingChange(adapter.getData().get(position))){
+                if(!playService.isSameSongToCurrent(adapter.getData().get(position))){
                     List<AbstractMusic> list = new ArrayList<>();
                     list.addAll(adapter.getData());
                     playService.play(list,position);

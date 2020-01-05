@@ -16,7 +16,9 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.hp.mycloudmusic.CMApplication;
 import com.example.hp.mycloudmusic.api.RetrofitFactory;
 import com.example.hp.mycloudmusic.download.MusicDownloadManager;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
@@ -31,6 +33,7 @@ import com.example.hp.mycloudmusic.service.receiver.NoisyAudioStreamReceiver;
 import com.example.hp.mycloudmusic.util.AudioFocusManager;
 import com.example.hp.mycloudmusic.util.DevUtil;
 import com.example.hp.mycloudmusic.util.FileMusicUtils;
+import com.example.hp.mycloudmusic.util.LocalMusicManager;
 import com.example.hp.mycloudmusic.util.LogUtils;
 import com.example.hp.mycloudmusic.util.NotificationHelper;
 import com.example.hp.mycloudmusic.util.SpUtils;
@@ -240,17 +243,18 @@ public class PlayService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public boolean checkPlayingChange(AbstractMusic music){
+    // 同一首歌则返回true，不同则返回false
+    public boolean isSameSongToCurrent(AbstractMusic music){
         if(mPlayingMusic == null){
-            return true;
+            return false;
         }
         if(!music.getType().equals(mPlayingMusic.getType())){
-            return true;
+            return false;
         }
         if(mPlayingMusic.getType().equals(AbstractMusic.TYPE_LOCAL)){
-            return ((AudioBean) music).getId() != ((AudioBean) mPlayingMusic).getId();
+            return ((AudioBean) music).getId() == ((AudioBean) mPlayingMusic).getId();
         }else{
-            return !((Song) music).getSong_id().equals(((Song) mPlayingMusic).getSong_id());
+            return ((Song) music).getSong_id().equals(((Song) mPlayingMusic).getSong_id());
         }
     }
 
@@ -404,6 +408,10 @@ public class PlayService extends Service {
             mPlayer.setOnErrorListener(mOnErrorListener);
             mPlayer.setOnInfoListener(mOnInfoListener);
         } catch (Exception e) {
+            Toast.makeText(this,"当前歌曲失效，已删除",Toast.LENGTH_SHORT).show();
+            if(music.getType().equals(AbstractMusic.TYPE_LOCAL)){
+                LocalMusicManager.getInstance(CMApplication.provideLiteOrm()).deleteAudio((AudioBean) music,this);
+            }
             e.printStackTrace();
         }
     }

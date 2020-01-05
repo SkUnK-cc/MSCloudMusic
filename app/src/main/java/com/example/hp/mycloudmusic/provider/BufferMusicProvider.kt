@@ -17,7 +17,7 @@ object BufferMusicProvider {
             if(dir.exists() && dir.isDirectory){
                 val fileList = dir.listFiles()
                 for(item in fileList){
-                    DevUtil.e(TAG,"add buffer file:${item.name}")
+                    DevUtil.e(TAG,"buffer_file:${item.name}")
                     map[item.name] = item.absolutePath
                 }
             }

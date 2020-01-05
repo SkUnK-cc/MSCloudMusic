@@ -6,9 +6,13 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.example.hp.mycloudmusic.base.BaseAppHelper;
+import com.example.hp.mycloudmusic.event.LocalMusicChangeEvent;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.litesuits.orm.LiteOrm;
 import com.litesuits.orm.db.assit.QueryBuilder;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,6 +26,7 @@ public class LocalMusicManager {
 
     private LiteOrm mLiteOrm;
     private static LocalMusicManager mInstance;
+
     //当没有明确的对象作为锁，只是想让一段代码同步时，可以创建一个特殊的对象来充当锁
     private static final Object mLock = new Object();
     private static final Object wLock = new Object();
@@ -114,6 +119,8 @@ public class LocalMusicManager {
     public void deleteAudio(AudioBean audioBean,Context context){
         mLiteOrm.delete(audioBean);
         deleteFromLocal(audioBean,context);
+        BaseAppHelper.get().setLocalMusicChanged(true);
+        EventBus.getDefault().post(new LocalMusicChangeEvent());
     }
 
     private void deleteFromLocal(AudioBean audioBean,Context context){

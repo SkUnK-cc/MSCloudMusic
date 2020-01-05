@@ -201,7 +201,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
 
     private void addOrShowFragment(FragmentTransaction transaction, Fragment fragment) {
         if(currentFragment == fragment){
-            return ;
+            return;
         }
         if (currentFragment != null){
             transaction.hide(currentFragment);
@@ -253,12 +253,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements IMainVi
         transaction.setCustomAnimations(0,R.anim.fragment_slide_out_right);
         transaction.hide(playMusicFragment);
         transaction.commitAllowingStateLoss();
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//        PlayMusicFragment fragment = FragmentFactory.getInstance(this).getmPlayMusicFragment();
-//        if(fragment.isAdded()){
-//            transaction.remove(fragment);
-//        }
-//        transaction.commitAllowingStateLoss();
     }
 
     private void showPlayingFragment() {
