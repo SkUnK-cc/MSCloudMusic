@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.example.hp.mycloudmusic.CMApplication;
 import com.example.hp.mycloudmusic.api.RetrofitFactory;
-import com.example.hp.mycloudmusic.download.MusicDownloadManager;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.AudioBean;
 import com.example.hp.mycloudmusic.musicInfo.merge.Song;
@@ -139,14 +138,14 @@ public class PlayService extends Service {
     private NotificationBroadcast broadcast;
     public void setOnPlayerEventListener(String className,OnPlayerEventListener listener) {
         if(listener!=null) {
-            DevUtil.d(TAG, "setOnPlayerEventListener: "+className);
+            //DevUtil.d(TAG, "setOnPlayerEventListener: "+className);
             listenerMap.put(className, listener);
             listener.onChange(mPlayingMusic);
         }
     }
 
     public void detachOnPlayerEventListener(String className){
-        DevUtil.d(TAG, "detachOnPlayerEventListener: "+className);
+        //.d(TAG, "detachOnPlayerEventListener: "+className);
         listenerMap.remove(className);
     }
 
@@ -306,7 +305,7 @@ public class PlayService extends Service {
     }
 
     private void getSongInfoAndPlay(final Song song) {
-        DevUtil.e(TAG,"getSongInfoAndPlay");
+        //DevUtil.e(TAG,"getSongInfoAndPlay");
         String fileName = FileMusicUtils.getLocalMusicName(song.title,song.author);
         if(BufferMusicProvider.INSTANCE.isContainsFile(fileName)){
             DevUtil.e(TAG,"containskey");
@@ -435,7 +434,6 @@ public class PlayService extends Service {
      */
     private MediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = (mp, percent) -> {
         curPercent = percent;
-        DevUtil.e(TAG,"buffer percent: "+percent);
         if(listenerMap!=null){
             List<OnPlayerEventListener> list = getListeners();
             for(int i=0;i<list.size();i++){
@@ -553,11 +551,11 @@ public class PlayService extends Service {
         if(!needBuffer || curPercent<65 || isBufferedNextSong)return;
         long remaindFlow = SpUtils.getTodayBufferRemaindFlow();
         if(remaindFlow==0)return;
-        DevUtil.d(TAG,"remaindFlow="+remaindFlow);
+        //DevUtil.d(TAG,"remaindFlow="+remaindFlow);
         AbstractMusic music = getMusicList().get(mPlayingPosition+1);
         if(remaindFlow>=3*1024*1024){
             isBufferedNextSong = true;
-            MusicDownloadManager.Companion.getInstance().downloadSong((Song) music,MusicDownloadManager.TYPE_CACHE);
+            //MusicDownloadManager.Companion.getInstance().downloadSong((Song) music,MusicDownloadManager.TYPE_CACHE);
         }
     }
 

@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Parcel;
 
 import com.example.hp.mycloudmusic.api.baidu.BaiduMusicApi;
+import com.example.hp.mycloudmusic.cache.MusicCacheManager;
 import com.example.hp.mycloudmusic.musicInfo.AbstractMusic;
 import com.example.hp.mycloudmusic.musicInfo.IQueryResult;
 import com.example.hp.mycloudmusic.musicInfo.songPlay.Bitrate;
@@ -11,6 +12,8 @@ import com.example.hp.mycloudmusic.musicInfo.songPlay.SongInfo;
 import com.example.hp.mycloudmusic.provider.BufferMusicProvider;
 import com.example.hp.mycloudmusic.util.DevUtil;
 import com.example.hp.mycloudmusic.util.FileMusicUtils;
+
+import java.io.File;
 
 public class Song extends AbstractMusic implements IQueryResult{
 
@@ -132,12 +135,17 @@ public class Song extends AbstractMusic implements IQueryResult{
         String bufferFileName = FileMusicUtils.getLocalMusicName(title,author);
         if(BufferMusicProvider.INSTANCE.getMap().containsKey(bufferFileName)){
             DevUtil.e("Song","map containskey");
-            return Uri.parse(BufferMusicProvider.INSTANCE.getMap().get(bufferFileName));
+            return Uri.fromFile(new File(BufferMusicProvider.INSTANCE.getMap().get(bufferFileName)));
         }
-        DevUtil.e("Song","map not containskey");
         // 如果没有预加载，则返回服务器资源地址
         String url = bitrate != null ? bitrate.getFile_link():BaiduMusicApi.DownloadUrl+song_id;
-        return Uri.parse(url);
+        String cacheFileName = MusicCacheManager.INSTANCE.getCacheFilePath(url);
+        if(!cacheFileName.equals("")){
+            DevUtil.e("Song","cache contains file");
+            return Uri.fromFile(new File(cacheFileName));
+        }
+        DevUtil.e("Song","get from net");
+        return Uri.parse(MusicCacheManager.INSTANCE.getLocalURLAndSetRemoteSocketAddr(url));
     }
 
     @Override
